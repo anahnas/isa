@@ -1,0 +1,127 @@
+package com.clinicalcenter.com.clinicalsys.model;
+
+import java.util.Objects;
+
+public class User {
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String password;  /*FIELD PASSWORD???*/
+    private String address;
+    private String city;
+    private String country;
+    private String phoneNumber;
+    private String jmbg;
+
+    public User() {
+    }
+
+    public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String jmbg) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.phoneNumber = phoneNumber;
+        this.jmbg = jmbg;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getjmbg() {
+        return jmbg;
+    }
+
+    public void setjmbg(String jmbg) {
+        this.jmbg = jmbg;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getEmail().equals(user.getEmail()) &&
+                getjmbg().equals(user.getjmbg());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getjmbg());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                '}';
+    }
+}
