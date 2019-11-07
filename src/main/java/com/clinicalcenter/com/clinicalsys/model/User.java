@@ -3,6 +3,7 @@ package com.clinicalcenter.com.clinicalsys.model;
 import java.util.Objects;
 
 public class User {
+    private long id;
     private String email;
     private String firstName;
     private String lastName;
