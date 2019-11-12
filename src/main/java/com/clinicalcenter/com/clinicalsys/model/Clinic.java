@@ -1,6 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
-import javafx.util.Pair;
+import java.util.AbstractMap;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ public class Clinic {
     private ArrayList <Appointment> fastApt;
     private ArrayList <MedicalStaff> staff;
     private ArrayList <Room> rooms;
-    private ArrayList <Pair<String, Double>> priceList; //Ne znamo sta ide u cijenovnik
+    private ArrayList <AbstractMap<String, Double>> priceList; //Ne znamo sta ide u cijenovnik
 
     public Clinic() {
         this.fastApt = new ArrayList<Appointment>();
@@ -76,11 +76,11 @@ public class Clinic {
         this.rooms = rooms;
     }
 
-    public ArrayList<Pair<String, Double>> getPriceList() {
+    public ArrayList<AbstractMap<String, Double>> getPriceList() {
         return priceList;
     }
 
-    public void setPriceList(ArrayList<Pair<String, Double>> priceList) {
+    public void setPriceList(ArrayList<AbstractMap<String, Double>> priceList) {
         this.priceList = priceList;
     }
 }

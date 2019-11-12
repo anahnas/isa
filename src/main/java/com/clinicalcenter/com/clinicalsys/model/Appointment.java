@@ -1,13 +1,14 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
-import javafx.util.Pair;
+
 
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Appointment {
-    private Pair<LocalDateTime,LocalDateTime> time;
+    private AbstractMap<LocalDateTime,LocalDateTime> time;
     private AppointmentType type;
     private Patient patient;
     private ArrayList<MedicalStaff> doctors;
@@ -17,7 +18,7 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(Pair<LocalDateTime, LocalDateTime> time, AppointmentType type, Patient patient, ArrayList<MedicalStaff> doctors, Room room, double price) {
+    public Appointment(AbstractMap<LocalDateTime, LocalDateTime> time, AppointmentType type, Patient patient, ArrayList<MedicalStaff> doctors, Room room, double price) {
         this.time = time;
         this.type = type;
         this.patient = patient;
@@ -26,11 +27,11 @@ public class Appointment {
         this.price = price;
     }
 
-    public Pair<LocalDateTime, LocalDateTime> getTime() {
+    public AbstractMap<LocalDateTime, LocalDateTime> getTime() {
         return time;
     }
 
-    public void setTime(Pair<LocalDateTime, LocalDateTime> time) {
+    public void setTime(AbstractMap<LocalDateTime, LocalDateTime> time) {
         this.time = time;
     }
 

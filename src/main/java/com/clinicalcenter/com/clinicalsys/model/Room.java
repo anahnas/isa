@@ -1,23 +1,23 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
-import javafx.util.Pair;
+import java.util.AbstractMap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 enum TYPE {SURGERY, EXAMINATION}
 public class Room {
     private String id;
-    private ArrayList<Pair<LocalDateTime,LocalDateTime>> reservedApt;
+    private ArrayList<AbstractMap<LocalDateTime,LocalDateTime>> reservedApt;
     private TYPE type;
 
     public Room() {
-        reservedApt = new ArrayList<Pair<LocalDateTime, LocalDateTime>>();
+        reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();
     }
 
     public Room(String id, TYPE type) {
         this.id = id;
         this.type = type;
-        reservedApt = new ArrayList<Pair<LocalDateTime, LocalDateTime>>();
+        reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();
     }
 
     public String getId() {
@@ -28,11 +28,11 @@ public class Room {
         this.id = id;
     }
 
-    public ArrayList<Pair<LocalDateTime, LocalDateTime>> getReservedApt() {
+    public ArrayList<AbstractMap<LocalDateTime, LocalDateTime>> getReservedApt() {
         return reservedApt;
     }
 
-    public void setReservedApt(ArrayList<Pair<LocalDateTime, LocalDateTime>> reservedApt) {
+    public void setReservedApt(ArrayList<AbstractMap<LocalDateTime, LocalDateTime>> reservedApt) {
         this.reservedApt = reservedApt;
     }
 
