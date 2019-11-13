@@ -9,8 +9,8 @@ public class AppointmentType {
     public AppointmentType() {
     }
 
-    public AppointmentType(String id, String name, double price) {
-        this.id = id;
+    public AppointmentType(String name, double price) {
+
         this.name = name;
         this.price = price;
     }

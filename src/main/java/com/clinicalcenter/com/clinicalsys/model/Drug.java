@@ -9,8 +9,8 @@ public class Drug {
     public Drug() {
     }
 
-    public Drug(String drugId, String drugName, double price) {
-        this.drugId = drugId;
+    public Drug(String drugName, double price) {
+
         this.drugName = drugName;
         this.price = price;
     }

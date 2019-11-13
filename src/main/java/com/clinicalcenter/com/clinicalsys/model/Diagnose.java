@@ -17,7 +17,7 @@ public class Diagnose
         return id;
     }
 
-    public void setId(String diagnoseID) {
+    public void setId(Long diagnoseID) {
         this.id = diagnoseID;
     }
 

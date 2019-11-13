@@ -22,7 +22,7 @@ public class Room {
         reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();
     }
 
-    public void setType(com.clinicalcenter.com.clinicalsys.model.TYPE type) {
+    public void setType(TYPE type) {
         this.type = type;
     }
 
@@ -54,7 +54,4 @@ public class Room {
         return type;
     }
 
-    public void setType(TYPE type) {
-        this.type = type;
-    }
 }
