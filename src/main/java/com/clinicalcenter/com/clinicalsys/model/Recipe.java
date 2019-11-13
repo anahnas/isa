@@ -1,11 +1,30 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+
+@Setter
+@Getter
+@Entity
+@Table(name = "recipe")
 public class Recipe {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String recipeID;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MedicalStaff doctor;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MedicalStaff nurse;
+
+    @Column(name = "isValidate", unique = false, nullable = true)
+    private boolean isValidate;
 
     public Recipe() {
     }

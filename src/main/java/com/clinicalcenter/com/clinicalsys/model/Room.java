@@ -1,16 +1,35 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.util.AbstractMap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 enum TYPE {SURGERY, EXAMINATION}
+
+@Getter
+@Setter
+@Entity
+@Table(name = "room")
 public class Room {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
     private ArrayList<AbstractMap<LocalDateTime,LocalDateTime>> reservedApt;
+
+    @Column(name = "type", nullable = false)
     private TYPE type;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Clinic clinic;
 
     public Room() {
         reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();

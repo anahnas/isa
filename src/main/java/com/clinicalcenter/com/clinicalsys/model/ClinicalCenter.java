@@ -1,15 +1,29 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.persistence.*;
+import java.util.*;
 
+@Entity
+@Table(name = "clinicalCenter")
 public class ClinicalCenter {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", unique = false, nullable = false)
     private String name;
-    private ArrayList<Clinic> clinics;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Clinic> clinics;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private HashMap <String, Drug> drugHashMap;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private HashMap <String, Diagnose> diagnoseHashMap;
-    private ArrayList<User> allUsers;
+
+    private Set<User> allUsers;
 
     public ArrayList<Patient> getRequests() {
         return requests;
@@ -19,19 +33,21 @@ public class ClinicalCenter {
     private ClinicalCenter instance = null;
 
     private ClinicalCenter() {
-        this.clinics = new ArrayList<Clinic>();
+        super();
+        //this.clinics = new Set<Clinic>();
         this.drugHashMap = new HashMap<String, Drug>();
         this.diagnoseHashMap = new HashMap<String, Diagnose>();
-        this.allUsers = new ArrayList<User>();
+        //this.allUsers = new Set<User>();
         this.requests = new ArrayList<Patient>();
     }
 
     public ClinicalCenter(String name) {
+        super();
         this.name = name;
-        this.clinics = new ArrayList<Clinic>();
+        //this.clinics = new Set<Clinic>();
         this.drugHashMap = new HashMap<String, Drug>();
         this.diagnoseHashMap = new HashMap<String, Diagnose>();
-        this.allUsers = new ArrayList<User>();
+       // this.allUsers = new Set<User>();
         this.requests = new ArrayList<Patient>();
     }
 
@@ -50,11 +66,11 @@ public class ClinicalCenter {
         return diagnoseHashMap;
     }
 
-    public ArrayList<User> getAllUsers() {
+    public Set<User> getAllUsers() {
         return allUsers;
     }
 
-    public ArrayList<Clinic> getClinics() {
+    public Set<Clinic> getClinics() {
         return clinics;
     }
 
@@ -74,7 +90,7 @@ public class ClinicalCenter {
         this.name = name;
     }
 
-    public void setClinics(ArrayList<Clinic> clinics) {
+    public void setClinics(Set<Clinic> clinics) {
         this.clinics = clinics;
     }
 
@@ -86,7 +102,7 @@ public class ClinicalCenter {
         this.diagnoseHashMap = diagnoseHashMap;
     }
 
-    public void setAllUsers(ArrayList<User> allUsers) {
+    public void setAllUsers(Set<User> allUsers) {
         this.allUsers = allUsers;
     }
 
