@@ -1,10 +1,16 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import javax.persistence.*;
 import java.util.AbstractMap;
 
 import java.util.ArrayList;
 
+@Entity
 public class Clinic {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "clinicName", nullable = false)
     private String clinicName;
     private String address;
     private String description;

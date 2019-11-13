@@ -1,9 +1,14 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class User {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "email", nullable = false)
     private String email;
     private String firstName;
     private String lastName;
