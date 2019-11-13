@@ -1,11 +1,21 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
 public class Recipe {
+
+    private Long id;
     private String recipeID;
     private MedicalStaff doctor;
     private MedicalStaff nurse;
 
     public Recipe() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Recipe(String recipeID) {

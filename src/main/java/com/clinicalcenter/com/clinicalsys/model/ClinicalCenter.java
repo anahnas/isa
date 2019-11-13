@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ClinicalCenter {
+    private Long id;
     private String name;
     private ArrayList<Clinic> clinics;
     private HashMap <String, Drug> drugHashMap;
@@ -55,5 +56,45 @@ public class ClinicalCenter {
 
     public ArrayList<Clinic> getClinics() {
         return clinics;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setClinics(ArrayList<Clinic> clinics) {
+        this.clinics = clinics;
+    }
+
+    public void setDrugHashMap(HashMap<String, Drug> drugHashMap) {
+        this.drugHashMap = drugHashMap;
+    }
+
+    public void setDiagnoseHashMap(HashMap<String, Diagnose> diagnoseHashMap) {
+        this.diagnoseHashMap = diagnoseHashMap;
+    }
+
+    public void setAllUsers(ArrayList<User> allUsers) {
+        this.allUsers = allUsers;
+    }
+
+    public void setRequests(ArrayList<Patient> requests) {
+        this.requests = requests;
+    }
+
+    public void setInstance(com.clinicalcenter.com.clinicalsys.model.ClinicalCenter instance) {
+        this.instance = instance;
     }
 }

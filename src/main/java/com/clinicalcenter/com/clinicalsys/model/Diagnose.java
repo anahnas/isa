@@ -2,23 +2,23 @@ package com.clinicalcenter.com.clinicalsys.model;
 
 public class Diagnose
 {
-    private String diagnoseID;
+    private Long id;
     private String name;
 
     public Diagnose() {
     }
 
-    public Diagnose(String diagnoseID, String name) {
-        this.diagnoseID = diagnoseID;
+    public Diagnose(String name) {
+
         this.name = name;
     }
 
-    public String getDiagnoseID() {
-        return diagnoseID;
+    public Long getId() {
+        return id;
     }
 
-    public void setDiagnoseID(String diagnoseID) {
-        this.diagnoseID = diagnoseID;
+    public void setId(String diagnoseID) {
+        this.id = diagnoseID;
     }
 
     public String getName() {

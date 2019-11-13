@@ -89,4 +89,12 @@ public class Clinic {
     public void setPriceList(ArrayList<AbstractMap<String, Double>> priceList) {
         this.priceList = priceList;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

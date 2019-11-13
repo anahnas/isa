@@ -1,7 +1,8 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
 public class Drug {
-    private String drugId;
+
+    private Long id;
     private String drugName;
     private double price;
 
@@ -22,12 +23,12 @@ public class Drug {
         this.price = price;
     }
 
-    public String getDrugId() {
-        return drugId;
+    public Long getDrugId() {
+        return id;
     }
 
-    public void setDrugId(String drugId) {
-        this.drugId = drugId;
+    public void setId(Long drugId) {
+        this.id = drugId;
     }
 
     public String getDrugName() {
