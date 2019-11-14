@@ -8,15 +8,32 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "email", nullable = false)
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(name = "firstName", unique = false, nullable = false)
     private String firstName;
+
+    @Column(name = "lastName", unique = false, nullable = false)
     private String lastName;
+
+    @Column(name = "password", unique = true, nullable = false)
     private String password;  /*FIELD PASSWORD???*/
+
+    @Column(name = "address", unique = false, nullable = false)
     private String address;
+
+    //@Column(name = "city", unique = false, nullable = false)
     private String city;
+
+   // @Column(name = "country", unique = false, nullable = false)
     private String country;
+
+   // @Column(name = "phoneNumber", unique = true, nullable = false)
     private String phoneNumber;
+
+    //@Column(name = "jmbg", unique = true, nullable = false)
     private String jmbg;
 
     public User() {
