@@ -2,19 +2,51 @@ package com.clinicalcenter.com.clinicalsys.model;
 
 
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Entity
+@Table(name = "appointment")
 public class Appointment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "startTime", unique = false, nullable = false)
+    private Long startTime;
+
+    @Column(name = "endTime", unique = false, nullable = false)
+    private Long endTime;
+
+    @Column(name = "duration", unique = false, nullable = false)
+    private Long duration;
+
+    @Column(name = "dateTime", unique = false, nullable = false)
     private AbstractMap<LocalDateTime,LocalDateTime> time;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private AppointmentType type;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Patient patient;
+
     private ArrayList<MedicalStaff> doctors;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Room room;
+
+    @Column(name = "price", unique = false, nullable = false)
     private double price;
+
+    @Column(name = "discount", unique = false, nullable = false)
+    private Float discount;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Clinic clinic;
 
     public Appointment() {
     }

@@ -4,25 +4,41 @@ import javax.persistence.*;
 import java.util.AbstractMap;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @Entity
+@Table(name = "clinic")
 public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "clinicName", nullable = false)
     private String clinicName;
+
+    @Column(name = "address", unique = false, nullable = false)
     private String address;
+
+    @Column(name = "description", unique = false, nullable = false)
     private String description;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private ArrayList <Appointment> fastApt;
-    private ArrayList <MedicalStaff> staff;
-    private ArrayList <Room> rooms;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set <MedicalStaff> staff; //doctor or nurse
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Room> rooms;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private ArrayList <AbstractMap<String, Double>> priceList; //Ne znamo sta ide u cijenovnik
 
     public Clinic() {
+        super();
         this.fastApt = new ArrayList<Appointment>();
-        this.staff = new ArrayList<MedicalStaff>();
-        this.rooms = new ArrayList<Room>();
+        //this.staff = new Set<MedicalStaff>();
+        //this.rooms = new Set<Room>();
     }
 
     public Clinic(String clinicName, String address, String description) {
@@ -30,8 +46,8 @@ public class Clinic {
         this.address = address;
         this.description = description;
         this.fastApt = new ArrayList<Appointment>();
-        this.staff = new ArrayList<MedicalStaff>();
-        this.rooms = new ArrayList<Room>();
+        //this.staff = new Set<MedicalStaff>();
+        //this.rooms = new Set<Room>();
     }
 
     public String getClinicName() {
@@ -66,19 +82,19 @@ public class Clinic {
         this.fastApt = freeApt;
     }
 
-    public ArrayList<MedicalStaff> getStaff() {
+    public Set<MedicalStaff> getStaff() {
         return staff;
     }
 
-    public void setStaff(ArrayList<MedicalStaff> staff) {
+    public void setStaff(Set<MedicalStaff> staff) {
         this.staff = staff;
     }
 
-    public ArrayList<Room> getRooms() {
+    public Set<Room> getRooms() {
         return rooms;
     }
 
-    public void setRooms(ArrayList<Room> rooms) {
+    public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
     }
 

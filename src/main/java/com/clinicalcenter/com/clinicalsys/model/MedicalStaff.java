@@ -1,7 +1,24 @@
 package com.clinicalcenter.com.clinicalsys.model;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 enum MEDICAL_STAFF {DOCTOR, NURSE, CLINIC_ADMIN, MAIN_ADMIN}
+
+@Setter
+@Getter
+@Entity
+@Table(name = "medicalStaff")
 public class MedicalStaff extends  User{
+
     private  MEDICAL_STAFF type;
+
+    @Column(name = "rating", unique = false, nullable = false)
+    private Float rating;
 
     public MedicalStaff(MEDICAL_STAFF type) {
         this.type = type;

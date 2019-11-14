@@ -1,9 +1,27 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+
+@Setter
+@Getter
+@Entity
+@Table(name = "drug")
 public class Drug {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "drugName", unique = false, nullable = false)
     private String drugName;
+
+    @Column(name = "description", unique = true, nullable = false)
+    private String description;
+
+    @Column(name = "price", unique = false, nullable = false)
     private double price;
 
     public Drug() {

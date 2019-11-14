@@ -1,10 +1,24 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import javax.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name = "appointmentType")
 public class AppointmentType {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+    @Column(name = "price", unique = false, nullable = false)
     double price;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Appointment> appointments;
 
     public AppointmentType() {
     }
