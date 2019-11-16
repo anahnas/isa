@@ -7,6 +7,7 @@ import lombok.Setter;
 import static javax.persistence.InheritanceType.JOINED;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Setter
@@ -52,6 +53,8 @@ public class User {
 
     public User() {
     }
+
+
 
     /*public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String jmbg) {
         this.email = email;
