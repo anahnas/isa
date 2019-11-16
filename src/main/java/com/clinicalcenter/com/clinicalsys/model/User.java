@@ -1,12 +1,23 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
+import lombok.Getter;
+import lombok.Setter;
+
+import static javax.persistence.InheritanceType.JOINED;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@Setter
+@Getter
 @Entity
+@Table(name = "user")
+@Inheritance(strategy = JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
     @Column(name = "email", unique = true, nullable = false)
@@ -21,7 +32,7 @@ public class User {
     @Column(name = "password", unique = true, nullable = false)
     private String password;  /*FIELD PASSWORD???*/
 
-    @Column(name = "address", unique = false, nullable = false)
+    @Column(name = "address", unique = false)
     private String address;
 
     //@Column(name = "city", unique = false, nullable = false)
@@ -36,10 +47,13 @@ public class User {
     //@Column(name = "jmbg", unique = true, nullable = false)
     private String jmbg;
 
+    @Column(name = "role", unique = false)
+    private RoleEnum role;
+
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String jmbg) {
+    /*public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String jmbg) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -146,5 +160,5 @@ public class User {
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 '}';
-    }
+    }*/
 }

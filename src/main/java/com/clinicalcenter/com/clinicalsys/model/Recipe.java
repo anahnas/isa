@@ -18,18 +18,24 @@ public class Recipe {
     private String recipeID;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private MedicalStaff doctor;
+    private Nurse nurse;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private MedicalStaff nurse;
+    private Drug drug;
+
+    /*@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private MedicalStaff nurse;*/
 
     @Column(name = "isValidate", unique = false, nullable = true)
     private boolean isValidate;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private MedicalHistory medicalHistory;
+
     public Recipe() {
     }
 
-    public Long getId() {
+    /* public Long getId() {
         return id;
     }
 
@@ -63,5 +69,5 @@ public class Recipe {
 
     public void setNurse(MedicalStaff nurse) {
         this.nurse = nurse;
-    }
+    }*/
 }

@@ -1,8 +1,13 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "appointmentType")
 public class AppointmentType {
@@ -11,11 +16,14 @@ public class AppointmentType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "type", unique = true, nullable = false)
+    private String type;
+
+   /* @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     @Column(name = "price", unique = false, nullable = false)
-    double price;
+    double price;*/
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Appointment> appointments;
@@ -23,7 +31,7 @@ public class AppointmentType {
     public AppointmentType() {
     }
 
-    public AppointmentType(String name, double price) {
+    /*public AppointmentType(String name, double price) {
 
         this.name = name;
         this.price = price;
@@ -51,5 +59,5 @@ public class AppointmentType {
 
     public void setPrice(double price) {
         this.price = price;
-    }
+    }*/
 }

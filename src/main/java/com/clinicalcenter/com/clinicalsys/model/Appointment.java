@@ -2,12 +2,18 @@ package com.clinicalcenter.com.clinicalsys.model;
 
 
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "appointment")
 public class Appointment {
@@ -26,21 +32,28 @@ public class Appointment {
     private Long duration;
 
     @Column(name = "dateTime", unique = false, nullable = false)
-    private AbstractMap<LocalDateTime,LocalDateTime> time;
+    private Long dateTime;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private AppointmentType type;
 
+    @Column(name = "appState", unique = false, nullable = false)
+    private AppStateEnum appState;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Patient patient;
 
-    private ArrayList<MedicalStaff> doctors;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Room room;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private MedicalHistory medicalHistory;
+
     @Column(name = "price", unique = false, nullable = false)
-    private double price;
+    private Float price;
 
     @Column(name = "discount", unique = false, nullable = false)
     private Float discount;
@@ -51,7 +64,7 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(AbstractMap<LocalDateTime, LocalDateTime> time, AppointmentType type, Patient patient, ArrayList<MedicalStaff> doctors, Room room, double price) {
+   /* public Appointment(AbstractMap<LocalDateTime, LocalDateTime> time, AppointmentType type, Patient patient, ArrayList<MedicalStaff> doctors, Room room, double price) {
         this.time = time;
         this.type = type;
         this.patient = patient;
@@ -114,5 +127,5 @@ public class Appointment {
 
     public void setPrice(double price) {
         this.price = price;
-    }
+    }*/
 }

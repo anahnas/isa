@@ -20,12 +20,12 @@ public class MedicalStaff extends  User{
     @Column(name = "rating", unique = false, nullable = false)
     private Float rating;
 
-    public MedicalStaff(MEDICAL_STAFF type) {
+    /*public MedicalStaff(MEDICAL_STAFF type) {
         this.type = type;
     }
 
     public MedicalStaff(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String jmbg, MEDICAL_STAFF type) {
         super(email, firstName, lastName, password, address, city, country, phoneNumber, jmbg);
         this.type = type;
-    }
+    }*/
 }

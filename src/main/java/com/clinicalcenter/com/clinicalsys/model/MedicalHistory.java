@@ -17,6 +17,9 @@ public class MedicalHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "description", unique = false, nullable = false)
+    private String description;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Drug> drugsInUse;
 
@@ -32,14 +35,14 @@ public class MedicalHistory {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Recipe> recipes;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private MedicalRecord medicalRecord;
+
 
     public MedicalHistory(){
-       /* this.drugsInUse = new ArrayList<Drug>();
-        this.pastDrugs = new ArrayList<Drug>();
-        this.diagnoses = new ArrayList<Diagnose>();*/
     }
 
-    public Long getId() {
+   /* public Long getId() {
         return id;
     }
 
@@ -69,5 +72,5 @@ public class MedicalHistory {
 
     public void setDiagnoses(Set<Diagnose> diagnoses) {
         this.diagnoses = diagnoses;
-    }
+    }*/
 }

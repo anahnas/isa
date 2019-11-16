@@ -23,7 +23,10 @@ public class Room {
     @Column(name = "name", nullable = false)
     private String name;
 
-    private ArrayList<AbstractMap<LocalDateTime,LocalDateTime>> reservedApt;
+    @Column(name = "number", nullable = false)
+    private Integer number;
+
+    //private ArrayList<AbstractMap<LocalDateTime,LocalDateTime>> reservedApt;
 
     @Column(name = "type", nullable = false)
     private TYPE type;
@@ -32,6 +35,9 @@ public class Room {
     private Clinic clinic;
 
     public Room() {
+    }
+
+    /*public Room() {
         reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();
     }
 
@@ -71,6 +77,6 @@ public class Room {
 
     public TYPE getType() {
         return type;
-    }
+    }*/
 
 }
