@@ -1,8 +1,13 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "clinicalCenter")
 public class ClinicalCenter {
@@ -15,33 +20,38 @@ public class ClinicalCenter {
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<RegistrationRequirement> registrationRequirements;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<ClinicCenterAdmin> ccAdmins;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Clinic> clinics;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private RecipeRecord recipeRecord;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private DiagnoseRecord diagnoseRecord;
+
+   /* @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private HashMap <String, Drug> drugHashMap;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private HashMap <String, Diagnose> diagnoseHashMap;
+    private HashMap <String, Diagnose> diagnoseHashMap;*/
 
-    private Set<User> allUsers;
-
-    public ArrayList<Patient> getRequests() {
+    /*public ArrayList<Patient> getRequests() {
         return requests;
     }
 
     private ArrayList<Patient> requests;
-    private ClinicalCenter instance = null;
+    private ClinicalCenter instance = null;*/
 
-    private ClinicalCenter() {
-        super();
-        //this.clinics = new Set<Clinic>();
-        this.drugHashMap = new HashMap<String, Drug>();
-        this.diagnoseHashMap = new HashMap<String, Diagnose>();
-        //this.allUsers = new Set<User>();
-        this.requests = new ArrayList<Patient>();
+    public ClinicalCenter() {
     }
 
-    public ClinicalCenter(String name) {
+
+    /*public ClinicalCenter(String name) {
         super();
         this.name = name;
         //this.clinics = new Set<Clinic>();
@@ -112,5 +122,5 @@ public class ClinicalCenter {
 
     public void setInstance(com.clinicalcenter.com.clinicalsys.model.ClinicalCenter instance) {
         this.instance = instance;
-    }
+    }*/
 }

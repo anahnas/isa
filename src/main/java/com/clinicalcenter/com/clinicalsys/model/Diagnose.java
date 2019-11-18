@@ -22,10 +22,13 @@ public class Diagnose
     @Column(name = "description", unique = false, nullable = false)
     private String description;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private DiagnoseRecord diagnoseRecord;
+
     public Diagnose() {
     }
 
-    public Diagnose(String name) {
+   /* public Diagnose(String name) {
 
         this.name = name;
     }
@@ -44,5 +47,5 @@ public class Diagnose
 
     public void setName(String name) {
         this.name = name;
-    }
+    }*/
 }

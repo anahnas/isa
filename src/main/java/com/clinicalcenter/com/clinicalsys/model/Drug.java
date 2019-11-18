@@ -24,10 +24,14 @@ public class Drug {
     @Column(name = "price", unique = false, nullable = false)
     private double price;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private RecipeRecord recipeRecord;
+
+
     public Drug() {
     }
 
-    public Drug(String drugName, double price) {
+   /* public Drug(String drugName, double price) {
 
         this.drugName = drugName;
         this.price = price;
@@ -55,5 +59,5 @@ public class Drug {
 
     public void setDrugName(String drugName) {
         this.drugName = drugName;
-    }
+    }*/
 }

@@ -1,11 +1,16 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.AbstractMap;
 
 import java.util.ArrayList;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "clinic")
 public class Clinic {
@@ -22,26 +27,49 @@ public class Clinic {
     @Column(name = "description", unique = false, nullable = false)
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private ArrayList <Appointment> fastApt;
+    @Column(name = "rating", unique = false, nullable = false)
+    private Float rating;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private ClinicReport clinicReport;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private PriceList priceList;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set <MedicalStaff> staff; //doctor or nurse
+    private  Set<Appointment> fastApt;
+
+   /* @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set <MedicalStaff> staff; //doctor or nurse*/
+
+   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<Doctor> doctors;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Nurse> nurses;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<ClinicAdmin> clinicAdmins;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Room> rooms;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<VacationRequest> vacReq;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<AppointReq> appReqs;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private ArrayList <AbstractMap<String, Double>> priceList; //Ne znamo sta ide u cijenovnik
+    private ClinicalCenter clinicCenter;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<SurgeryReq> surReq;
 
     public Clinic() {
-        super();
-        this.fastApt = new ArrayList<Appointment>();
-        //this.staff = new Set<MedicalStaff>();
-        //this.rooms = new Set<Room>();
     }
 
-    public Clinic(String clinicName, String address, String description) {
+  /*  public Clinic(String clinicName, String address, String description) {
         this.clinicName = clinicName;
         this.address = address;
         this.description = description;
@@ -112,5 +140,5 @@ public class Clinic {
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }*/
 }
