@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import static javax.persistence.InheritanceType.JOINED;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
@@ -30,23 +31,23 @@ public class User {
     @Column(name = "lastName", unique = false, nullable = false)
     private String lastName;
 
-    @Column(name = "password", unique = true, nullable = false)
+    @Column(name = "password", unique = false, nullable = false)
     private String password;  /*FIELD PASSWORD???*/
 
     @Column(name = "address", unique = false)
     private String address;
 
-    //@Column(name = "city", unique = false, nullable = false)
+    @Column(name = "city", unique = false, nullable = false)
     private String city;
 
-   // @Column(name = "country", unique = false, nullable = false)
+    @Column(name = "country", unique = false, nullable = false)
     private String country;
 
-   // @Column(name = "phoneNumber", unique = true, nullable = false)
+    @Column(name = "phoneNumber", unique = false, nullable = false)
     private String phoneNumber;
 
-    //@Column(name = "jmbg", unique = true, nullable = false)
-    private String jmbg;
+    @Column(name = "ssn", unique = true, nullable = false)
+    private String ssn;
 
     @Column(name = "role", unique = false)
     private RoleEnum role;
@@ -56,7 +57,7 @@ public class User {
 
 
 
-    /*public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String jmbg) {
+    public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String ssn) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,7 +66,8 @@ public class User {
         this.city = city;
         this.country = country;
         this.phoneNumber = phoneNumber;
-        this.jmbg = jmbg;
+        this.ssn = ssn;
+        this.role = RoleEnum.PATIENT;
     }
 
     public String getEmail() {
@@ -132,12 +134,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getjmbg() {
-        return jmbg;
+    public String getSsn() {
+        return ssn;
     }
 
-    public void setjmbg(String jmbg) {
-        this.jmbg = jmbg;
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
     }
 
     @Override
@@ -146,12 +148,12 @@ public class User {
         if (!(o instanceof User)) return false;
         User user = (User) o;
         return getEmail().equals(user.getEmail()) &&
-                getjmbg().equals(user.getjmbg());
+                getSsn().equals(user.getSsn());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getjmbg());
+        return Objects.hash(getEmail(), getSsn());
     }
 
     @Override
@@ -163,5 +165,5 @@ public class User {
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 '}';
-    }*/
+    }
 }
