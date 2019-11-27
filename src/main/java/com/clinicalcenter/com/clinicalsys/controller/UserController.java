@@ -2,6 +2,8 @@ package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.User;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,24 +17,26 @@ public class UserController {
     }
 
     @GetMapping("/users/{email}/{password}")
-    public User getUsers(@PathVariable("email") String email, @PathVariable("password") String password) {
+    public ResponseEntity<User> getUsers(@PathVariable("email") String email, @PathVariable("password") String password) {
         System.out.println("usaooo");
         User temp = userRepository.findByEmail(email);
         if(temp == null){
             System.out.println("User with email: " + email + " dose not exist!");
-            return null;
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         if(!temp.getPassword().equals(password)){
             System.out.println("Wrong password");
-            return null;
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         System.out.println(temp.getFirstName() + " " + temp.getPhoneNumber());
-        return temp;
+        return new ResponseEntity<>(temp, HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    void addUser(@RequestBody User user) {
+    public ResponseEntity<String> addUser(@RequestBody User user) {
         System.out.println(user.getFirstName() + " " + user.getEmail());
+        // TODO validacija
         userRepository.save(user);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 }
