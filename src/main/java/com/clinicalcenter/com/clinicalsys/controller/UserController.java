@@ -1,7 +1,9 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.User;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
+    @Autowired
     private final UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
@@ -34,6 +37,7 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<String> addUser(@RequestBody User user) {
+        user.setRole(RoleEnum.PATIENT);
         System.out.println(user.getFirstName() + " " + user.getEmail());
         // TODO validacija
         userRepository.save(user);
