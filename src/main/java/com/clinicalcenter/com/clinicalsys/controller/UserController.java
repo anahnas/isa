@@ -40,6 +40,7 @@ public class UserController {
         user.setRole(RoleEnum.PATIENT);
         System.out.println(user.getFirstName() + " " + user.getEmail());
         // TODO validacija
+        user.setActive(Boolean.FALSE);
         userRepository.save(user);
         return new ResponseEntity<>("", HttpStatus.OK);
     }

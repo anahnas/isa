@@ -25,6 +25,17 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @Column(name = "active", nullable = false)
+    private Boolean active;
+
     @Column(name = "firstName", unique = false, nullable = false)
     private String firstName;
 
