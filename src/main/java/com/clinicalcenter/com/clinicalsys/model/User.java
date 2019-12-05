@@ -25,14 +25,6 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
     @Column(name = "active", nullable = false)
     private Boolean active;
 
@@ -159,6 +151,14 @@ public class User {
 
     public void setRole(RoleEnum role) {
         this.role = role;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override

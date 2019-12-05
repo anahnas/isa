@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -16,19 +17,23 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.util.Set;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
-public class ReuqestsController {
+@PreAuthorize("hasRole('CLINIC_CENTER_ADMIN')")
+@RequestMapping("/admin")
+public class RequestsController {
 
     private final UserRepository userRepository;
+
     @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
     private Environment env;
 
-    public ReuqestsController(UserRepository userRepository) {
+    public RequestsController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @PreAuthorize("hasRole('CLINIC_CENTER_ADMIN')")
     @GetMapping("/getrequests")
     public ResponseEntity<Set<User>> getRequests(){
         Set<User> retValue = userRepository.findRequests();
@@ -51,12 +56,12 @@ public class ReuqestsController {
             System.out.println("Deleting..." + email);
             System.out.println("Content: " + content);
 
-            System.out.println("Slanje emaila...");
+            System.out.println("Sending mail...");
             SimpleMailMessage mail = new SimpleMailMessage();
             mail.setTo(email);
             mail.setFrom("spring.mail.username");
             mail.setSubject("Rejection");
-            mail.setText("Explanation for reqistration rejection: \n" + content);
+            mail.setText("Explanation for registration rejection: \n" + content);
             this.mailSender.send(mail);
             System.out.println("Email sent..");
             userRepository.deleteByEmail(email);
