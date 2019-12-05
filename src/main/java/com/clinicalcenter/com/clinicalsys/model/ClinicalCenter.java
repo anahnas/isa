@@ -25,8 +25,8 @@ public class ClinicalCenter {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ClinicCenterAdmin> ccAdmins;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Clinic> clinics;
+    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Set<Clinic> clinics;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private RecipeRecord recipeRecord;

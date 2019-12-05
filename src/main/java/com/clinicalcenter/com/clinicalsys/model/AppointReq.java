@@ -31,8 +31,8 @@ public class AppointReq {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User applicant;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
     public AppointReq() {
     }
