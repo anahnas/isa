@@ -27,10 +27,10 @@ public class Clinic {
     @Column(name = "address", unique = false, nullable = false)
     private String address;
 
-    @Column(name = "description", unique = false)
+    @Column(name = "description", unique = false, nullable = true)
     private String description;
 
-    @Column(name = "rating", unique = false)
+    @Column(name = "rating", unique = false, nullable = true)
     private Float rating;
 
 //    //@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

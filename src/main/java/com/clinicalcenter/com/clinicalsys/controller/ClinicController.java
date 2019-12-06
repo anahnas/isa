@@ -22,6 +22,8 @@ public class ClinicController {
     @PostMapping("/clinics")
     public ResponseEntity<String> addClinic(@RequestBody Clinic clinic) {
         System.out.println(clinic.getClinicName() + " " + clinic.getAddress());
+        clinic.setDescription("Opis");
+        clinic.setRating(5.5f);
         clinicRespository.save(clinic);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
