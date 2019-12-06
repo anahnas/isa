@@ -31,8 +31,8 @@ public class Room {
     @Column(name = "type", nullable = false)
     private TYPE type;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
     public Room() {
     }

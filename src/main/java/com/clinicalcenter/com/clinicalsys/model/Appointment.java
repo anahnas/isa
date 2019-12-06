@@ -58,8 +58,8 @@ public class Appointment {
     @Column(name = "discount", unique = false, nullable = false)
     private Float discount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
     public Appointment() {
     }

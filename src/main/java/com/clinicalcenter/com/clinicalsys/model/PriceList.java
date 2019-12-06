@@ -19,8 +19,8 @@ public class PriceList {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<PriceListItem> items;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
     public PriceList() {
     }

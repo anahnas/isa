@@ -27,8 +27,8 @@ public class ClinicReport {
     @Column(name = "income", unique = false, nullable = false)
     private Float income;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
     public ClinicReport() {
     }

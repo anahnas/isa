@@ -17,8 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     void deleteByEmail(String email);
 
-
-
     @Query("SELECT u FROM User u WHERE u.active = false ")
     Set<User> findRequests();
 }

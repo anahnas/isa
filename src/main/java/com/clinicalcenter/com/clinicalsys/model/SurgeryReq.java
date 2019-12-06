@@ -24,8 +24,8 @@ public class SurgeryReq {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
     public SurgeryReq() {
     }

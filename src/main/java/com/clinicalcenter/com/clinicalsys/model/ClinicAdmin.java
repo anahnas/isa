@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Table(name = "clinicAdmin")
 public class ClinicAdmin extends User{
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Clinic clinic;
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Clinic clinic;
 
 
     public ClinicAdmin() {

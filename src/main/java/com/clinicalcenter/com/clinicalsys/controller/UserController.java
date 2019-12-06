@@ -21,7 +21,7 @@ public class UserController {
         System.out.println("usaooo");
         User temp = userRepository.findByEmail(email);
         if(temp == null){
-            System.out.println("User with email: " + email + " dose not exist!");
+            System.out.println("User with email: " + email + " does not exist!");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         if(!temp.getPassword().equals(password)){

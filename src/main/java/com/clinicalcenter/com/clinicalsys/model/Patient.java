@@ -13,8 +13,8 @@ import java.util.Set;
 @Table(name = "patient")
 public class Patient extends User{
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Clinic> clinics;
+    /*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Clinic> clinics;*/
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MedicalRecord medicalRecord;
