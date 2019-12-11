@@ -33,6 +33,9 @@ public class User {
         this.active = active;
     }
 
+    @Column(name="adminConfirmed")
+    private Boolean adminConfirmed;
+
     @Column(name = "active", nullable = false)
     private Boolean active;
 
@@ -91,6 +94,22 @@ public class User {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public Boolean getAdminConfirmed() {
+        return adminConfirmed;
+    }
+
+    public void setAdminConfirmed(Boolean adminConfirmed) {
+        this.adminConfirmed = adminConfirmed;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 
     public void setFirstName(String firstName) {
