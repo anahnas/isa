@@ -35,8 +35,7 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<String> addUser(@RequestBody User user) {
-        System.out.println(user.getFirstName() + " " + user.getEmail());
-        // TODO validacija
+
         user.setActive(Boolean.FALSE);
         user.setAdminConfirmed(Boolean.FALSE);
         user.setRole(RoleEnum.PATIENT);

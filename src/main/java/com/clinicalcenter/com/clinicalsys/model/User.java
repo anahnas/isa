@@ -51,13 +51,13 @@ public class User {
     @Column(name = "address", unique = false)
     private String address;
 
-    @Column(name = "city", unique = false, nullable = false)
+    @Column(name = "city", unique = false)
     private String city;
 
-    @Column(name = "country", unique = false, nullable = false)
+    @Column(name = "country", unique = false)
     private String country;
 
-    @Column(name = "phoneNumber", unique = false, nullable = false)
+    @Column(name = "phoneNumber", unique = false)
     private String phoneNumber;
 
     @Column(name = "ssn", unique = true, nullable = false)

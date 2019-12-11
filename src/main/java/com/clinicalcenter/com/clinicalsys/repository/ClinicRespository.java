@@ -17,4 +17,7 @@ public interface ClinicRespository extends JpaRepository<Clinic, Long> {
 
     @Query("SELECT c FROM Clinic c ")
     Set<Clinic> findClinics();
+
+    @Transactional
+    Clinic findByClinicName(String clinicName);
 }

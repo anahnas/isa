@@ -51,9 +51,17 @@ public class Clinic {
 //    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    private Set<Nurse> nurses;
 //
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<ClinicAdmin> clinicAdmins;
+    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Set<ClinicAdmin> clinicAdmins;
 //
+
+ //   public Set<ClinicAdmin> getClinicAdmins() {
+ //       return clinicAdmins;
+   // }
+
+    //public void setClinicAdmins(Set<ClinicAdmin> clinicAdmins) {
+      //  this.clinicAdmins = clinicAdmins;
+    //}
 //    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    private Set<Room> rooms;
 //
