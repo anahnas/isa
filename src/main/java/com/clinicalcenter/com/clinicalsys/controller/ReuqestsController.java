@@ -29,6 +29,7 @@ public class ReuqestsController {
     public ReuqestsController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @GetMapping("/getrequests")
     public ResponseEntity<Set<User>> getRequests(){
         Set<User> retValue = userRepository.findRequests();
@@ -37,6 +38,41 @@ public class ReuqestsController {
         }
 
         return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
+    @Async
+    @PutMapping("/acceptrequest/{email}")
+    public ResponseEntity<String> acceptRequest(@PathVariable("email") String email) throws MailException{
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        user.setAdminConfirmed(Boolean.TRUE);
+        userRepository.save(user);
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(email);
+        mail.setFrom("spring.mail.username");
+        mail.setSubject("Confirmation");
+        mail.setText("Please confirm your registration by click on link bellow: \n\n" + "http://localhost:4200/accept/"+email);
+        this.mailSender.send(mail);
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @Async
+    @PutMapping("/confirm/{email}")
+    public ResponseEntity<String> confirmAcc(@PathVariable("email") String email){
+        User u = userRepository.findByEmail(email);
+        if(u == null){
+            return new ResponseEntity<>("Something gone wrong", HttpStatus.BAD_REQUEST);
+        }
+        else if(u.getActive()){
+            return new ResponseEntity<>("User is already active", HttpStatus.NO_CONTENT);
+        }
+        u.setActive(Boolean.TRUE);
+        userRepository.save(u);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @Async
@@ -63,5 +99,7 @@ public class ReuqestsController {
             return new ResponseEntity<>("", HttpStatus.OK);
         }
     }
+
+
 
 }

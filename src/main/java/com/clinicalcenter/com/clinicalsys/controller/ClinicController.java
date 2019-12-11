@@ -30,7 +30,7 @@ public class ClinicController {
 
     @GetMapping("/getclinics")
     public ResponseEntity<Set<Clinic>> getRequests(){
-        Set<Clinic> retValue = clinicRespository.findRequests();
+        Set<Clinic> retValue = clinicRespository.findClinics();
         if(retValue==null){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

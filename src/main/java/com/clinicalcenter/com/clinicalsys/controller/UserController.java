@@ -1,6 +1,7 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.User;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,8 @@ public class UserController {
         System.out.println(user.getFirstName() + " " + user.getEmail());
         // TODO validacija
         user.setActive(Boolean.FALSE);
+        user.setAdminConfirmed(Boolean.FALSE);
+        user.setRole(RoleEnum.PATIENT);
         userRepository.save(user);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
