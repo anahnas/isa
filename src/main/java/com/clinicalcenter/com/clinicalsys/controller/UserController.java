@@ -40,8 +40,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest auth_req) {
         System.out.println("usao");
+        Authentication authentication;
         try {
-            authenticationManager.authenticate(
+            authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(auth_req.getUsername(), auth_req.getPassword())
             );
         } catch (BadCredentialsException e){

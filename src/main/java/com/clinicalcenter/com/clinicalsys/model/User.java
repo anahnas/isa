@@ -58,8 +58,6 @@ public class User {
     public User() {
     }
 
-
-
     public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String ssn) {
         this.email = email;
         this.firstName = firstName;
