@@ -25,14 +25,6 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
     @Column(name="adminConfirmed")
     private Boolean adminConfirmed;
 
@@ -60,7 +52,7 @@ public class User {
     @Column(name = "phoneNumber", unique = false)
     private String phoneNumber;
 
-    @Column(name = "ssn", unique = true, nullable = false)
+    @Column(name = "ssn", unique = false, nullable = false)
     private String ssn;
 
     @Column(name = "role", unique = false)
@@ -69,7 +61,13 @@ public class User {
     public User() {
     }
 
-
+    public User(User u){
+        this.email = u.email;
+        this.firstName = u.firstName;
+        this.lastName = u.lastName;
+        this.ssn = u.ssn;
+        this.password = u.password;
+    }
 
     public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String ssn) {
         this.email = email;
@@ -82,6 +80,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.ssn = ssn;
         this.role = RoleEnum.PATIENT;
+        this.adminConfirmed = Boolean.FALSE;
     }
 
     public String getEmail() {
@@ -94,6 +93,18 @@ public class User {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Boolean getAdminConfirmed() {
@@ -110,10 +121,6 @@ public class User {
 
     public void setRole(RoleEnum role) {
         this.role = role;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
     }
 
     public String getLastName() {
