@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,7 +46,9 @@ public class UserController {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(auth_req.getUsername(), auth_req.getPassword())
             );
-        } catch (BadCredentialsException e){
+        }catch (UsernameNotFoundException e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (BadCredentialsException e) {
             System.out.println("bad_credentials");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
