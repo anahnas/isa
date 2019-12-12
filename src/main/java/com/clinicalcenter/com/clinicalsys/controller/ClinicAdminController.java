@@ -30,7 +30,9 @@ public class ClinicAdminController {
 
     @PostMapping("/regClinicAdmin/{clinic}")
     public ResponseEntity<String> addUser(@RequestBody User user, @PathVariable("clinic") String clinic) {
-
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         Clinic clc = clinicRespository.findByClinicName(clinic);
         System.out.println("Ovo je klinika koju treba obraditi: "+clinic);
         ClinicAdmin ca = new ClinicAdmin(user, clc);
@@ -40,10 +42,9 @@ public class ClinicAdminController {
 
     @GetMapping("/getadmins")
     public ResponseEntity<Set<User>> getRequests(){
-        //TODO aktivirati autorizaciju za ovu metodu
-        /*if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }*/
+        }
         System.out.println("ClinicAdminController");
         Set<User> retValue = new Set<User>() {
             @Override
