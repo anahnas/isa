@@ -27,6 +27,37 @@ public class Drug {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private RecipeRecord recipeRecord;
 
+    public String getDrugName() {
+        return drugName;
+    }
+
+    public void setDrugName(String drugName) {
+        this.drugName = drugName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public RecipeRecord getRecipeRecord() {
+        return recipeRecord;
+    }
+
+    public void setRecipeRecord(RecipeRecord recipeRecord) {
+        this.recipeRecord = recipeRecord;
+    }
 
     public Drug() {
     }
