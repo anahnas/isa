@@ -21,6 +21,8 @@ public class MyUserDetails implements UserDetails {
 
     public MyUserDetails(User user){
         username = user.getEmail();
+        first_name = user.getFirstName();
+        second_name = user.getLastName();
         active = user.getActive();
         password = user.getPassword();
         role = user.getRole().toString();

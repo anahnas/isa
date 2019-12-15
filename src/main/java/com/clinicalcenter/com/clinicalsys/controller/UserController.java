@@ -53,10 +53,11 @@ public class UserController {
             System.out.println("bad_credentials");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
-        MyUserDetails myUserDetails = (MyUserDetails) myUserDetailsService
+        MyUserDetails myUD = (MyUserDetails) myUserDetailsService
                 .loadUserByUsername(auth_req.getUsername());
-        String jwt = jwtUtil.generateToken(myUserDetails);
-        return new ResponseEntity<>( new AuthenticationResponse(jwt), HttpStatus.OK);
+        String jwt = jwtUtil.generateToken(myUD);
+        return new ResponseEntity<>(
+                new AuthenticationResponse(jwt, myUD.getRole(), myUD.getFirst_name(), myUD.getSecond_name()), HttpStatus.OK);
     }
 
     @PostMapping("/register")
