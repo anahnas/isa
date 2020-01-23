@@ -11,21 +11,11 @@ import java.util.List;
 
 public class MyUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
-    private String first_name;
-    private String second_name;
-    private String role;
-    boolean active;
+    private User user;
     private ArrayList<GrantedAuthority> authorities;
 
     public MyUserDetails(User user){
-        username = user.getEmail();
-        first_name = user.getFirstName();
-        second_name = user.getLastName();
-        active = user.getActive();
-        password = user.getPassword();
-        role = user.getRole().toString();
+        this.user = user;
         authorities = new ArrayList<GrantedAuthority>();
         //authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
     }
@@ -37,12 +27,12 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getEmail();
     }
 
     @Override
@@ -62,18 +52,10 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return active;
+        return user.getActive();
     }
 
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public String getSecond_name() {
-        return second_name;
-    }
-
-    public String getRole() {
-        return role;
+    public User getUser() {
+        return user;
     }
 }

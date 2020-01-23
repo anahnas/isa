@@ -12,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -68,8 +65,9 @@ public class RequestsController {
         mail.setFrom("spring.mail.username");
         mail.setSubject("Confirmation");
         mail.setText("Please confirm your registration by click on link bellow: \n\n" + "http://localhost:4200/accept/"+email);
-        this.mailSender.send(mail);
-
+        new Thread(() -> {
+            this.mailSender.send(mail);
+        }).start();
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
@@ -91,7 +89,9 @@ public class RequestsController {
             mail.setFrom("spring.mail.username");
             mail.setSubject("Rejection");
             mail.setText("Explanation for registration rejection: \n" + rqst.getContent());
-            this.mailSender.send(mail);
+            new Thread(() -> {
+                this.mailSender.send(mail);
+            }).start();
             System.out.println("Email sent..");
             userRepository.deleteByEmail(rqst.getEmail());
             return new ResponseEntity<>("", HttpStatus.OK);

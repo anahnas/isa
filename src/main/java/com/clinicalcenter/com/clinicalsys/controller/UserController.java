@@ -41,7 +41,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest auth_req) {
-        System.out.println("usao");
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -57,7 +56,7 @@ public class UserController {
                 .loadUserByUsername(auth_req.getUsername());
         String jwt = jwtUtil.generateToken(myUD);
         return new ResponseEntity<>(
-                new AuthenticationResponse(jwt, myUD.getRole(), myUD.getFirst_name(), myUD.getSecond_name()), HttpStatus.OK);
+                new AuthenticationResponse(jwt, myUD.getUser()), HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -70,7 +69,6 @@ public class UserController {
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
-    @Async
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmAcc(@RequestBody String email){
         User u = userRepository.findByEmail(email);
@@ -83,5 +81,17 @@ public class UserController {
         u.setActive(Boolean.TRUE);
         userRepository.save(u);
         return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @PostMapping("/getuser")
+    public ResponseEntity<User> getUser(@RequestBody String email){
+        User u = userRepository.findByEmail(email);
+        if(u == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else if(u.getActive()){
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 }

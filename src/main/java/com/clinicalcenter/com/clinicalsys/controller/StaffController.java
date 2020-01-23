@@ -95,7 +95,6 @@ public class StaffController {
             }
         };
         retValue = userRepository.findStaff();
-
         return new ResponseEntity<>(retValue, HttpStatus.OK);
     }
 
