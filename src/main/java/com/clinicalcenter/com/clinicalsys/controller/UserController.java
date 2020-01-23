@@ -7,6 +7,7 @@ import com.clinicalcenter.com.clinicalsys.model.authentication.AuthenticationRes
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
 import com.clinicalcenter.com.clinicalsys.services.MyUserDetailsService;
+import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import com.clinicalcenter.com.clinicalsys.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,19 @@ public class UserController {
         user.setAdminConfirmed(Boolean.FALSE);
         user.setActive(Boolean.FALSE);
         user.setRole(RoleEnum.PATIENT);
+        userRepository.save(user);
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @PostMapping("/newcca")
+    public ResponseEntity<String> newCCA(@RequestBody User user){
+
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        user.setAdminConfirmed(Boolean.TRUE);
+        user.setActive(Boolean.TRUE);
+        user.setRole(RoleEnum.CLINIC_CENTER_ADMIN);
         userRepository.save(user);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
