@@ -1,48 +1,30 @@
 package com.clinicalcenter.com.clinicalsys.model.authentication;
 
+import com.clinicalcenter.com.clinicalsys.model.User;
+
 public class AuthenticationResponse {
 
     private String token;
-    private String role;
-    private String firstName;
-    private String secondName;
+    private User user;
 
-    public AuthenticationResponse(String token, String role, String firstName, String secondName){
+    public AuthenticationResponse(String token, User user){
         this.token = token;
-        this.role = role;
-        this.firstName = firstName;
-        this.secondName = secondName;
+        this.user = user;
     }
 
     public void setToken(String token) {
         this.token = token;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
     public String getToken(){
         return  token;
     }
 
-    public String getRole() {
-        return role;
+    public User getUser() {
+        return user;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getSecondName() {
-        return secondName;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
