@@ -16,6 +16,30 @@ public class Diagnose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public DiagnoseRecord getDiagnoseRecord() {
+        return diagnoseRecord;
+    }
+
+    public void setDiagnoseRecord(DiagnoseRecord diagnoseRecord) {
+        this.diagnoseRecord = diagnoseRecord;
+    }
+
     @Column(name = "name", unique = false, nullable = false)
     private String name;
 
