@@ -33,6 +33,18 @@ public class DrugController {
         }
     }
 
+    @GetMapping("/drugs/getalldrugs")
+    public ResponseEntity<Set<Drug>> getDrugs(){
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Set<Drug> retValue = drugRepository.allDrugs();
+        if(retValue==null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
     @GetMapping("/getdrugs")
     public ResponseEntity<Set<Drug>> getRequests(){
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){

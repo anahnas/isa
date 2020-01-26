@@ -1,10 +1,12 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Set;
 
 @Setter
@@ -21,6 +23,17 @@ public class Patient extends User{
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Appointment> appointments;
+
+    public Set<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(Set<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Recipe> recipes;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<AppointReq> reqApp;
@@ -41,10 +54,18 @@ public class Patient extends User{
     }
 
 
-
+        */
     public Patient() {
-        this.medhistory = new MedicalHistory();
-    }*/
+
+    }
+
+    public Patient(User u){
+        super(u);
+        this.setActive(Boolean.FALSE);
+        this.setAdminConfirmed(Boolean.FALSE);
+        this.setRole(RoleEnum.PATIENT);
+
+    }
 
 
 }

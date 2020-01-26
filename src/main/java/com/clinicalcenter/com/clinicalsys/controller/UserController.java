@@ -1,10 +1,12 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.MyUserDetails;
+import com.clinicalcenter.com.clinicalsys.model.Patient;
 import com.clinicalcenter.com.clinicalsys.model.User;
 import com.clinicalcenter.com.clinicalsys.model.authentication.AuthenticationRequest;
 import com.clinicalcenter.com.clinicalsys.model.authentication.AuthenticationResponse;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
+import com.clinicalcenter.com.clinicalsys.repository.PatientRepository;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
 import com.clinicalcenter.com.clinicalsys.services.MyUserDetailsService;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
@@ -28,6 +30,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -36,8 +41,9 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, PatientRepository patientRepository) {
         this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
     }
 
     @PostMapping("/login")
@@ -66,7 +72,7 @@ public class UserController {
         user.setAdminConfirmed(Boolean.FALSE);
         user.setActive(Boolean.FALSE);
         user.setRole(RoleEnum.PATIENT);
-        userRepository.save(user);
+        userRepository.save(new Patient(user));
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
@@ -94,6 +100,8 @@ public class UserController {
         }
         u.setActive(Boolean.TRUE);
         userRepository.save(u);
+        Patient p = new Patient(u);
+        patientRepository.save(p);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 

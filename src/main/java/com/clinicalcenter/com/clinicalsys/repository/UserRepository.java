@@ -25,6 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.role = 3 or u.role = 4")
     Set<User> findStaff();
 
+    @Query("SELECT u FROM User u WHERE u.active = true and u.role = 2")
+    Set<User> allPatients();
+
 
 
 }
