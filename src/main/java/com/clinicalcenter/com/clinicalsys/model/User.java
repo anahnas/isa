@@ -17,6 +17,10 @@ import java.util.Objects;
 @Table(name = "user")
 @Inheritance(strategy = JOINED)
 public class User {
+    public Long getId() {
+        return id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
