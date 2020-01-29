@@ -41,6 +41,17 @@ public class User {
     @Column(name = "lastName", unique = false, nullable = false)
     private String lastName;
 
+    public Boolean getFirstLogin() {
+        return firstLogin;
+    }
+
+    public void setFirstLogin(Boolean firstLogin) {
+        this.firstLogin = firstLogin;
+    }
+
+    @Column(name = "firstLogin")
+    private Boolean firstLogin;
+
     @Column(name = "password", unique = false, nullable = false)
     private String password;  /*FIELD PASSWORD???*/
 

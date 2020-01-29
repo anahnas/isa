@@ -72,7 +72,8 @@ public class UserController {
         user.setAdminConfirmed(Boolean.FALSE);
         user.setActive(Boolean.FALSE);
         user.setRole(RoleEnum.PATIENT);
-        userRepository.save(new Patient(user));
+        user.setFirstLogin(Boolean.TRUE);
+        patientRepository.save(new Patient(user));
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 

@@ -2,6 +2,7 @@ package com.clinicalcenter.com.clinicalsys.repository;
 
         import com.clinicalcenter.com.clinicalsys.model.User;
         import org.springframework.data.jpa.repository.JpaRepository;
+        import org.springframework.data.jpa.repository.Modifying;
         import org.springframework.data.jpa.repository.Query;
         import org.springframework.stereotype.Repository;
 
@@ -28,6 +29,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.active = true and u.role = 2")
     Set<User> allPatients();
 
+    @Transactional
+    @Modifying
+    @Query("update User u SET u.password = ?2 where u.email= ?1")
+    void updatePassword(String email, String newpassword);
 
-
+    @Transactional
+    @Modifying
+    @Query("update User u SET u.firstLogin = false where u.email= ?1")
+    void changeFirstLogin(String email);
 }

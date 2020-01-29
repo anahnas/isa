@@ -16,6 +16,7 @@ public class ClinicCenterAdmin extends User{
     @Column(name = "predefined", unique = false, nullable = true)
     private Boolean predefined;
 
+
     public ClinicCenterAdmin() {
     }
 }
