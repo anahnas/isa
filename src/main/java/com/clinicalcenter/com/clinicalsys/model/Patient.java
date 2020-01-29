@@ -64,7 +64,7 @@ public class Patient extends User{
         this.setActive(Boolean.FALSE);
         this.setAdminConfirmed(Boolean.FALSE);
         this.setRole(RoleEnum.PATIENT);
-
+        this.setFirstLogin(Boolean.TRUE);
     }
 
 
