@@ -16,6 +16,12 @@ public class Diagnose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", unique = false, nullable = false)
+    private String name;
+
+    @Column(name = "description", unique = false, nullable = false)
+    private String description;
+
     public String getName() {
         return name;
     }
@@ -32,44 +38,7 @@ public class Diagnose
         this.description = description;
     }
 
-    public DiagnoseRecord getDiagnoseRecord() {
-        return diagnoseRecord;
-    }
-
-    public void setDiagnoseRecord(DiagnoseRecord diagnoseRecord) {
-        this.diagnoseRecord = diagnoseRecord;
-    }
-
-    @Column(name = "name", unique = false, nullable = false)
-    private String name;
-
-    @Column(name = "description", unique = false, nullable = false)
-    private String description;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private DiagnoseRecord diagnoseRecord;
-
     public Diagnose() {
     }
 
-   /* public Diagnose(String name) {
-
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long diagnoseID) {
-        this.id = diagnoseID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }*/
 }

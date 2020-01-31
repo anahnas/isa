@@ -72,8 +72,20 @@ public class UserController {
         user.setAdminConfirmed(Boolean.FALSE);
         user.setActive(Boolean.FALSE);
         user.setRole(RoleEnum.PATIENT);
-        userRepository.save(new Patient(user));
+        Patient patient = new Patient(user);
+        patientRepository.save(patient);
+        //TODO backgroud checking for same email
         return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @PostMapping("/edit")
+    public  ResponseEntity<User> editInfo(@RequestBody User u){
+        if(!Authorized.isAuthorised(u.getEmail())){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        patientRepository.editPatient(u.getFirstName(),u.getLastName(),u.getPassword(),u.getAddress(),
+                u.getCity(),u.getPhoneNumber(),u.getCountry(),u.getEmail());
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
     @PostMapping("/newcca")
@@ -91,17 +103,14 @@ public class UserController {
 
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmAcc(@RequestBody String email){
-        User u = userRepository.findByEmail(email);
-        if(u == null){
+        Patient p = patientRepository.findByEmail(email);
+        if(p == null){
             return new ResponseEntity<>("Something gone wrong", HttpStatus.BAD_REQUEST);
         }
-        else if(u.getActive()){
+        else if(p.getActive()){
             return new ResponseEntity<>("User is already active", HttpStatus.NO_CONTENT);
         }
-        u.setActive(Boolean.TRUE);
-        userRepository.save(u);
-        Patient p = new Patient(u);
-        patientRepository.save(p);
+        patientRepository.setActive(email);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 

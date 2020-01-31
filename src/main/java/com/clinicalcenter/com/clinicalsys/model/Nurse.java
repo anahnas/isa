@@ -13,8 +13,9 @@ import java.util.Set;
 @Table(name = "nurse")
 public class Nurse extends Staff{
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Recipe> recipes;
+
     public Nurse() {
     }
 }

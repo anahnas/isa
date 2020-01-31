@@ -51,7 +51,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(jwt, myUserDetails)) {
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(myUserDetails, "", jwtUtil.getAuthorities(jwt));
+                        new UsernamePasswordAuthenticationToken(myUserDetails, username, jwtUtil.getAuthorities(jwt));
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 Collection<GrantedAuthority> col = jwtUtil.getAuthorities(jwt);
                 logger.info("user: " + username + " role: " + jwtUtil.getAuthorities(jwt).toArray()[0]);

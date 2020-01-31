@@ -3,6 +3,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 import com.clinicalcenter.com.clinicalsys.model.User;
 import com.clinicalcenter.com.clinicalsys.model.authentication.DeleteRequest;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
+import com.clinicalcenter.com.clinicalsys.repository.PatientRepository;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.Set;
 public class RequestsController {
 
     private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -30,8 +32,9 @@ public class RequestsController {
     @Autowired
     private Environment env;
 
-    public RequestsController(UserRepository userRepository) {
+    public RequestsController(UserRepository userRepository, PatientRepository patientRepository) {
         this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
     }
 
     @GetMapping("/getrequests")
@@ -57,8 +60,7 @@ public class RequestsController {
         if(user == null){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        user.setAdminConfirmed(Boolean.TRUE);
-        userRepository.save(user);
+        patientRepository.setConfirmed(user.getEmail());
 
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(email);

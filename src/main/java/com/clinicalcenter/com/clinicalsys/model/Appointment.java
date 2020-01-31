@@ -23,109 +23,37 @@ public class Appointment {
     private Long id;
 
     @Column(name = "startTime", unique = false, nullable = false)
-    private Long startTime;
+    private Date startTime;
 
     @Column(name = "endTime", unique = false, nullable = false)
-    private Long endTime;
+    private Date endTime;
 
-    @Column(name = "duration", unique = false, nullable = false)
-    private Long duration;
-
-    @Column(name = "dateTime", unique = false, nullable = false)
-    private Long dateTime;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private AppointmentType type;
 
     @Column(name = "appState", unique = false, nullable = false)
     private AppStateEnum appState;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    /*proveriti jos da li je dobro onetone ili nesto drugo*/
+    @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Doctor doctor;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Room room;
-
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private MedicalHistory medicalHistory;
-
-    @Column(name = "price", unique = false, nullable = false)
-    private Float price;
-
-    @Column(name = "discount", unique = false, nullable = false)
-    private Float discount;
-
-    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //private Clinic clinic;
 
     public Appointment() {
     }
 
-   /* public Appointment(AbstractMap<LocalDateTime, LocalDateTime> time, AppointmentType type, Patient patient, ArrayList<MedicalStaff> doctors, Room room, double price) {
-        this.time = time;
+    public Appointment(Date startTime, Date endTime, AppointmentType type, Patient patient, Room room, Doctor doctor) {
+        this.startTime = startTime;
         this.type = type;
+        this.appState=AppStateEnum.REQUESTED;
         this.patient = patient;
-        this.doctors = doctors;
-        this.room = room;
-        this.price = price;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public AbstractMap<LocalDateTime, LocalDateTime> getTime() {
-        return time;
-    }
-
-    public void setTime(AbstractMap<LocalDateTime, LocalDateTime> time) {
-        this.time = time;
-    }
-
-    public AppointmentType getType() {
-        return type;
-    }
-
-    public void setType(AppointmentType type) {
-        this.type = type;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public ArrayList<MedicalStaff> getDoctors() {
-        return doctors;
-    }
-
-    public void setDoctors(ArrayList<MedicalStaff> doctors) {
-        this.doctors = doctors;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
+        this.doctor = doctor;
         this.room = room;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }*/
 }

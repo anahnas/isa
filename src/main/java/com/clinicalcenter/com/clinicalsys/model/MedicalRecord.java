@@ -17,11 +17,14 @@ public class MedicalRecord {
     private Long id;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<MedicalHistory> diseaseHistory;
+    private Set<Recipe> recipes;
 
-    @Column(name = "description", unique = false, nullable = false)
-    private String description;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Drug> drugs_in_user;
 
-    public MedicalRecord() {
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Diagnose> diagnoses;
+    public MedicalRecord(){
+
     }
 }

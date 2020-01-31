@@ -1,5 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +18,14 @@ public class ClinicCenterAdmin extends User{
     private Boolean predefined;
 
     public ClinicCenterAdmin() {
+
+    }
+
+    public ClinicCenterAdmin(User u,boolean predefined) {
+        super(u);
+        this.predefined = predefined;
+        this.setRole(RoleEnum.CLINIC_CENTER_ADMIN);
+        this.setActive(Boolean.TRUE);
+        this.setAdminConfirmed(Boolean.TRUE);
     }
 }
