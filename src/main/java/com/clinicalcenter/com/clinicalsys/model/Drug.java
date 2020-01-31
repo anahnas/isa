@@ -24,8 +24,14 @@ public class Drug {
     @Column(name = "price", unique = false, nullable = false)
     private double price;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private RecipeRecord recipeRecord;
+    public Drug() {
+    }
+
+    public Drug(String drugName, double price) {
+
+        this.drugName = drugName;
+        this.price = price;
+    }
 
     public String getDrugName() {
         return drugName;
@@ -51,44 +57,4 @@ public class Drug {
         this.price = price;
     }
 
-    public RecipeRecord getRecipeRecord() {
-        return recipeRecord;
-    }
-
-    public void setRecipeRecord(RecipeRecord recipeRecord) {
-        this.recipeRecord = recipeRecord;
-    }
-
-    public Drug() {
-    }
-
-   /* public Drug(String drugName, double price) {
-
-        this.drugName = drugName;
-        this.price = price;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public Long getDrugId() {
-        return id;
-    }
-
-    public void setId(Long drugId) {
-        this.id = drugId;
-    }
-
-    public String getDrugName() {
-        return drugName;
-    }
-
-    public void setDrugName(String drugName) {
-        this.drugName = drugName;
-    }*/
 }

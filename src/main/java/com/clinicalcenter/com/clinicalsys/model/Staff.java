@@ -13,16 +13,13 @@ import java.util.Set;
 @Table(name = "staff")
 public class Staff extends User {
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Patient> patients;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Clinic clinic;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<VacationRequest> vacReq;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
 
     public Staff() {
@@ -31,7 +28,6 @@ public class Staff extends User {
     public Staff(User u,Clinic c){
         super(u);
         clinic = c;
-        patients = new HashSet<Patient>();
         vacReq = new HashSet<VacationRequest>();
         appointments = new HashSet<Appointment>();
     }
@@ -50,17 +46,8 @@ public class Staff extends User {
         this.setSsn(s.getSsn());
         this.setRole(s.getRole());
         this.clinic = s.getClinic();
-        this.patients = s.getPatients();
         this.vacReq = s.getVacReq();
         this.appointments = s.getAppointments();
-    }
-
-    public Set<Patient> getPatients() {
-        return patients;
-    }
-
-    public void setPatients(Set<Patient> patients) {
-        this.patients = patients;
     }
 
     public Clinic getClinic() {
