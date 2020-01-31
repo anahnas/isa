@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashSet;
 
 @Component
@@ -26,6 +27,14 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
     ClinicAdminRepository clinicAdminRepository;
     @Autowired
     ClinicCenterAdminRepository clinicCenterAdminRepository;
+    @Autowired
+    NurseRepository nurseRepository;
+    @Autowired
+    DrugRepository drugRepository;
+    @Autowired
+    DiagnoseRepository diagnoseRepository;
+    @Autowired
+    AppointmentRepository appointmentRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -36,6 +45,20 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "(407) 1040666","6199927252131");
         ClinicCenterAdmin ccadmin = new ClinicCenterAdmin(user_ccadmin,true);
         clinicCenterAdminRepository.save(ccadmin);
+        //endregion
+
+        //region Drug
+        Drug drug1 = new Drug("Cefaleksin", "Lek protiv upalnih tipova bolova",240.0);
+        drugRepository.save(drug1);
+
+        Drug drug2 = new Drug("Xalol", "Protiv napada panike + dobro ide uz alkohol",440.0);
+        drugRepository.save(drug2);
+
+        Drug drug3 = new Drug("Morfijum", "Protiv jakih bolova",940.0);
+        drugRepository.save(drug3);
+
+        Drug drug4 = new Drug("Vervex", "Resava glavobolje i bol grla",62.0);
+        drugRepository.save(drug4);
         //endregion
 
         //region Rooms
@@ -54,6 +77,24 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         Room clinicsu_1_s = new Room ("Sala za operacije", RoomType.SURGERY);
 
         Room clinicvl_1_e = new Room("Jedina soba...", RoomType.EXAMINATION);
+        //endregion
+
+        //region Diagnoses
+        Diagnose diagnose1 = new Diagnose("Upala pluca",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+        diagnoseRepository.save(diagnose1);
+
+        Diagnose diagnose2 = new Diagnose("Rak slepog creva",
+                "Duis pretium sed sapien at pellentesque. ");
+        diagnoseRepository.save(diagnose2);
+
+        Diagnose diagnose3 = new Diagnose("Upala pluca",
+                "Fusce pharetra sem nisl, non gravida neque vulputate in. Praesent nec augue odio amet.");
+        diagnoseRepository.save(diagnose3);
+
+        Diagnose diagnose4 = new Diagnose("Upala pluca",
+                "Vivamus mattis pellentesque augue nec nullam. ");
+        diagnoseRepository.save(diagnose4);
         //endregion
 
         //region AppointmentTypes
@@ -135,17 +176,17 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "519930","277 Quincy Lane","Radojevo","Serbia",
                 "(691) 5982347","4498498325468");
         ClinicAdmin cadmin2 = new ClinicAdmin(user_cadminns,clinicns);
-        clinicAdminRepository.save(cadmin1);
+        clinicAdminRepository.save(cadmin2);
         User user_cadminsu = new User("aashton7@acquirethisname.com","Adrianne","Ashton",
                 "893866","29 Melvin Alley","Radenka","Serbia",
                 "(263) 5567560","5057737453126");
         ClinicAdmin cadmin3 = new ClinicAdmin(user_cadminsu,clinicsu);
-        clinicAdminRepository.save(cadmin1);
+        clinicAdminRepository.save(cadmin3);
         User user_cadminvl = new User("avanrembrandt8@ezinearticles.com","Ashley",
                 "Van Rembrandt","651346","610 Forster Point","Kovilj",
                 "Serbia","(929) 7283860","9967156809229");
         ClinicAdmin cadmin4 = new ClinicAdmin(user_cadminvl,clinicvl);
-        clinicAdminRepository.save(cadmin1);
+        clinicAdminRepository.save(cadmin4);
         //endregion
 
         //region Doctors
@@ -197,6 +238,43 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         Staff staff_doctor_6 = new Staff(user_doctor_6, clinicvl);
         Doctor doctor6 = new Doctor(staff_doctor_6);
         doctorRepository.save(doctor6);
+        //endregion
+
+        //region Nurses
+            User user_nurse_ns1 = new User("rkitchinghamd@salon.com","Robinette","Kitchingham",
+                "272851","1715 Boyd Place","Nova Pazova","Serbia",
+                "(687) 2189973","8211024836776");
+            Staff staff_nurse_ns1 = new Staff(user_nurse_ns1,clinicns);
+            Nurse nurse_ns1 =new Nurse(staff_nurse_ns1);
+            nurseRepository.save(nurse_ns1);
+
+            User user_nurse_bg1 = new User("dbishopp4@wikispaces.com","Delcine","Bishopp",
+                    "785391","1810 Michigan Way", "Balatun","Bosnia and Herzegovina",
+                    "(192) 8186705","6771172485802");
+            Staff staff_nurse_bg1 = new Staff(user_nurse_bg1,clinicbg);
+            Nurse nurse_bg1 =new Nurse(staff_nurse_bg1);
+            nurseRepository.save(nurse_bg1);
+
+            User user_nurse_su1 = new User("sscholte5@examiner.com","Sydney","Scholte",
+                    "401257","48 Hoard Hill","Lipci","Montenegro",
+                    "(286) 9748369","3636790947925");
+            Staff staff_nurse_su1 = new Staff(user_nurse_su1,clinicsu);
+            Nurse nurse_su1 =new Nurse(staff_nurse_su1);
+            nurseRepository.save(nurse_su1);
+
+            User user_nurse_vl1 = new User("rkitchinghamd@salon.com","Robinette","Kitchingham",
+                    "272851","1715 Boyd Place","Nova Pazova","Serbia",
+                    "(687) 2189973","8211024836776");
+            Staff staff_nurse_vl1 = new Staff(user_nurse_vl1,clinicvl);
+            Nurse nurse_vl1 =new Nurse(staff_nurse_vl1);
+            nurseRepository.save(nurse_vl1);
+
+        //endregion
+
+        //region Appointments
+        Appointment ap_req1 = new Appointment(new Date(),null, clinicns_a1, patient1, null, doctor1);
+        patient1.getAppointments().add(ap_req1);
+        patientRepository.save(patient1);
         //endregion
     }
 }

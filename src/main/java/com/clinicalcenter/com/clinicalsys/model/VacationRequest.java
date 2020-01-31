@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -19,16 +20,13 @@ public class VacationRequest {
     private String type;
 
     @Column(name = "startDate", unique = false, nullable = false)
-    private Long startDate;
+    private Date startDate;
 
     @Column(name = "endDate", unique = false, nullable = false)
-    private Long endDate;
+    private Date endDate;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Staff staff;
-
-    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //private Clinic clinic;
 
     public VacationRequest() {
     }
