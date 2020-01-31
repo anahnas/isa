@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -17,5 +18,10 @@ public class Nurse extends Staff{
     private Set<Recipe> recipes;
 
     public Nurse() {
+    }
+
+    public Nurse(Staff s) {
+        super(s);
+        recipes = new HashSet<Recipe>();
     }
 }

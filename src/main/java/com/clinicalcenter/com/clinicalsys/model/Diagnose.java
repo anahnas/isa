@@ -22,6 +22,14 @@ public class Diagnose
     @Column(name = "description", unique = false, nullable = false)
     private String description;
 
+    public Diagnose() {
+    }
+
+    public Diagnose(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
@@ -36,9 +44,6 @@ public class Diagnose
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Diagnose() {
     }
 
 }

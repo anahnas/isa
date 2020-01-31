@@ -17,10 +17,10 @@ public class Patient extends User{
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MedicalRecord medicalRecord;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Appointment> appointments;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Surgery> surgeries;
 
     public Patient() {
