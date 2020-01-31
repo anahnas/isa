@@ -3,6 +3,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 import com.clinicalcenter.com.clinicalsys.model.Clinic;
 import com.clinicalcenter.com.clinicalsys.model.ClinicAdmin;
 import com.clinicalcenter.com.clinicalsys.model.User;
+import com.clinicalcenter.com.clinicalsys.model.authentication.UpdatePassword;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.ClinicAdminRepository;
 import com.clinicalcenter.com.clinicalsys.repository.ClinicRespository;
@@ -40,6 +41,41 @@ public class ClinicCenterAdminController {
         ClinicAdmin ca = new ClinicAdmin(user, clc);
         caRep.save(ca);
         return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @PostMapping("/cca/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            if(us.getFirstLogin() == true){
+                userRepository.changeFirstLogin(updatePassword.getEmail());
+            }
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/cca/justUpdatePassword")
+    public ResponseEntity<String> justUpdatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
     }
 
     @GetMapping("/getadmins")

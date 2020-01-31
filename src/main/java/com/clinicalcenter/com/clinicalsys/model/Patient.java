@@ -32,6 +32,7 @@ public class Patient extends User{
         this.setActive(Boolean.FALSE);
         this.setAdminConfirmed(Boolean.FALSE);
         this.setRole(RoleEnum.PATIENT);
+        this.setFirstLogin(Boolean.TRUE);
         this.medicalRecord = new MedicalRecord();
         this.appointments = new HashSet<Appointment>();
         this.surgeries = new HashSet<Surgery>();
