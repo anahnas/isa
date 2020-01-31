@@ -66,45 +66,7 @@ public class Recipe {
     @Column(name = "isValidate", unique = false, nullable = true)
     private boolean isValidate;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private MedicalHistory medicalHistory;
-
     public Recipe() {
     }
 
-    /* public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Recipe(String recipeID) {
-        this.recipeID = recipeID;
-    }
-
-    public String getRecipeID() {
-        return recipeID;
-    }
-
-    public void setRecipeID(String recipeID) {
-        this.recipeID = recipeID;
-    }
-
-    public MedicalStaff getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(MedicalStaff doctor) {
-        this.doctor = doctor;
-    }
-
-    public MedicalStaff getNurse() {
-        return nurse;
-    }
-
-    public void setNurse(MedicalStaff nurse) {
-        this.nurse = nurse;
-    }*/
 }

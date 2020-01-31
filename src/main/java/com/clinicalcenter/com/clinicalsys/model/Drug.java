@@ -15,10 +15,10 @@ public class Drug {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "drugName", unique = false, nullable = false)
+    @Column(name = "drugName", unique = true, length=30, nullable = false)
     private String drugName;
 
-    @Column(name = "description", unique = true, nullable = false)
+    @Column(name = "description", unique = false, nullable = false)
     private String description;
 
     @Column(name = "price", unique = false, nullable = false)

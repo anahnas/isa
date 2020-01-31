@@ -16,48 +16,48 @@ public class AppointmentType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "type", unique = true, nullable = false)
+    @Column(name = "type", nullable = false)
     private String type;
 
-   /* @Column(name = "name", unique = true, nullable = false)
-    private String name;
+    @Column(name = "price")
+    private Double price;
 
-    @Column(name = "price", unique = false, nullable = false)
-    double price;*/
+    @Column(name = "discount")
+    private Double discount;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Appointment> appointments;
+    /*@OneToMany(fetch = FetchType.EAGER)
+    private Set<Appointment> appointments;*/
 
     public AppointmentType() {
     }
 
-    /*public AppointmentType(String name, double price) {
-
-        this.name = name;
-        this.price = price;
+    public AppointmentType(String type, Double price, Double discount) {
+        this.price=price;
+        this.type = type;
+        this.discount = discount;
     }
 
-    public Long getId() {
-        return id;
+    public String getType() {
+        return type;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
-    }*/
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
 }

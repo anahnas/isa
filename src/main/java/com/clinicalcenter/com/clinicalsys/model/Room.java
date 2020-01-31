@@ -1,14 +1,13 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.AbstractMap;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-enum TYPE {SURGERY, EXAMINATION}
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,40 +22,19 @@ public class Room {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "number", nullable = false)
-    private Integer number;
-
-    //private ArrayList<AbstractMap<LocalDateTime,LocalDateTime>> reservedApt;
-
     @Column(name = "type", nullable = false)
-    private TYPE type;
+    private RoomType type;
 
-    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //private Clinic clinic;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Appointment> future_appointments;
 
     public Room() {
     }
 
-    /*public Room() {
-        reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();
-    }
-
-    public Room(String name, TYPE type) {
+    public Room(String name, RoomType type) {
         this.name = name;
         this.type = type;
-        reservedApt = new ArrayList<AbstractMap<LocalDateTime, LocalDateTime>>();
-    }
-
-    public void setType(TYPE type) {
-        this.type = type;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        future_appointments = new HashSet<Appointment>();
     }
 
     public String getName() {
@@ -67,16 +45,19 @@ public class Room {
         this.name = name;
     }
 
-    public ArrayList<AbstractMap<LocalDateTime, LocalDateTime>> getReservedApt() {
-        return reservedApt;
-    }
-
-    public void setReservedApt(ArrayList<AbstractMap<LocalDateTime, LocalDateTime>> reservedApt) {
-        this.reservedApt = reservedApt;
-    }
-
-    public TYPE getType() {
+    public RoomType getType() {
         return type;
-    }*/
+    }
 
+    public void setType(RoomType type) {
+        this.type = type;
+    }
+
+    public Set<Appointment> getFuture_appointments() {
+        return future_appointments;
+    }
+
+    public void setFuture_appointments(Set<Appointment> future_appointments) {
+        this.future_appointments = future_appointments;
+    }
 }

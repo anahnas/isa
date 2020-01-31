@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Table(name = "clinicAdmin")
 public class ClinicAdmin extends User{
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Clinic clinic;
 
     public ClinicAdmin() {

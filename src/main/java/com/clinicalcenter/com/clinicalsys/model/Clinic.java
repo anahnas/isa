@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.AbstractMap;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.InheritanceType.JOINED;
@@ -21,11 +22,17 @@ public class Clinic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "clinicName", nullable = false)
+    @Column(name = "clinicName", unique = true, nullable = false)
     private String clinicName;
 
     @Column(name = "address", unique = false, nullable = false)
     private String address;
+
+    @Column(name = "city", unique = false, nullable = false)
+    private String city;
+
+    @Column(name = "country", unique = false, nullable = false)
+    private String country;
 
     @Column(name = "description", unique = false, nullable = true)
     private String description;
@@ -33,57 +40,22 @@ public class Clinic {
     @Column(name = "rating", unique = false, nullable = true)
     private Float rating;
 
-//    //@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private ClinicReport clinicReport;
-//
-//    //@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private PriceList priceList;
-//
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private  Set<Appointment> fastApt;
-//
-//   /* @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set <MedicalStaff> staff; //doctor or nurse ovaj je i bio zakom jer ne koristimo vise med staff*/
-//
-//   //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//   private Set<Doctor> doctors;
-//
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<Nurse> nurses;
-//
-    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //private Set<ClinicAdmin> clinicAdmins;
-//
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Room> rooms;
 
- //   public Set<ClinicAdmin> getClinicAdmins() {
- //       return clinicAdmins;
-   // }
-
-    //public void setClinicAdmins(Set<ClinicAdmin> clinicAdmins) {
-      //  this.clinicAdmins = clinicAdmins;
-    //}
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<Room> rooms;
-//
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<VacationRequest> vacReq;
-//
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<AppointReq> appReqs;
-//
-//    //@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private ClinicalCenter clinicCenter;
-//
-//    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<SurgeryReq> surReq;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<AppointmentType> appointmentTypes;
 
     public Clinic() {}
 
-    public Clinic(String clinicName, String address, String description, Float rating) {
+    public Clinic(String clinicName, String address, String description, Float rating, String city, String country) {
         this.clinicName = clinicName;
         this.address = address;
         this.description = description;
         this.rating = rating;
+        this.city = city;
+        this.country = country;
+        this.rooms = new HashSet<Room>();
     }
 
     public String getClinicName() {
@@ -93,7 +65,6 @@ public class Clinic {
     public void setClinicName(String clinicName) {
         this.clinicName = clinicName;
     }
-
 
     public String getAddress() {
         return address;
@@ -119,53 +90,20 @@ public class Clinic {
         this.rating = rating;
     }
 
-    /*  public Clinic(String clinicName, String address, String description) {
-        this.clinicName = clinicName;
-        this.address = address;
-        this.description = description;
-        this.fastApt = new ArrayList<Appointment>();
-        //this.staff = new Set<MedicalStaff>();
-        //this.rooms = new Set<Room>();
+    public String getCity() {
+        return city;
     }
 
-    public String getClinicName() {
-        return clinicName;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public void setClinicName(String clinicName) {
-        this.clinicName = clinicName;
+    public String getCountry() {
+        return country;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ArrayList<Appointment> getFastApt() {
-        return fastApt;
-    }
-
-    public void setFastApt(ArrayList<Appointment> freeApt) {
-        this.fastApt = freeApt;
-    }
-
-    public Set<MedicalStaff> getStaff() {
-        return staff;
-    }
-
-    public void setStaff(Set<MedicalStaff> staff) {
-        this.staff = staff;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public Set<Room> getRooms() {
@@ -176,19 +114,11 @@ public class Clinic {
         this.rooms = rooms;
     }
 
-    public ArrayList<AbstractMap<String, Double>> getPriceList() {
-        return priceList;
+    public Set<AppointmentType> getAppointmentTypes() {
+        return appointmentTypes;
     }
 
-    public void setPriceList(ArrayList<AbstractMap<String, Double>> priceList) {
-        this.priceList = priceList;
+    public void setAppointmentTypes(Set<AppointmentType> appointmentTypes) {
+        this.appointmentTypes = appointmentTypes;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }*/
 }

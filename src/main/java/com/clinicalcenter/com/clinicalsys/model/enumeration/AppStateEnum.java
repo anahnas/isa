@@ -1,6 +1,5 @@
 package com.clinicalcenter.com.clinicalsys.model.enumeration;
 
 public enum AppStateEnum {
-    REQUIRED, PENDING, APPROVED, REJECTED, STARTED, FINISHED
-
+    REQUESTED, APPROVED, REJECTED, IN_PROGRESS, FINISHED
 }

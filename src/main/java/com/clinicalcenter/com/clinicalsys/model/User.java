@@ -73,15 +73,23 @@ public class User {
     @Column(name = "role", unique = false)
     private RoleEnum role;
 
+
     public User() {
     }
 
     public User(User u){
-        this.email = u.email;
-        this.firstName = u.firstName;
-        this.lastName = u.lastName;
-        this.ssn = u.ssn;
-        this.password = u.password;
+        this.email = u.getEmail();
+        this.adminConfirmed = u.getAdminConfirmed();
+        this.active = u.getActive();
+        this.firstName = u.getFirstName();
+        this.lastName = u.getLastName();
+        this.password = u.getPassword();
+        this.address = u.getAddress();
+        this.city=u.getCity();
+        this.country=u.getCountry();
+        this.phoneNumber = u.getPhoneNumber();
+        this.ssn = u.getSsn();
+        this.role = u.getRole();
     }
 
     public User(String email, String firstName, String lastName, String password, String address, String city, String country, String phoneNumber, String ssn) {
@@ -96,6 +104,7 @@ public class User {
         this.ssn = ssn;
         this.role = RoleEnum.PATIENT;
         this.adminConfirmed = Boolean.FALSE;
+        this.active = Boolean.FALSE;
     }
 
     public String getEmail() {
