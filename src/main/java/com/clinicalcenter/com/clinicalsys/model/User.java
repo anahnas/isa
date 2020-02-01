@@ -17,14 +17,14 @@ import java.util.Objects;
 @Table(name = "user")
 @Inheritance(strategy = JOINED)
 public class User {
-    public Long getId() {
-        return id;
-    }
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
+
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -47,6 +47,14 @@ public class User {
 
     public void setFirstLogin(Boolean firstLogin) {
         this.firstLogin = firstLogin;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Column(name = "firstLogin")

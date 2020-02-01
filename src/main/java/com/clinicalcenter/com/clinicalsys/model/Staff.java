@@ -2,6 +2,7 @@ package com.clinicalcenter.com.clinicalsys.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class Staff extends User {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<VacationRequest> vacReq;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
 
