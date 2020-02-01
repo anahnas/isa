@@ -15,6 +15,9 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Patient findByEmail(String email);
 
+    @Query("select p from Patient p")
+    Set<Patient> getAllPatients();
+
     @Transactional
     @Modifying(flushAutomatically = true)
     @Query("UPDATE Patient p SET p.active = true where p.email = email")

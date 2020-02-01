@@ -38,7 +38,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-
+    /*
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -163,6 +163,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "117565","88529 Fairfield Parkway","Budapest","Hungary",
                 "(682) 9443368","9598205971511");
         Patient patient1 = new Patient(user_patient1);
+        patient1.setActive(Boolean.TRUE);
         patientRepository.save(patient1);
         //endregion
 
@@ -262,8 +263,8 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             Nurse nurse_su1 =new Nurse(staff_nurse_su1);
             nurseRepository.save(nurse_su1);
 
-            User user_nurse_vl1 = new User("rkitchinghamd@salon.com","Robinette","Kitchingham",
-                    "272851","1715 Boyd Place","Nova Pazova","Serbia",
+            User user_nurse_vl1 = new User("nurse@nrs.com","Robinette","Kitchingham",
+                    "123123","1715 Boyd Place","Nova Pazova","Serbia",
                     "(687) 2189973","8211024836776");
             Staff staff_nurse_vl1 = new Staff(user_nurse_vl1,clinicvl);
             Nurse nurse_vl1 =new Nurse(staff_nurse_vl1);
@@ -273,8 +274,8 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
         //region Appointments
         Appointment ap_req1 = new Appointment(new Date(),null, clinicns_a1, patient1, null, doctor1);
-        patient1.getAppointments().add(ap_req1);
+        appointmentRepository.save(ap_req1);
         patientRepository.save(patient1);
-        //endregion
+        //endregion*/
     }
 }

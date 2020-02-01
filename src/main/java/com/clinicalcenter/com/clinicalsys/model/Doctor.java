@@ -1,5 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,10 @@ public class Doctor extends Staff {
     public Doctor(Staff staff){
         super(staff);
         rating = null;
+        this.setActive(Boolean.TRUE);
+        this.setAdminConfirmed(Boolean.TRUE);
+        this.setRole(RoleEnum.DOCTOR);
+        this.setFirstLogin(Boolean.TRUE);
         requested = new HashSet<Appointment>();
     }
 

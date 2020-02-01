@@ -15,22 +15,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/doctor")
 public class DoctorController {
+
     private final UserRepository userRepository;
-    private final PatientRepository patientRepository;
     private final RecipeRepository recipeRepository;
     private final DrugRepository drugRepository;
+    private final PatientRepository patientRepository;
 
-    public DoctorController(UserRepository userRepository, PatientRepository patientRepository, RecipeRepository recipeRepository, DrugRepository drugRepository) {
+    public DoctorController(UserRepository userRepository, RecipeRepository recipeRepository, DrugRepository drugRepository, PatientRepository patientRepository) {
         this.userRepository = userRepository;
-        this.patientRepository = patientRepository;
         this.recipeRepository = recipeRepository;
         this.drugRepository = drugRepository;
+        this.patientRepository = patientRepository;
     }
 
     @GetMapping("/getpatients")
@@ -75,8 +75,9 @@ public class DoctorController {
             Drug dr = drugRepository.findDrugByDrugName(drug.getDrugName());
             Recipe r = new Recipe();
             r.setDrug(dr);
-            r.setPatient((Patient) user);
-            this.recipeRepository.save(r);
+            Patient p =((Patient)user);
+            p.getMedicalRecord().getRecipes().add(r);
+            patientRepository.save(p);
             return new ResponseEntity<>("", HttpStatus.OK);
 
 

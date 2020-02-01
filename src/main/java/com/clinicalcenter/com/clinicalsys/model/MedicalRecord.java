@@ -27,4 +27,28 @@ public class MedicalRecord {
     public MedicalRecord(){
 
     }
+
+    public Set<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(Set<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public Set<Drug> getDrugs_in_user() {
+        return drugs_in_user;
+    }
+
+    public void setDrugs_in_user(Set<Drug> drugs_in_user) {
+        this.drugs_in_user = drugs_in_user;
+    }
+
+    public Set<Diagnose> getDiagnoses() {
+        return diagnoses;
+    }
+
+    public void setDiagnoses(Set<Diagnose> diagnoses) {
+        this.diagnoses = diagnoses;
+    }
 }

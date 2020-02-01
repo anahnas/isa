@@ -23,6 +23,7 @@ public class ClinicAdmin extends User{
         this.setActive(Boolean.TRUE);
         this.setAdminConfirmed(Boolean.TRUE);
         this.setRole(RoleEnum.CLINIC_ADMIN);
+        this.setFirstLogin(Boolean.TRUE);
         this.clinic = clc;
     }
 

@@ -58,14 +58,6 @@ public class Appointment {
         this.room = room;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Date getStartTime() {
         return startTime;
     }

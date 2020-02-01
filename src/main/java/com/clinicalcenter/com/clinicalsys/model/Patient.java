@@ -17,9 +17,9 @@ public class Patient extends User{
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MedicalRecord medicalRecord;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    /*@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Appointment> appointments;
-
+    */
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Surgery> surgeries;
 
@@ -34,7 +34,7 @@ public class Patient extends User{
         this.setRole(RoleEnum.PATIENT);
         this.setFirstLogin(Boolean.TRUE);
         this.medicalRecord = new MedicalRecord();
-        this.appointments = new HashSet<Appointment>();
+        //this.appointments = new HashSet<Appointment>();
         this.surgeries = new HashSet<Surgery>();
     }
 
@@ -46,13 +46,7 @@ public class Patient extends User{
         this.medicalRecord = medicalRecord;
     }
 
-    public Set<Appointment> getAppointments() {
-        return appointments;
-    }
 
-    public void setAppointments(Set<Appointment> appointments) {
-        this.appointments = appointments;
-    }
 
     public Set<Surgery> getSurgeries() {
         return surgeries;
