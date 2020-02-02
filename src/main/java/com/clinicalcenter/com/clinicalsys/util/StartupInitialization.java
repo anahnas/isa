@@ -35,11 +35,13 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
     @Autowired
     AppointmentRepository appointmentRepository;
     @Autowired
+    AppointmentTypeRepository appointmentTypeRepository;
+    @Autowired
     RoomRepository roomRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-    /*
+        /*
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -99,19 +101,27 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region AppointmentTypes
-            AppointmentType clinicns_a1 = new AppointmentType("Ocni pregled", 1400.0, 1.0);
-            AppointmentType clinicns_a2 = new AppointmentType("Pregled grla", 750.0, 1.0);
-            AppointmentType clinicns_a3 = new AppointmentType("Pregled sluha", 920.0, 0.85);
+            AppointmentType appointmentType1 = new AppointmentType("Ocni pregled", 1400.0, 1.0);
+            AppointmentType appointmentType2 = new AppointmentType("Pregled grla", 750.0, 1.0);
+            AppointmentType appointmentType3 = new AppointmentType("Pregled sluha", 920.0, 0.85);
+            AppointmentType appointmentType4 = new AppointmentType("Pregled vida", 1600.0, 1.0);
+            AppointmentType appointmentType5 = new AppointmentType("Pregled pluca", 920.0, 1.0);
+            AppointmentType appointmentType6 = new AppointmentType("Alergo test", 2100.0, 0.85);
+            AppointmentType appointmentType7 = new AppointmentType("Merenje holesterola", 880.0, 0.95);
+            AppointmentType appointmentType8 = new AppointmentType("Sistematski pregled", 1050.0,1.0);
+            AppointmentType appointmentType9 = new AppointmentType("Stomatoloski pregled", 2400.0,0.9);
+            AppointmentType appointmentType10 = new AppointmentType("Rutinska kontrola", 450.0,1.0);
 
-            AppointmentType clinicbg_a1 = new AppointmentType("Pregled vida", 1600.0, 1.0);
-            AppointmentType clinicbg_a2 = new AppointmentType("Pregled pluca", 920.0, 1.0);
-            AppointmentType clinicbg_a3 = new AppointmentType("Alergo test", 2100.0, 0.85);
-            AppointmentType clinicbg_a4 = new AppointmentType("Merenje holesterola", 880.0, 0.95);
-
-            AppointmentType clinicsu_a1 = new AppointmentType("Sistematski pregled", 1050.0,1.0);
-            AppointmentType clinicsu_a2 = new AppointmentType("Stomatoloski pregled", 2400.0,0.9);
-
-            AppointmentType clinicvl_a1 = new AppointmentType("Rutinska kontrola", 450.0,1.0);
+            appointmentTypeRepository.save(appointmentType1);
+            appointmentTypeRepository.save(appointmentType2);
+            appointmentTypeRepository.save(appointmentType3);
+            appointmentTypeRepository.save(appointmentType4);
+            appointmentTypeRepository.save(appointmentType5);
+            appointmentTypeRepository.save(appointmentType6);
+            appointmentTypeRepository.save(appointmentType7);
+            appointmentTypeRepository.save(appointmentType8);
+            appointmentTypeRepository.save(appointmentType9);
+            appointmentTypeRepository.save(appointmentType10);
         //endregion
 
         //region Clinics
@@ -120,28 +130,18 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         HashSet<Room> rooms = new HashSet<Room>();
         rooms.add(clinicns_1_e);rooms.add(clinicns_2_e);rooms.add(clinicns_1_s);
         clinicns.setRooms(rooms);
-        HashSet<AppointmentType> appointmentTypes = new HashSet<AppointmentType>();
-        appointmentTypes.add(clinicns_a1);appointmentTypes.add(clinicns_a2);appointmentTypes.add(clinicns_a3);
-        clinicns.setAppointmentTypes(appointmentTypes);
 
         Clinic clinicbg = new Clinic("Centralna Klinika Beograd", "Nemanjina 163a",
                 null, null, "Beograd", "Srbija");
         rooms = new HashSet<Room>();
-        rooms.add(clinicbg_1_e);rooms.add(clinicbg_2_e);rooms.add(clinicbg_1_s);rooms.add(clinicbg_1_s);
+        rooms.add(clinicbg_1_e);rooms.add(clinicbg_2_e);rooms.add(clinicbg_1_s);rooms.add(clinicbg_2_s);
         clinicbg.setRooms(rooms);
-        appointmentTypes = new HashSet<AppointmentType>();
-        appointmentTypes.add(clinicbg_a1);appointmentTypes.add(clinicbg_a2);appointmentTypes.add(clinicbg_a3);
-        appointmentTypes.add(clinicbg_a4);
-        clinicbg.setAppointmentTypes(appointmentTypes);
 
         Clinic clinicsu = new Clinic("Okruzna Bolnica", "Kerska 34",
                 null, null, "Subotica", "Srbija");
         rooms = new HashSet<Room>();
         rooms.add(clinicsu_1_e);rooms.add(clinicsu_2_e);rooms.add(clinicsu_1_s);rooms.add(clinicsu_3_e);
         clinicsu.setRooms(rooms);
-        appointmentTypes = new HashSet<AppointmentType>();
-        appointmentTypes.add(clinicsu_a1);appointmentTypes.add(clinicsu_a2);
-        clinicsu.setAppointmentTypes(appointmentTypes);
 
 
         Clinic clinicvl = new Clinic("Mesna Ambulanta Vlasenica", "Brdskih Heroja 34",
@@ -149,9 +149,6 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         rooms = new HashSet<Room>();
         rooms.add(clinicvl_1_e);
         clinicvl.setRooms(rooms);
-        appointmentTypes = new HashSet<AppointmentType>();
-        appointmentTypes.add(clinicvl_a1);
-        clinicvl.setAppointmentTypes(appointmentTypes);
 
         clinicRespository.save(clinicns);
         clinicRespository.save(clinicbg);
@@ -198,6 +195,9 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         user_doctor_1.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_1 = new Staff(user_doctor_1, clinicbg);
         Doctor doctor1 = new Doctor(staff_doctor_1);
+        doctor1.addSpecialisation(appointmentType1);
+        doctor1.addSpecialisation(appointmentType3);
+        doctor1.addSpecialisation(appointmentType10);
         doctorRepository.save(doctor1);
 
         User user_doctor_2 = new User("jmingardo1@howstuffworks.com","Judith","Mingardo",
@@ -206,6 +206,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         user_doctor_2.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_2 = new Staff(user_doctor_2, clinicbg);
         Doctor doctor2 = new Doctor(staff_doctor_2);
+        doctor2.addSpecialisation(appointmentType2);
+        doctor2.addSpecialisation(appointmentType6);
+        doctor2.addSpecialisation(appointmentType8);
+        doctor2.addSpecialisation(appointmentType7);
         doctorRepository.save(doctor2);
 
         User user_doctor_3 = new User("nattle4@hhs.gov","Nigel","Attle","320532",
@@ -214,6 +218,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         user_doctor_3.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_3 = new Staff(user_doctor_3, clinicns);
         Doctor doctor3 = new Doctor(staff_doctor_3);
+        doctor3.addSpecialisation(appointmentType1);
+        doctor3.addSpecialisation(appointmentType4);
+        doctor3.addSpecialisation(appointmentType8);
+        doctor3.addSpecialisation(appointmentType6);
         doctorRepository.save(doctor3);
 
         User user_doctor_4 = new User("gstuchbery6@cargocollective.com","Gabriell",
@@ -222,6 +230,8 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         user_doctor_4.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_4 = new Staff(user_doctor_4, clinicns);
         Doctor doctor4 = new Doctor(staff_doctor_4);
+        doctor4.addSpecialisation(appointmentType5);
+        doctor4.addSpecialisation(appointmentType10);
         doctorRepository.save(doctor4);
 
         User user_doctor_5 = new User("kbalbeck9@java.com","Karyn","Balbeck",
@@ -230,6 +240,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         user_doctor_5.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_5 = new Staff(user_doctor_5, clinicsu);
         Doctor doctor5 = new Doctor(staff_doctor_5);
+        doctor5.addSpecialisation(appointmentType1);
+        doctor5.addSpecialisation(appointmentType4);
+        doctor5.addSpecialisation(appointmentType8);
+        doctor5.addSpecialisation(appointmentType3);
         doctorRepository.save(doctor5);
 
         User user_doctor_6 = new User("aarne1@fastcompany.com","Ariela","Arne",
@@ -238,6 +252,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         user_doctor_6.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_6 = new Staff(user_doctor_6, clinicvl);
         Doctor doctor6 = new Doctor(staff_doctor_6);
+        doctor6.addSpecialisation(appointmentType6);
         doctorRepository.save(doctor6);
         //endregion
 
@@ -273,7 +288,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region Appointments
-        Appointment ap_req1 = new Appointment(new Date(),null, clinicns_a1, patient1, null, doctor1);
+        Appointment ap_req1 = new Appointment(new Date(),null, appointmentType1, patient1, null, doctor1);
         appointmentRepository.save(ap_req1);
         List<Room> list = new ArrayList<Room>(clinicns.getRooms());
         Room ap_room = list.get(0);
@@ -301,6 +316,6 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             nurseRepository.save(nurse_ns1);
         //endregion
 
-     */
+         */
     }
 }

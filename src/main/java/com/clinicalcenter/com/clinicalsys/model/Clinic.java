@@ -39,12 +39,10 @@ public class Clinic {
 
     @Column(name = "rating", unique = false, nullable = true)
     private Float rating;
-
+    
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<Room> rooms;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<AppointmentType> appointmentTypes;
 
     public Clinic() {}
 
@@ -120,13 +118,5 @@ public class Clinic {
 
     public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
-    }
-
-    public Set<AppointmentType> getAppointmentTypes() {
-        return appointmentTypes;
-    }
-
-    public void setAppointmentTypes(Set<AppointmentType> appointmentTypes) {
-        this.appointmentTypes = appointmentTypes;
     }
 }

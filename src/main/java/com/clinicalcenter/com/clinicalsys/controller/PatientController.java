@@ -1,16 +1,22 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
-import com.clinicalcenter.com.clinicalsys.model.Appointment;
-import com.clinicalcenter.com.clinicalsys.model.AppointmentType;
-import com.clinicalcenter.com.clinicalsys.model.Doctor;
-import com.clinicalcenter.com.clinicalsys.model.User;
+import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.AppointmentTypeRepository;
+import com.clinicalcenter.com.clinicalsys.repository.ClinicRespository;
 import com.clinicalcenter.com.clinicalsys.repository.DoctorRepository;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import com.clinicalcenter.com.clinicalsys.model.AppointmentType;
+import com.clinicalcenter.com.clinicalsys.model.Doctor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,10 +32,14 @@ public class PatientController {
     private DoctorRepository doctorRepository;
     @Autowired
     private AppointmentTypeRepository appointmentTypeRepository;
+    @Autowired
+    private ClinicRespository clinicRespository;
 
-    public PatientController(DoctorRepository doctorRepository, AppointmentTypeRepository appointmentTypeRepository){
+    public PatientController(DoctorRepository doctorRepository, AppointmentTypeRepository appointmentTypeRepository,
+                             ClinicRespository clinicRespository){
         this.doctorRepository=doctorRepository;
         this.appointmentTypeRepository = appointmentTypeRepository;
+        this.clinicRespository = clinicRespository;
     }
 
     @GetMapping("/getDoctors")
@@ -48,5 +58,28 @@ public class PatientController {
         }
         Set<AppointmentType> retValue= new HashSet<AppointmentType>(appointmentTypeRepository.findAll());
         return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
+    /*Receives Date and AppointmentType, returns Clinics that have doctors
+    free on that date that specialise in those AppointmentTypes*/
+    @PostMapping("/getAvailableClinics/{date}")
+    public ResponseEntity<Set<Clinic>> date(@RequestBody AppointmentType appType, @PathVariable("date") String date_string) {
+        System.out.println(date_string);
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date;
+        try {
+            date = simpleDateFormat.parse(date_string);
+        } catch (ParseException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        Set<Doctor> doctors= new HashSet<Doctor>(doctorRepository.allWithSpecialization(appType.getId()));
+        Set<Clinic> clinics = new HashSet<Clinic>();
+        for(Doctor doctor : doctors){
+            if(!clinics.contains(doctor.getClinic())){
+                clinics.add(doctor.getClinic());
+            }
+        }
+        return new ResponseEntity<>(clinics,HttpStatus.OK);
     }
 }
