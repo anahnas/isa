@@ -63,7 +63,7 @@ public class UserController {
                 .loadUserByUsername(auth_req.getUsername());
         String jwt = jwtUtil.generateToken(myUD);
         return new ResponseEntity<>(
-                new AuthenticationResponse(jwt, myUD.getUser()), HttpStatus.OK);
+                new AuthenticationResponse(jwt,myUD.getUser()), HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -107,7 +107,7 @@ public class UserController {
     public ResponseEntity<String> confirmAcc(@RequestBody String email){
         Patient p = patientRepository.findByEmail(email);
         if(p == null){
-            return new ResponseEntity<>("Something gone wrong", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
         else if(p.getActive()){
             return new ResponseEntity<>("User is already active", HttpStatus.NO_CONTENT);

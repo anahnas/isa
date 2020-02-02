@@ -58,6 +58,14 @@ public class Clinic {
         this.rooms = new HashSet<Room>();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getClinicName() {
         return clinicName;
     }

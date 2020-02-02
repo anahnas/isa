@@ -52,6 +52,11 @@ public class Staff extends User {
         this.appointments = s.getAppointments();
     }
 
+    public void addAppointment(Appointment apt){
+        this.appointments.add(apt);
+    }
+
+    //region Getters/Setters
     public Clinic getClinic() {
         return clinic;
     }
@@ -75,4 +80,5 @@ public class Staff extends User {
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
+    //endregion
 }

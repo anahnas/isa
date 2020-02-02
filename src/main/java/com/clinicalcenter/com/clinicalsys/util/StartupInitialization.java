@@ -9,8 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 @Component
 public class StartupInitialization implements ApplicationListener<ContextRefreshedEvent> {
@@ -35,6 +34,8 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
     DiagnoseRepository diagnoseRepository;
     @Autowired
     AppointmentRepository appointmentRepository;
+    @Autowired
+    RoomRepository roomRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -196,14 +197,13 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "(682) 9409237","8657870655830");
         user_doctor_1.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_1 = new Staff(user_doctor_1, clinicbg);
-        staffRepository.save(staff_doctor_1);
         Doctor doctor1 = new Doctor(staff_doctor_1);
         doctorRepository.save(doctor1);
 
         User user_doctor_2 = new User("jmingardo1@howstuffworks.com","Judith","Mingardo",
                 "638473","33 7th Crossing","Gyor","Madjarska",
                 "(666) 6994851","1715377197364");
-        user_doctor_1.setRole(RoleEnum.DOCTOR);
+        user_doctor_2.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_2 = new Staff(user_doctor_2, clinicbg);
         Doctor doctor2 = new Doctor(staff_doctor_2);
         doctorRepository.save(doctor2);
@@ -211,7 +211,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         User user_doctor_3 = new User("nattle4@hhs.gov","Nigel","Attle","320532",
                 "5 International Place","Kamenica", "Srbija","(466) 6189663",
                 "9028453261450");
-        user_doctor_1.setRole(RoleEnum.DOCTOR);
+        user_doctor_3.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_3 = new Staff(user_doctor_3, clinicns);
         Doctor doctor3 = new Doctor(staff_doctor_3);
         doctorRepository.save(doctor3);
@@ -275,7 +275,32 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //region Appointments
         Appointment ap_req1 = new Appointment(new Date(),null, clinicns_a1, patient1, null, doctor1);
         appointmentRepository.save(ap_req1);
-        patientRepository.save(patient1);
-        //endregion*/
+        List<Room> list = new ArrayList<Room>(clinicns.getRooms());
+        Room ap_room = list.get(0);
+        ap_room.addAppointment(ap_req1);
+        roomRepository.save(ap_room);
+        ap_req1.addRoom(ap_room);
+        appointmentRepository.save(ap_req1);
+        doctor1.addAppointment(ap_req1);
+        doctorRepository.save(doctor1);
+        //endregion
+
+        //region Recipe
+            Recipe recipe1 = new Recipe(drug1,nurse_ns1,patient1);
+            patient1.getMedicalRecord().addRecipe(recipe1);
+            patient1 =patientRepository.save(patient1);
+            List<Recipe> recipes = new ArrayList<Recipe>(patient1.getMedicalRecord().getRecipes());
+            nurse_ns1.addRecipe(recipes.get(recipes.size()-1));
+            nurse_ns1 = nurseRepository.save(nurse_ns1);
+
+            Recipe recipe2 = new Recipe(drug4,nurse_ns1,patient1);
+            patient1.getMedicalRecord().addRecipe(recipe2);
+            patient1=patientRepository.save(patient1);
+            recipes = new ArrayList<Recipe>(patient1.getMedicalRecord().getRecipes());
+            nurse_ns1.addRecipe(recipes.get(recipes.size()-1));
+            nurseRepository.save(nurse_ns1);
+        //endregion
+
+     */
     }
 }
