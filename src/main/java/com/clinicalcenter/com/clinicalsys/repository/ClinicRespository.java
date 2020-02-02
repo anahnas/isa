@@ -20,4 +20,5 @@ public interface ClinicRespository extends JpaRepository<Clinic, Long> {
 
     @Transactional
     Clinic findByClinicName(String clinicName);
+
 }
