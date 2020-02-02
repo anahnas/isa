@@ -10,6 +10,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class StartupInitialization implements ApplicationListener<ContextRefreshedEvent> {
@@ -41,7 +42,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        /*
+
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -62,6 +63,9 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
         Drug drug4 = new Drug("Vervex", "Resava glavobolje i bol grla",62.0);
         drugRepository.save(drug4);
+
+        ArrayList<Drug> drugs =new ArrayList<Drug>();
+        drugs.add(drug1);drugs.add(drug2);drugs.add(drug3);drugs.add(drug4);
         //endregion
 
         //region Rooms
@@ -154,6 +158,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         clinicRespository.save(clinicbg);
         clinicRespository.save(clinicsu);
         clinicRespository.save(clinicvl);
+
         //endregion
 
         //region Patients
@@ -288,15 +293,29 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region Appointments
-        Appointment ap_req1 = new Appointment(new Date(),null, appointmentType1, patient1, null, doctor1);
-        appointmentRepository.save(ap_req1);
-        List<Room> list = new ArrayList<Room>(clinicns.getRooms());
-        Room ap_room = list.get(0);
-        ap_room.addAppointment(ap_req1);
-        roomRepository.save(ap_room);
-        ap_req1.addRoom(ap_room);
-        appointmentRepository.save(ap_req1);
-        doctor1.addAppointment(ap_req1);
+        Calendar start_time = Calendar.getInstance();
+        start_time.set(2020,2,25,8,0,0);
+        Calendar final_app = Calendar.getInstance();
+        final_app.set(2020,2,25,15,30,0);
+        while(start_time.compareTo(final_app)<0){
+            Calendar endTime= (Calendar) start_time.clone();
+            endTime.add(Calendar.MINUTE,30);
+            ArrayList<AppointmentType> at_list= new ArrayList<AppointmentType>();
+            at_list.addAll(doctor1.getSpecializations());
+            AppointmentType temp_at= at_list.get(ThreadLocalRandom.current().nextInt(0, at_list.size()));
+            Appointment ap_req1 = new Appointment(start_time.getTime(),endTime.getTime(), temp_at, patient1, null, doctor1);
+            appointmentRepository.save(ap_req1);
+            start_time.add(Calendar.MINUTE, 30);
+            List<Room> list = new ArrayList<Room>(clinicns.getRooms());
+            Room ap_room = list.get(0);
+            clinicns.getRooms().remove(ap_room);
+            ap_room.addAppointment(ap_req1);
+            ap_room=roomRepository.save(ap_room);
+            clinicns.getRooms().add(ap_room);
+            ap_req1.addRoom(ap_room);
+            appointmentRepository.save(ap_req1);
+            doctor1.addAppointment(ap_req1);
+        }
         doctorRepository.save(doctor1);
         //endregion
 
@@ -316,6 +335,5 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             nurseRepository.save(nurse_ns1);
         //endregion
 
-         */
     }
 }

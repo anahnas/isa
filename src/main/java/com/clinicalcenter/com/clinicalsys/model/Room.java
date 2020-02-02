@@ -58,6 +58,7 @@ public class Room {
         future_appointments.add(apt);
         return true;
     }
+
     public Long getId() {
         return id;
     }
