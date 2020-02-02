@@ -3,6 +3,7 @@ package com.clinicalcenter.com.clinicalsys.model;
 
 
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,19 +30,21 @@ public class Appointment {
     @Column(name = "endTime", unique = false)
     private Date endTime;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private AppointmentType type;
 
     @Column(name = "appState", unique = false, nullable = false)
     private AppStateEnum appState;
 
+    @JsonIgnore
     /*proveriti jos da li je dobro onetone ili nesto drugo*/
     @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Doctor doctor;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Room room;
 
