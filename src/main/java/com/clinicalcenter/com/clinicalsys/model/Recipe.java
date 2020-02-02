@@ -16,9 +16,35 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String recipeID;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Nurse nurse;
 
-    private Boolean certified;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Drug drug;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Patient patient;
+
+    @Column(name = "isValidate", unique = false, nullable = true)
+    private boolean isValidate;
+
+    public Recipe() {
+    }
+
+    public Recipe(Drug drug, Nurse nurse, Patient patient){
+        this.drug=drug;
+        this.nurse=nurse;
+        this.patient=patient;
+        this.isValidate = Boolean.FALSE;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Nurse getNurse() {
         return nurse;
@@ -51,23 +77,4 @@ public class Recipe {
     public void setValidate(boolean validate) {
         isValidate = validate;
     }
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Nurse nurse;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Drug drug;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Patient patient;
-    /*@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private MedicalStaff nurse;*/
-
-    @Column(name = "isValidate", unique = false, nullable = true)
-    private boolean isValidate;
-
-    public Recipe() {
-    }
-
-
 }

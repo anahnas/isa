@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Setter
@@ -24,8 +26,23 @@ public class MedicalRecord {
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Diagnose> diagnoses;
-    public MedicalRecord(){
 
+    public MedicalRecord(){
+        recipes = new LinkedHashSet<>();
+        drugs_in_user = new LinkedHashSet<>();
+        diagnoses = new LinkedHashSet<>();
+    }
+
+    public void addRecipe(Recipe recipe){
+        this.recipes.add(recipe);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Set<Recipe> getRecipes() {

@@ -4,6 +4,7 @@ package com.clinicalcenter.com.clinicalsys.model;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class Nurse extends Staff{
     private Set<Recipe> recipes;
 
     public Nurse() {
+        recipes = new HashSet<Recipe>();
     }
 
     public Nurse(Staff s) {
@@ -28,5 +30,9 @@ public class Nurse extends Staff{
         this.setAdminConfirmed(Boolean.TRUE);
         this.setRole(RoleEnum.NURSE);
         this.setFirstLogin(Boolean.TRUE);
+    }
+
+    public void addRecipe(Recipe recipe){
+        recipes.add(recipe);
     }
 }
