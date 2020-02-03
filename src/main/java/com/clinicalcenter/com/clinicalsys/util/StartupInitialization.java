@@ -1,6 +1,7 @@
 package com.clinicalcenter.com.clinicalsys.util;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import com.clinicalcenter.com.clinicalsys.repository.*;
@@ -170,12 +171,12 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region ClinicAdmin
-        User user_cadminbg = new User("wdeekes5@tmall.com,Whittaker","Deekes","318914",
-                "6 Brentwood Way","Savski","Venac","Serbia",
+        User user_cadminbg = new User("wdeekes5@tmall.com,Whittaker","Deekes","Mills",
+                "318914","6 Brentwood Way","Savski Venac","Serbia",
                 "(141) 9739447","67607378738");
         ClinicAdmin cadmin1 = new ClinicAdmin(user_cadminbg,clinicbg);
         clinicAdminRepository.save(cadmin1);
-        User user_cadminns = new User("gprophete@acquirethisname.com","Gustavus","Prophet",
+        User user_cadminns = new User("maxi.maksimovic7@gmail.com","Gustavus","Prophet",
                 "519930","277 Quincy Lane","Radojevo","Serbia",
                 "(691) 5982347","4498498325468");
         ClinicAdmin cadmin2 = new ClinicAdmin(user_cadminns,clinicns);
@@ -329,6 +330,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             at_list.addAll(doctor1.getSpecializations());
             AppointmentType temp_at= at_list.get(ThreadLocalRandom.current().nextInt(0, at_list.size()));
             Appointment ap_req1 = new Appointment(start_time.getTime(),endTime.getTime(), temp_at, patient1, null, doctor1);
+            ap_req1.setAppState(AppStateEnum.APPROVED);
             appointmentRepository.save(ap_req1);
             start_time.add(Calendar.MINUTE, 30);
             List<Room> list = new ArrayList<Room>(clinicns.getRooms());

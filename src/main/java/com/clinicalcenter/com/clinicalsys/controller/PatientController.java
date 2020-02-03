@@ -5,6 +5,7 @@ import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
+import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServis;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,9 @@ import java.util.Set;
 public class PatientController {
 
     @Autowired
+    private NotifyAdminsServis notifyAdminsServis;
+
+    @Autowired
     private DoctorRepository doctorRepository;
     @Autowired
     private AppointmentTypeRepository appointmentTypeRepository;
@@ -37,16 +41,21 @@ public class PatientController {
     @Autowired
     private ClinicRespository clinicRespository;
     @Autowired
+    private ClinicAdminRepository clinicAdminRespository;
+    @Autowired
     private PatientRepository patientRespository;
 
     public PatientController(DoctorRepository doctorRepository, AppointmentTypeRepository appointmentTypeRepository,
                              ClinicRespository clinicRespository, PatientRepository patientRepository,
-                             AppointmentRepository appointmentRepository){
+                             AppointmentRepository appointmentRepository,ClinicAdminRepository clinicAminRespository,
+                             NotifyAdminsServis notifyAdminsServis){
         this.doctorRepository=doctorRepository;
         this.appointmentTypeRepository = appointmentTypeRepository;
         this.clinicRespository = clinicRespository;
         this.patientRespository = patientRepository;
         this.appointmentRepository = appointmentRepository;
+        this.clinicAdminRespository = clinicAminRespository;
+        this.notifyAdminsServis = notifyAdminsServis;
     }
 
     @GetMapping("/getDoctors")
@@ -142,7 +151,13 @@ public class PatientController {
         end_time.add(Calendar.MINUTE,30);
         Appointment requestedApp = new Appointment(date, end_time.getTime(),appType,patient,null,doctor);
         requestedApp.setAppState(AppStateEnum.REQUESTED);
-        appointmentRepository.save(requestedApp);
+        requestedApp = appointmentRepository.save(requestedApp);
+        Set<ClinicAdmin> clinicAdmins = clinicAdminRespository.getByDoctorEmail(doctor_email);
+        for (ClinicAdmin admin:clinicAdmins){
+            admin.getAppointments_to_process().add(requestedApp);
+            admin = clinicAdminRespository.save(admin);
+            notifyAdminsServis.newAppointmentRequestNotification(admin);
+        }
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
     
