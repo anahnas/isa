@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,6 +15,12 @@ public class ClinicAdmin extends User{
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Clinic clinic;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<VacationRequest> vacations_to_process;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Appointment> appointments_to_process;
 
     public ClinicAdmin() {
     }
@@ -27,6 +34,7 @@ public class ClinicAdmin extends User{
         this.clinic = clc;
     }
 
+    //region getters setters
     public Clinic getClinic() {
         return clinic;
     }
@@ -34,4 +42,21 @@ public class ClinicAdmin extends User{
     public void setClinic(Clinic clinic) {
         this.clinic = clinic;
     }
+
+    public Set<VacationRequest> getVacations_to_process() {
+        return vacations_to_process;
+    }
+
+    public void setVacations_to_process(Set<VacationRequest> vacations_to_process) {
+        this.vacations_to_process = vacations_to_process;
+    }
+
+    public Set<Appointment> getAppointments_to_process() {
+        return appointments_to_process;
+    }
+
+    public void setAppointments_to_process(Set<Appointment> appointments_to_process) {
+        this.appointments_to_process = appointments_to_process;
+    }
+    //endregion
 }

@@ -38,7 +38,6 @@ public class Appointment {
     private AppStateEnum appState;
 
     @JsonIgnore
-    /*proveriti jos da li je dobro onetone ili nesto drugo*/
     @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
     @JsonIgnore

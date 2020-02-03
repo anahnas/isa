@@ -1,25 +1,33 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
+import com.clinicalcenter.com.clinicalsys.model.Appointment;
+import com.clinicalcenter.com.clinicalsys.model.Staff;
 import com.clinicalcenter.com.clinicalsys.model.User;
+import com.clinicalcenter.com.clinicalsys.model.VacationRequest;
+import com.clinicalcenter.com.clinicalsys.repository.StaffRepository;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 @RestController
 public class StaffController {
     private final UserRepository userRepository;
+    @Autowired
+    private StaffRepository staffRepository;
 
-    public StaffController(UserRepository userRepository) {
+    public StaffController(UserRepository userRepository, StaffRepository staffRepository) {
         this.userRepository = userRepository;
+        this.staffRepository = staffRepository;
     }
-
-
 
     @GetMapping("/getStaff")
     public ResponseEntity<Set<User>> getRequests(){
@@ -28,75 +36,19 @@ public class StaffController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }*/
         System.out.println("StaffController");
-        Set<User> retValue = new Set<User>() {
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @Override
-            public boolean contains(Object o) {
-                return false;
-            }
-
-            @Override
-            public Iterator<User> iterator() {
-                return null;
-            }
-
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @Override
-            public <T> T[] toArray(T[] a) {
-                return null;
-            }
-
-            @Override
-            public boolean add(User user) {
-                return false;
-            }
-
-            @Override
-            public boolean remove(Object o) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends User> c) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-        };
-        retValue = userRepository.findStaff();
+        Set<User> retValue = userRepository.findStaff();
         return new ResponseEntity<>(retValue, HttpStatus.OK);
     }
 
+    @GetMapping("/getAppointments/{email}")
+    public ResponseEntity<Set<Appointment>> getAppointments(@PathVariable("email") String email){
+        Staff staff = staffRepository.findByEmail(email);
+        return new ResponseEntity<>(staff.getAppointments(), HttpStatus.OK);
+    }
 
+    @GetMapping("/getVacations/{email}")
+    public ResponseEntity<Set<VacationRequest>> getVacations(@PathVariable("email") String email){
+        Staff staff = staffRepository.findByEmail(email);
+        return new ResponseEntity<>(staff.getVacReq(), HttpStatus.OK);
+    }
 }
