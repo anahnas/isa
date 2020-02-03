@@ -25,7 +25,7 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name="adminConfirmed")
+    @Column(name = "adminConfirmed")
     private Boolean adminConfirmed;
 
     @Column(name = "active", nullable = false)
@@ -81,7 +81,7 @@ public class User {
     public User() {
     }
 
-    public User(User u){
+    public User(User u) {
         this.email = u.getEmail();
         this.adminConfirmed = u.getAdminConfirmed();
         this.active = u.getActive();
@@ -89,8 +89,8 @@ public class User {
         this.lastName = u.getLastName();
         this.password = u.getPassword();
         this.address = u.getAddress();
-        this.city=u.getCity();
-        this.country=u.getCountry();
+        this.city = u.getCity();
+        this.country = u.getCountry();
         this.phoneNumber = u.getPhoneNumber();
         this.ssn = u.getSsn();
         this.role = u.getRole();

@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "nurse")
-public class Nurse extends Staff{
+public class Nurse extends Staff {
 
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Recipe> recipes;
@@ -32,7 +32,7 @@ public class Nurse extends Staff{
         this.setFirstLogin(Boolean.TRUE);
     }
 
-    public void addRecipe(Recipe recipe){
+    public void addRecipe(Recipe recipe) {
         recipes.add(recipe);
     }
 }

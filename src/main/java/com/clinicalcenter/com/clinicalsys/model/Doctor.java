@@ -22,11 +22,11 @@ public class Doctor extends Staff {
     @ManyToMany
     private Set<AppointmentType> specializations;
 
-    public Doctor(){
+    public Doctor() {
 
     }
 
-    public Doctor(Staff staff){
+    public Doctor(Staff staff) {
         super(staff);
         rating = null;
         this.setActive(Boolean.TRUE);
@@ -48,21 +48,21 @@ public class Doctor extends Staff {
         date.set(Calendar.HOUR_OF_DAY, 8);
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
-        Calendar final_app= Calendar.getInstance();
+        Calendar final_app = Calendar.getInstance();
         final_app.setTime(asked_date);
         final_app.set(Calendar.HOUR_OF_DAY, 15);
         final_app.set(Calendar.MINUTE, 30);
         final_app.set(Calendar.SECOND, 0);
-        while(date.compareTo(final_app)<0){
-            Calendar endTime= (Calendar) date.clone();
-            endTime.add(Calendar.MINUTE,30);
-            if(checkIfAppFree(date,endTime)){
+        while (date.compareTo(final_app) < 0) {
+            Calendar endTime = (Calendar) date.clone();
+            endTime.add(Calendar.MINUTE, 30);
+            if (checkIfAppFree(date, endTime)) {
                 String str = String.valueOf(date.get(Calendar.HOUR_OF_DAY)) + ":" + String.valueOf(date.get(Calendar.MINUTE));
-                if(date.get(Calendar.HOUR_OF_DAY)<10){
-                    str="0"+str;
+                if (date.get(Calendar.HOUR_OF_DAY) < 10) {
+                    str = "0" + str;
                 }
-                if(date.get(Calendar.MINUTE)==0){
-                    str+="0";
+                if (date.get(Calendar.MINUTE) == 0) {
+                    str += "0";
                 }
                 freeTimes.add(str);
             }
@@ -72,25 +72,25 @@ public class Doctor extends Staff {
         return sortedTimes;
     }
 
-    private Boolean checkIfAppFree(Calendar start, Calendar end){
-        for (Appointment apt: this.getAppointments()){
+    private Boolean checkIfAppFree(Calendar start, Calendar end) {
+        for (Appointment apt : this.getAppointments()) {
             Calendar start2 = Calendar.getInstance();
             start2.setTime(apt.getStartTime());
             Calendar end2 = Calendar.getInstance();
             end2.setTime(apt.getEndTime());
-            if(start.compareTo(start2)>=0&&start.compareTo(end2)<0||
-                    (end.compareTo(start2)>0&&end.compareTo(end2)<=0)){
+            if (start.compareTo(start2) >= 0 && start.compareTo(end2) < 0 ||
+                    (end.compareTo(start2) > 0 && end.compareTo(end2) <= 0)) {
                 return Boolean.FALSE;
             }
-            if(start2.compareTo(start)>0&&start2.compareTo(end)<0){
+            if (start2.compareTo(start) > 0 && start2.compareTo(end) < 0) {
                 return Boolean.FALSE;
             }
         }
         return Boolean.TRUE;
     }
 
-    public void addSpecialisation(AppointmentType at){
-        if(!this.specializations.contains(at)){
+    public void addSpecialisation(AppointmentType at) {
+        if (!this.specializations.contains(at)) {
             this.specializations.add(at);
         }
     }

@@ -11,8 +11,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name="clinicCenterAdmin")
-public class ClinicCenterAdmin extends User{
+@Table(name = "clinicCenterAdmin")
+public class ClinicCenterAdmin extends User {
 
     @Column(name = "predefined", unique = false, nullable = true)
     private Boolean predefined;
@@ -22,7 +22,7 @@ public class ClinicCenterAdmin extends User{
 
     }
 
-    public ClinicCenterAdmin(User u,boolean predefined) {
+    public ClinicCenterAdmin(User u, boolean predefined) {
         super(u);
         this.predefined = predefined;
         this.setRole(RoleEnum.CLINIC_CENTER_ADMIN);

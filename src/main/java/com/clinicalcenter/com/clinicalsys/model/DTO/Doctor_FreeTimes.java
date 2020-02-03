@@ -9,11 +9,11 @@ public class Doctor_FreeTimes {
     private Doctor doctor;
     private Set<String> freeTimes;
 
-    public Doctor_FreeTimes(){
+    public Doctor_FreeTimes() {
 
     }
 
-    public Doctor_FreeTimes(Doctor doctor, Set<String> freeTimes){
+    public Doctor_FreeTimes(Doctor doctor, Set<String> freeTimes) {
         this.doctor = doctor;
         this.freeTimes = freeTimes;
     }
