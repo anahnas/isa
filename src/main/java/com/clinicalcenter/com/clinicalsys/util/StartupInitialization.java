@@ -42,7 +42,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        /*
+
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -318,8 +318,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //region Appointments
         Calendar start_time = Calendar.getInstance();
         start_time.set(2020,Calendar.MARCH,25,8,0,0);
+        start_time.set(Calendar.MILLISECOND,0);
         Calendar final_app = Calendar.getInstance();
         final_app.set(2020,Calendar.MARCH,25,15,30,0);
+        final_app.set(Calendar.MILLISECOND,0);
         while(start_time.compareTo(final_app)<0){
             Calendar endTime= (Calendar) start_time.clone();
             endTime.add(Calendar.MINUTE,30);
@@ -357,6 +359,6 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             nurse_ns1.addRecipe(recipes.get(recipes.size()-1));
             nurseRepository.save(nurse_ns1);
         //endregion
-        */
+
     }
 }
