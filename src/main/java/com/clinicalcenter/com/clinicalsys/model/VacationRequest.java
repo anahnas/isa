@@ -25,9 +25,16 @@ public class VacationRequest {
     @Column(name = "endDate", unique = false, nullable = false)
     private Date endDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Staff staff;
+    @Column(name = "accepted")
+    private Boolean accepted;
 
     public VacationRequest() {
+    }
+
+    public VacationRequest(String type, Date startDate, Date endDate, Boolean accepted){
+        this.type = type;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.accepted = accepted;
     }
 }

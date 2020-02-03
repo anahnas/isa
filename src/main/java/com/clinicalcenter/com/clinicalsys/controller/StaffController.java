@@ -29,6 +29,8 @@ public class StaffController {
         this.staffRepository = staffRepository;
     }
 
+
+
     @GetMapping("/getStaff")
     public ResponseEntity<Set<User>> getRequests(){
         //TODO aktivirati autorizaciju za ovu metodu
