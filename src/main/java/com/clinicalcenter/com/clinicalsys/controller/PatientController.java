@@ -145,4 +145,5 @@ public class PatientController {
         appointmentRepository.save(requestedApp);
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
+    
 }
