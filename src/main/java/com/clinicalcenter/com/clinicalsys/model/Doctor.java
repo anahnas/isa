@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -41,27 +38,38 @@ public class Doctor extends Staff {
     }
 
     /*Takes in a day and checks if doctor is free on that day*/
-    public Boolean hasFreeAppointments(Date asked_date) {
+    public Set<String> getFreeTimes(Date asked_date) {
         //TODO check if on vaccation
+
+        Set<String> freeTimes = new HashSet<String>();
+
         Calendar date = Calendar.getInstance();
         date.setTime(asked_date);
-        date.set(Calendar.HOUR, 8);
+        date.set(Calendar.HOUR_OF_DAY, 8);
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
         Calendar final_app= Calendar.getInstance();
         final_app.setTime(asked_date);
-        final_app.set(Calendar.HOUR, 15);
+        final_app.set(Calendar.HOUR_OF_DAY, 15);
         final_app.set(Calendar.MINUTE, 30);
         final_app.set(Calendar.SECOND, 0);
         while(date.compareTo(final_app)<0){
             Calendar endTime= (Calendar) date.clone();
             endTime.add(Calendar.MINUTE,30);
             if(checkIfAppFree(date,endTime)){
-                return Boolean.TRUE;
+                String str = String.valueOf(date.get(Calendar.HOUR_OF_DAY)) + ":" + String.valueOf(date.get(Calendar.MINUTE));
+                if(date.get(Calendar.HOUR_OF_DAY)<10){
+                    str="0"+str;
+                }
+                if(date.get(Calendar.MINUTE)==0){
+                    str+="0";
+                }
+                freeTimes.add(str);
             }
             date.add(Calendar.MINUTE, 30);
         }
-        return Boolean.FALSE;
+        TreeSet<String> sortedTimes = new TreeSet<String>(freeTimes);
+        return sortedTimes;
     }
 
     private Boolean checkIfAppFree(Calendar start, Calendar end){
@@ -70,10 +78,6 @@ public class Doctor extends Staff {
             start2.setTime(apt.getStartTime());
             Calendar end2 = Calendar.getInstance();
             end2.setTime(apt.getEndTime());
-            int t=start.compareTo(start2);
-            int t1=start.compareTo(end2);
-            int t2=end.compareTo(start2);
-            int t3=end.compareTo(start2);
             if(start.compareTo(start2)>=0&&start.compareTo(end2)<0||
                     (end.compareTo(start2)>0&&end.compareTo(end2)<=0)){
                 return Boolean.FALSE;

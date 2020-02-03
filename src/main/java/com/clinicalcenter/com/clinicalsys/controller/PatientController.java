@@ -1,13 +1,13 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.AppointmentTypeRepository;
 import com.clinicalcenter.com.clinicalsys.repository.ClinicRespository;
 import com.clinicalcenter.com.clinicalsys.repository.DoctorRepository;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +75,7 @@ public class PatientController {
         Set<Doctor> doctors= new HashSet<Doctor>(doctorRepository.allWithSpecialization(appType.getId()));
         Set<Clinic> clinics = new HashSet<Clinic>();
         for(Doctor doctor : doctors){
-            if(!doctor.hasFreeAppointments(date))
+            if(doctor.getFreeTimes(date).isEmpty())
                 continue;
             if(!clinics.contains(doctor.getClinic())){
                 clinics.add(doctor.getClinic());
@@ -87,9 +87,9 @@ public class PatientController {
     /*Receives Date,AppointmentType and CLinic name, returns all doctors that work for that clinic,
      are free on that date and specialise in those AppointmentTypes*/
     @PostMapping("/getAvailableClinics/{date}/{clinicName}")
-    public ResponseEntity<Set<Doctor>> getFreeSpecializedDoctors(@RequestBody AppointmentType appType,
-                                                                 @PathVariable("date") String date_string,
-                                                                 @PathVariable("clinicName") String clinic_name) {
+    public ResponseEntity<Set<Doctor_FreeTimes>> getFreeSpecializedDoctors(@RequestBody AppointmentType appType,
+                                                                           @PathVariable("date") String date_string,
+                                                                           @PathVariable("clinicName") String clinic_name) {
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Date date;
@@ -100,11 +100,12 @@ public class PatientController {
         }
         Clinic clinic = clinicRespository.findByClinicName(clinic_name);
         Set<Doctor> doctors_temp= new HashSet<Doctor>(doctorRepository.allWithSpecializationInClinic(appType.getId(),clinic.getId()));
-        Set<Doctor> retVal=new HashSet<>();
+        Set<Doctor_FreeTimes> retVal=new HashSet<>();
         for(Doctor doctor : doctors_temp){
-            if(!doctor.hasFreeAppointments(date))
+            Set<String> freeTimes = doctor.getFreeTimes(date);
+            if(freeTimes.isEmpty())
                 continue;
-            retVal.add(doctor);
+            retVal.add(new Doctor_FreeTimes(doctor,freeTimes));
         }
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }

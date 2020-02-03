@@ -28,7 +28,7 @@ public class ClinicController {
         }
         System.out.println(clinic.getClinicName() + " " + clinic.getAddress());
         clinic.setDescription("Opis");
-        clinic.setRating(5.5f);
+        clinic.setRating(5.5);
         clinicRespository.save(clinic);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
