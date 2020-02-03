@@ -2,10 +2,9 @@ package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
-import com.clinicalcenter.com.clinicalsys.repository.AppointmentTypeRepository;
-import com.clinicalcenter.com.clinicalsys.repository.ClinicRespository;
-import com.clinicalcenter.com.clinicalsys.repository.DoctorRepository;
+import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import com.clinicalcenter.com.clinicalsys.model.AppointmentType;
 import com.clinicalcenter.com.clinicalsys.model.Doctor;
@@ -33,13 +33,20 @@ public class PatientController {
     @Autowired
     private AppointmentTypeRepository appointmentTypeRepository;
     @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
     private ClinicRespository clinicRespository;
+    @Autowired
+    private PatientRepository patientRespository;
 
     public PatientController(DoctorRepository doctorRepository, AppointmentTypeRepository appointmentTypeRepository,
-                             ClinicRespository clinicRespository){
+                             ClinicRespository clinicRespository, PatientRepository patientRepository,
+                             AppointmentRepository appointmentRepository){
         this.doctorRepository=doctorRepository;
         this.appointmentTypeRepository = appointmentTypeRepository;
         this.clinicRespository = clinicRespository;
+        this.patientRespository = patientRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @GetMapping("/getDoctors")
@@ -85,7 +92,7 @@ public class PatientController {
     }
 
     /*Receives Date,AppointmentType and CLinic name, returns all doctors that work for that clinic,
-     are free on that date and specialise in those AppointmentTypes*/
+     are free on that date and specialise in those AppointmentTypes + all their free times*/
     @PostMapping("/getAvailableClinics/{date}/{clinicName}")
     public ResponseEntity<Set<Doctor_FreeTimes>> getFreeSpecializedDoctors(@RequestBody AppointmentType appType,
                                                                            @PathVariable("date") String date_string,
@@ -112,26 +119,30 @@ public class PatientController {
 
     /*Receives Date,AppointmentType and CLinic name, returns all doctors that work for that clinic,
     are free on that date and specialise in those AppointmentTypes*/
-  /*  @PostMapping("/requestApp/{date}/{doctorName}")
+    /*IMPORTANT NOTE patient email ends wit .com ili .net ili tako nesto, sto se uopste ne parsira, pa se na kraj
+    * mora dadati jos jedna tacka!!!*/
+    @PostMapping("/requestApp/{date}/{doctorEmail}/{patientEmail}")
     public ResponseEntity<String> requestApp(@RequestBody AppointmentType appType,
                                                                  @PathVariable("date") String date_string,
-                                                                 @PathVariable("doctorName") String dontor_name) {
-        String pattern = "yyyy-MM-dd";
+                                                                 @PathVariable("doctorEmail") String doctor_email,
+                                                                 @PathVariable("patientEmail") String patient_email) {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Date date;
         try {
             date = simpleDateFormat.parse(date_string);
         } catch (ParseException e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
-        Clinic clinic = clinicRespository.findByClinicName(clinic_name);
-        Set<Doctor> doctors_temp= new HashSet<Doctor>(doctorRepository.allWithSpecializationInClinic(appType.getId(),clinic.getId()));
-        Set<Doctor> retVal=new HashSet<>();
-        for(Doctor doctor : doctors_temp){
-            if(!doctor.hasFreeAppointments(date))
-                continue;
-            retVal.add(doctor);
-        }
-        return new ResponseEntity<>(retVal,HttpStatus.OK);
-    }*/
+        Doctor doctor = doctorRepository.findByEmail(doctor_email);
+        Patient patient = patientRespository.findByEmail(patient_email);
+        Calendar end_time = Calendar.getInstance();
+        end_time.setTime(date);
+        end_time.add(Calendar.MINUTE,30);
+        Appointment requestedApp = new Appointment(date, end_time.getTime(),appType,patient,null,doctor);
+        requestedApp.setAppState(AppStateEnum.REQUESTED);
+        appointmentRepository.save(requestedApp);
+        return new ResponseEntity<>(null,HttpStatus.OK);
+    }
 }

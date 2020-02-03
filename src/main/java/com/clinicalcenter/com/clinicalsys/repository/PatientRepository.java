@@ -35,10 +35,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     void editPatient(String firstName, String lastName, String password, String address, String city,
                      String phoneNumber, String country, String email_test);
 
-    /*@Query(value = "INSERT INTO patient_appointments (patient_id, appointments_id) " +
-            "VALUES (?1,?2)", nativeQuery = true)
-    void addAppointment(Long patientid, Long appointmentid);*/
-
     @Query(value = "SELECT p.id from Patient p where p.email=email")
     Long getId(String email);
 

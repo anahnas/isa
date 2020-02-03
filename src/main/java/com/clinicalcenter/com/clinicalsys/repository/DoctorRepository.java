@@ -21,4 +21,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
             "(SELECT doctor_specializations.doctor_id FROM doctor_specializations WHERE " +
             "doctor_specializations.specializations_id = ?1 AND clinicalsys.staff.clinic_id=?2)", nativeQuery = true)
     Set<Doctor> allWithSpecializationInClinic(Long id, Long clinicid);
+
+    Doctor findByEmail(String email);
 }
