@@ -42,7 +42,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        /*
+
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -105,16 +105,16 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region AppointmentTypes
-            AppointmentType appointmentType1 = new AppointmentType("Ocni pregled", 1400.0, 1.0);
-            AppointmentType appointmentType2 = new AppointmentType("Pregled grla", 750.0, 1.0);
-            AppointmentType appointmentType3 = new AppointmentType("Pregled sluha", 920.0, 0.85);
-            AppointmentType appointmentType4 = new AppointmentType("Pregled vida", 1600.0, 1.0);
-            AppointmentType appointmentType5 = new AppointmentType("Pregled pluca", 920.0, 1.0);
-            AppointmentType appointmentType6 = new AppointmentType("Alergo test", 2100.0, 0.85);
-            AppointmentType appointmentType7 = new AppointmentType("Merenje holesterola", 880.0, 0.95);
-            AppointmentType appointmentType8 = new AppointmentType("Sistematski pregled", 1050.0,1.0);
-            AppointmentType appointmentType9 = new AppointmentType("Stomatoloski pregled", 2400.0,0.9);
-            AppointmentType appointmentType10 = new AppointmentType("Rutinska kontrola", 450.0,1.0);
+            AppointmentType appointmentType1 = new AppointmentType("Ocni pregled");
+            AppointmentType appointmentType2 = new AppointmentType("Pregled grla");
+            AppointmentType appointmentType3 = new AppointmentType("Pregled sluha");
+            AppointmentType appointmentType4 = new AppointmentType("Pregled vida");
+            AppointmentType appointmentType5 = new AppointmentType("Pregled pluca");
+            AppointmentType appointmentType6 = new AppointmentType("Alergo test");
+            AppointmentType appointmentType7 = new AppointmentType("Merenje holesterola");
+            AppointmentType appointmentType8 = new AppointmentType("Sistematski pregled");
+            AppointmentType appointmentType9 = new AppointmentType("Stomatoloski pregled");
+            AppointmentType appointmentType10 = new AppointmentType("Rutinska kontrola");
 
             appointmentTypeRepository.save(appointmentType1);
             appointmentTypeRepository.save(appointmentType2);
@@ -130,26 +130,26 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
         //region Clinics
         Clinic clinicns = new Clinic("Klinicki Centar Novi Sad", "Bulevar Cara Lazara 18",
-                null, null, "Novi Sad", "Srbija");
+                null, 8.3, "Novi Sad", "Srbija");
         HashSet<Room> rooms = new HashSet<Room>();
         rooms.add(clinicns_1_e);rooms.add(clinicns_2_e);rooms.add(clinicns_1_s);
         clinicns.setRooms(rooms);
 
         Clinic clinicbg = new Clinic("Centralna Klinika Beograd", "Nemanjina 163a",
-                null, null, "Beograd", "Srbija");
+                null, 9.2, "Beograd", "Srbija");
         rooms = new HashSet<Room>();
         rooms.add(clinicbg_1_e);rooms.add(clinicbg_2_e);rooms.add(clinicbg_1_s);rooms.add(clinicbg_2_s);
         clinicbg.setRooms(rooms);
 
         Clinic clinicsu = new Clinic("Okruzna Bolnica", "Kerska 34",
-                null, null, "Subotica", "Srbija");
+                null, 9.99, "Subotica", "Srbija");
         rooms = new HashSet<Room>();
         rooms.add(clinicsu_1_e);rooms.add(clinicsu_2_e);rooms.add(clinicsu_1_s);rooms.add(clinicsu_3_e);
         clinicsu.setRooms(rooms);
 
 
         Clinic clinicvl = new Clinic("Mesna Ambulanta Vlasenica", "Brdskih Heroja 34",
-                null, null, "Vlasenica", "Bosna i Hercegovina");
+                null, 5.2, "Vlasenica", "Bosna i Hercegovina");
         rooms = new HashSet<Room>();
         rooms.add(clinicvl_1_e);
         clinicvl.setRooms(rooms);
@@ -180,17 +180,17 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "519930","277 Quincy Lane","Radojevo","Serbia",
                 "(691) 5982347","4498498325468");
         ClinicAdmin cadmin2 = new ClinicAdmin(user_cadminns,clinicns);
-        clinicAdminRepository.save(cadmin2);
+        cadmin2 = clinicAdminRepository.save(cadmin2);
         User user_cadminsu = new User("aashton7@acquirethisname.com","Adrianne","Ashton",
                 "893866","29 Melvin Alley","Radenka","Serbia",
                 "(263) 5567560","5057737453126");
         ClinicAdmin cadmin3 = new ClinicAdmin(user_cadminsu,clinicsu);
-        clinicAdminRepository.save(cadmin3);
+        cadmin3 = clinicAdminRepository.save(cadmin3);
         User user_cadminvl = new User("avanrembrandt8@ezinearticles.com","Ashley",
                 "Van Rembrandt","651346","610 Forster Point","Kovilj",
                 "Serbia","(929) 7283860","9967156809229");
         ClinicAdmin cadmin4 = new ClinicAdmin(user_cadminvl,clinicvl);
-        clinicAdminRepository.save(cadmin4);
+        cadmin4 = clinicAdminRepository.save(cadmin4);
         //endregion
 
         //region Doctors
@@ -203,7 +203,11 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         doctor1.addSpecialisation(appointmentType1);
         doctor1.addSpecialisation(appointmentType3);
         doctor1.addSpecialisation(appointmentType10);
-        doctorRepository.save(doctor1);
+        doctor1 = doctorRepository.save(doctor1);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType1,456.0,1.0);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType3,590.0,0.95);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType10,1200.0,0.8);
+        clinicbg = clinicRespository.save(clinicbg);
 
         User user_doctor_2 = new User("jmingardo1@howstuffworks.com","Judith","Mingardo",
                 "638473","33 7th Crossing","Gyor","Madjarska",
@@ -215,7 +219,12 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         doctor2.addSpecialisation(appointmentType6);
         doctor2.addSpecialisation(appointmentType8);
         doctor2.addSpecialisation(appointmentType7);
-        doctorRepository.save(doctor2);
+        doctor2 = doctorRepository.save(doctor2);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType2, 4580.0,0.75);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType6, 856.0,0.1);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType8, 380.0,0.1);
+        clinicbg.addNewAppTypePriceDiscount(appointmentType7, 1200.0,0.5);
+        clinicbg = clinicRespository.save(clinicbg);
 
         User user_doctor_3 = new User("nattle4@hhs.gov","Nigel","Attle","320532",
                 "5 International Place","Kamenica", "Srbija","(466) 6189663",
@@ -227,7 +236,12 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         doctor3.addSpecialisation(appointmentType4);
         doctor3.addSpecialisation(appointmentType8);
         doctor3.addSpecialisation(appointmentType6);
-        doctorRepository.save(doctor3);
+        doctor3 = doctorRepository.save(doctor3);
+        clinicns.addNewAppTypePriceDiscount(appointmentType1,850.0,1.0);
+        clinicns.addNewAppTypePriceDiscount(appointmentType4,180.0,1.0);
+        clinicns.addNewAppTypePriceDiscount(appointmentType8,950.0,0.85);
+        clinicns.addNewAppTypePriceDiscount(appointmentType6,1120.0,0.98);
+        clinicns = clinicRespository.save(clinicns);
 
         User user_doctor_4 = new User("gstuchbery6@cargocollective.com","Gabriell",
                 "Stuchbery","688918", "67 Little Fleur Plaza","Bogojevo",
@@ -237,7 +251,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         Doctor doctor4 = new Doctor(staff_doctor_4);
         doctor4.addSpecialisation(appointmentType5);
         doctor4.addSpecialisation(appointmentType10);
-        doctorRepository.save(doctor4);
+        doctor4 = doctorRepository.save(doctor4);
+        clinicns.addNewAppTypePriceDiscount(appointmentType5,920.0,1.0);
+        clinicns.addNewAppTypePriceDiscount(appointmentType10,2200.0,0.7);
+        clinicns = clinicRespository.save(clinicns);
 
         User user_doctor_5 = new User("kbalbeck9@java.com","Karyn","Balbeck",
                 "695696","8 Ilene Junction","Budapest","Hungary",
@@ -249,7 +266,12 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         doctor5.addSpecialisation(appointmentType4);
         doctor5.addSpecialisation(appointmentType8);
         doctor5.addSpecialisation(appointmentType3);
-        doctorRepository.save(doctor5);
+        doctor5 = doctorRepository.save(doctor5);
+        clinicsu.addNewAppTypePriceDiscount(appointmentType1,150.0,1.0);
+        clinicsu.addNewAppTypePriceDiscount(appointmentType4,240.0,0.7);
+        clinicsu.addNewAppTypePriceDiscount(appointmentType8,1500.0,0.5);
+        clinicsu.addNewAppTypePriceDiscount(appointmentType3,720.0,1.0);
+        clinicsu = clinicRespository.save(clinicsu);
 
         User user_doctor_6 = new User("aarne1@fastcompany.com","Ariela","Arne",
                 "658385","910 Westend Terrace","Potoci","Bosna i Hercegovina",
@@ -258,7 +280,9 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         Staff staff_doctor_6 = new Staff(user_doctor_6, clinicvl);
         Doctor doctor6 = new Doctor(staff_doctor_6);
         doctor6.addSpecialisation(appointmentType6);
-        doctorRepository.save(doctor6);
+        doctor6 = doctorRepository.save(doctor6);
+        clinicvl.addNewAppTypePriceDiscount(appointmentType6, 860.0,0.9);
+        clinicvl = clinicRespository.save(clinicvl);
         //endregion
 
         //region Nurses
@@ -334,6 +358,6 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             nurse_ns1.addRecipe(recipes.get(recipes.size()-1));
             nurseRepository.save(nurse_ns1);
         //endregion
-        */
+
     }
 }

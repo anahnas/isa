@@ -38,15 +38,18 @@ public class Clinic {
     private String description;
 
     @Column(name = "rating", unique = false, nullable = true)
-    private Float rating;
+    private Double rating;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<Room> rooms;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<AppointmentType_Price_Discount> appointmentTypePriceDiscounts;
+
     public Clinic() {}
 
-    public Clinic(String clinicName, String address, String description, Float rating, String city, String country) {
+    public Clinic(String clinicName, String address, String description, Double rating, String city, String country) {
         this.clinicName = clinicName;
         this.address = address;
         this.description = description;
@@ -54,8 +57,21 @@ public class Clinic {
         this.city = city;
         this.country = country;
         this.rooms = new HashSet<Room>();
+        this.appointmentTypePriceDiscounts = new HashSet<AppointmentType_Price_Discount>();
     }
 
+    public void addNewAppTypePriceDiscount(AppointmentType at,Double price, Double discount){
+        for(AppointmentType_Price_Discount atpd : this.appointmentTypePriceDiscounts){
+            if(atpd.getAppointmentType().getId()==at.getId()){
+                this.appointmentTypePriceDiscounts.remove(atpd);
+                break;
+            }
+        }
+        AppointmentType_Price_Discount temp = new AppointmentType_Price_Discount(at,price,discount);
+        this.appointmentTypePriceDiscounts.add(temp);
+    }
+
+    //region Getters/Setters
     public Long getId() {
         return id;
     }
@@ -88,11 +104,11 @@ public class Clinic {
         this.description = description;
     }
 
-    public Float getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Float rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -119,4 +135,13 @@ public class Clinic {
     public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
     }
+
+    public Set<AppointmentType_Price_Discount> getAppointmentType_price_discounts() {
+        return appointmentTypePriceDiscounts;
+    }
+
+    public void setAppointmentType_price_discounts(Set<AppointmentType_Price_Discount> appointmentType_price_discounts) {
+        this.appointmentTypePriceDiscounts = appointmentType_price_discounts;
+    }
+    //endregion
 }
