@@ -19,22 +19,12 @@ public class AppointmentType {
     @Column(name = "type", nullable = false)
     private String type;
 
-    @Column(name = "price")
-    private Double price;
-
-    @Column(name = "discount")
-    private Double discount;
-
-    /*@OneToMany(fetch = FetchType.EAGER)
-    private Set<Appointment> appointments;*/
 
     public AppointmentType() {
     }
 
-    public AppointmentType(String type, Double price, Double discount) {
-        this.price=price;
+    public AppointmentType(String type) {
         this.type = type;
-        this.discount = discount;
     }
 
     public Long getId() {
@@ -53,19 +43,4 @@ public class AppointmentType {
         this.type = type;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Double discount) {
-        this.discount = discount;
-    }
 }

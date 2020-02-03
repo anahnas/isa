@@ -84,8 +84,8 @@ public class PatientController {
         return new ResponseEntity<>(clinics,HttpStatus.OK);
     }
 
-    /*Receives Date and AppointmentType, returns Clinics that have doctors
-    free on that date that specialise in those AppointmentTypes*/
+    /*Receives Date,AppointmentType and CLinic name, returns all doctors that work for that clinic,
+     are free on that date and specialise in those AppointmentTypes*/
     @PostMapping("/getAvailableClinics/{date}/{clinicName}")
     public ResponseEntity<Set<Doctor>> getFreeSpecializedDoctors(@RequestBody AppointmentType appType,
                                                                  @PathVariable("date") String date_string,
@@ -108,4 +108,29 @@ public class PatientController {
         }
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
+
+    /*Receives Date,AppointmentType and CLinic name, returns all doctors that work for that clinic,
+    are free on that date and specialise in those AppointmentTypes*/
+  /*  @PostMapping("/requestApp/{date}/{doctorName}")
+    public ResponseEntity<String> requestApp(@RequestBody AppointmentType appType,
+                                                                 @PathVariable("date") String date_string,
+                                                                 @PathVariable("doctorName") String dontor_name) {
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date;
+        try {
+            date = simpleDateFormat.parse(date_string);
+        } catch (ParseException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        Clinic clinic = clinicRespository.findByClinicName(clinic_name);
+        Set<Doctor> doctors_temp= new HashSet<Doctor>(doctorRepository.allWithSpecializationInClinic(appType.getId(),clinic.getId()));
+        Set<Doctor> retVal=new HashSet<>();
+        for(Doctor doctor : doctors_temp){
+            if(!doctor.hasFreeAppointments(date))
+                continue;
+            retVal.add(doctor);
+        }
+        return new ResponseEntity<>(retVal,HttpStatus.OK);
+    }*/
 }
