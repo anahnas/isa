@@ -1,6 +1,7 @@
 package com.clinicalcenter.com.clinicalsys.repository;
 
 import com.clinicalcenter.com.clinicalsys.model.Nurse;
+import com.clinicalcenter.com.clinicalsys.model.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,9 +19,7 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
             "FROM clinic WHERE clinic.clinic_name = ?1)", nativeQuery = true)
     Set<Nurse> findByClinicName(String clinicName);
 
-    @Transactional
-    @Modifying
-    @Query(value = "INSERT INTO clinicalsys.nurse_recipes (clinicalsys.nurse_recipes.nurse_id," +
-            "clinicalsys.nurse_recipes.recipe_id) VALUES (?1, ?2)", nativeQuery = true)
-    void addRecipe(Long nurseId, Long recipeId);
+    @Query(value = "SELECT * FROM recipe WHERE recipe.nurse_id in (SELECT clinicalsys.user.id FROM clinicalsys.user " +
+            "where  clinicalsys.user.email = ?1)",nativeQuery = true)
+    Set<Recipe> getRecipesForValidation(String email);
 }
