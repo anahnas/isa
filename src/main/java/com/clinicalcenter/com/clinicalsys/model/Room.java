@@ -31,6 +31,9 @@ public class Room {
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> future_appointments;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Surgery> future_surgeries;
+
     public Room() {
     }
 
@@ -38,6 +41,7 @@ public class Room {
         this.name = name;
         this.type = type;
         future_appointments = new HashSet<Appointment>();
+        future_surgeries = new HashSet<Surgery>();
     }
 
     /*returns true if it added apt successfully, or false if the room was taken in given time span*/
@@ -45,6 +49,14 @@ public class Room {
     public boolean addAppointment(Appointment apt) {
         Date start = apt.getStartTime();
         Date end = apt.getEndTime();
+        if(isFree(start,end)){
+            future_appointments.add(apt);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isFree(Date start, Date end) {
         for (Appointment future_appointment : future_appointments) {
             Date start2 = future_appointment.getStartTime();
             Date end2 = future_appointment.getEndTime();
@@ -55,7 +67,6 @@ public class Room {
                 return false;
             }
         }
-        future_appointments.add(apt);
         return true;
     }
 
@@ -89,5 +100,13 @@ public class Room {
 
     public void setFuture_appointments(Set<Appointment> future_appointments) {
         this.future_appointments = future_appointments;
+    }
+
+    public Set<Surgery> getFuture_surgeries() {
+        return future_surgeries;
+    }
+
+    public void setFuture_surgeries(Set<Surgery> future_surgeries) {
+        this.future_surgeries = future_surgeries;
     }
 }

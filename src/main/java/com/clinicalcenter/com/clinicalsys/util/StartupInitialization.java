@@ -5,6 +5,7 @@ import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import com.clinicalcenter.com.clinicalsys.repository.*;
+import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -18,6 +19,8 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    SurgeryRepository surgeryRepository;
     @Autowired
     ClinicRespository clinicRespository;
     @Autowired
@@ -40,10 +43,14 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
     AppointmentTypeRepository appointmentTypeRepository;
     @Autowired
     RoomRepository roomRepository;
+    @Autowired
+    VacationRepository vacationRepository;
+    @Autowired
+    private NotifyAdminsServis notifyAdminsServis;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-/*
+
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -91,18 +98,28 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         Diagnose diagnose1 = new Diagnose("Upala pluca",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         diagnoseRepository.save(diagnose1);
-
         Diagnose diagnose2 = new Diagnose("Rak slepog creva",
                 "Duis pretium sed sapien at pellentesque. ");
         diagnoseRepository.save(diagnose2);
-
-        Diagnose diagnose3 = new Diagnose("Upala pluca",
+        Diagnose diagnose3 = new Diagnose("Temperatura",
                 "Fusce pharetra sem nisl, non gravida neque vulputate in. Praesent nec augue odio amet.");
         diagnoseRepository.save(diagnose3);
-
         Diagnose diagnose4 = new Diagnose("Upala pluca",
                 "Vivamus mattis pellentesque augue nec nullam. ");
         diagnoseRepository.save(diagnose4);
+        Diagnose diagnose5 = new Diagnose("Visok pritisak",
+                "Pellentesque faucibus sapien velit, facilisis consectetur enim egestas et. ");
+        diagnoseRepository.save(diagnose5);
+        Diagnose diagnose6 = new Diagnose("Nizak secer",
+                "Morbi venenatis sapien et dolor pellentesque condimentum. Mauris quis eros sem.");
+        diagnoseRepository.save(diagnose6);
+        Diagnose diagnose7 = new Diagnose("Glavobolja ",
+                " Aliquam aliquet tellus nec sapien efficitur commodo. Aenean nibh ante, ornare eu mi eu, " +
+                        "tristique commodo lorem.");
+        diagnoseRepository.save(diagnose7);
+        ArrayList<Diagnose> diagnoses= new ArrayList<>();
+        diagnoses.add(diagnose1);diagnoses.add(diagnose2);diagnoses.add(diagnose3);diagnoses.add(diagnose4);
+        diagnoses.add(diagnose5);diagnoses.add(diagnose6);diagnoses.add(diagnose7);
         //endregion
 
         //region AppointmentTypes
@@ -166,12 +183,35 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "117565","88529 Fairfield Parkway","Budapest","Hungary",
                 "(682) 9443368","9598205971511");
         Patient patient1 = new Patient(user_patient1);
+        patient1.setAdminConfirmed(Boolean.TRUE);
         patient1.setActive(Boolean.TRUE);
         patientRepository.save(patient1);
+        User user_patient2 = new User("drugipacijent@php.net","Boris","Brejcha",
+                "78596789","88529 Fairfield Parkway","Subotica","Serbia",
+                "(682) 9425368","9598795971511");
+        Patient patient2 = new Patient(user_patient2);
+        patient1.setAdminConfirmed(Boolean.TRUE);
+        patient1.setActive(Boolean.TRUE);
+        patientRepository.save(patient2);
+        User user_patient3 = new User("instapatient@java.net","Senidah","The Third",
+                "120565","88529 Fairfield Parkway","Szeged","Hungary",
+                "(682) 9449668","9598205101511");
+        Patient patient3 = new Patient(user_patient3);
+        patient1.setAdminConfirmed(Boolean.TRUE);
+        patient1.setActive(Boolean.TRUE);
+        patientRepository.save(patient3);
+        User user_patient4 = new User("finalpatient@test.co","Yo","Yo",
+                "007565","88529 Fairfield Parkway","Pecs","Hungary",
+                "(682) 9489668","9598205970311");
+        Patient patient4 = new Patient(user_patient4);
+        patient1.setActive(Boolean.TRUE);
+        patientRepository.save(patient4);
+        ArrayList<Patient> patients = new ArrayList<>();
+        patients.add(patient1);patients.add(patient2);patients.add(patient3);patients.add(patient4);
         //endregion
 
         //region ClinicAdmin
-        User user_cadminbg = new User("wdeekes5@tmall.com,Whittaker","Deekes","Mills",
+        User user_cadminbg = new User("wdeekes5@tmall.com","Whittaker","Deekes",
                 "318914","6 Brentwood Way","Savski Venac","Serbia",
                 "(141) 9739447","67607378738");
         ClinicAdmin cadmin1 = new ClinicAdmin(user_cadminbg,clinicbg);
@@ -194,16 +234,18 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region Doctors
+        ArrayList<Doctor> doctors = new ArrayList<>();
         User user_doctor_1 = new User("jpavlovic0@google.com.au","Justus","Pavlovic",
                 "557369","810 Cherokee Lane", "Kuštilj","Srbija",
                 "(682) 9409237","8657870655830");
         user_doctor_1.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_1 = new Staff(user_doctor_1, clinicbg);
-        Doctor doctor1 = new Doctor(staff_doctor_1);
+        Doctor doctor1 = new Doctor(staff_doctor_1,8.18);
         doctor1.addSpecialisation(appointmentType1);
         doctor1.addSpecialisation(appointmentType3);
         doctor1.addSpecialisation(appointmentType10);
         doctor1 = doctorRepository.save(doctor1);
+        doctors.add(doctor1);
         clinicbg.addNewAppTypePriceDiscount(appointmentType1,456.0,1.0);
         clinicbg.addNewAppTypePriceDiscount(appointmentType3,590.0,0.95);
         clinicbg.addNewAppTypePriceDiscount(appointmentType10,1200.0,0.8);
@@ -214,12 +256,13 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "(666) 6994851","1715377197364");
         user_doctor_2.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_2 = new Staff(user_doctor_2, clinicbg);
-        Doctor doctor2 = new Doctor(staff_doctor_2);
+        Doctor doctor2 = new Doctor(staff_doctor_2,9.58);
         doctor2.addSpecialisation(appointmentType2);
         doctor2.addSpecialisation(appointmentType6);
         doctor2.addSpecialisation(appointmentType8);
         doctor2.addSpecialisation(appointmentType7);
         doctor2 = doctorRepository.save(doctor2);
+        doctors.add(doctor2);
         clinicbg.addNewAppTypePriceDiscount(appointmentType2, 4580.0,0.75);
         clinicbg.addNewAppTypePriceDiscount(appointmentType6, 856.0,0.1);
         clinicbg.addNewAppTypePriceDiscount(appointmentType8, 380.0,0.1);
@@ -231,12 +274,13 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "9028453261450");
         user_doctor_3.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_3 = new Staff(user_doctor_3, clinicns);
-        Doctor doctor3 = new Doctor(staff_doctor_3);
+        Doctor doctor3 = new Doctor(staff_doctor_3,6.12);
         doctor3.addSpecialisation(appointmentType1);
         doctor3.addSpecialisation(appointmentType4);
         doctor3.addSpecialisation(appointmentType8);
         doctor3.addSpecialisation(appointmentType6);
         doctor3 = doctorRepository.save(doctor3);
+        doctors.add(doctor3);
         clinicns.addNewAppTypePriceDiscount(appointmentType1,850.0,1.0);
         clinicns.addNewAppTypePriceDiscount(appointmentType4,180.0,1.0);
         clinicns.addNewAppTypePriceDiscount(appointmentType8,950.0,0.85);
@@ -248,10 +292,11 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "Srbija","(376) 9635234","2697619396679");
         user_doctor_4.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_4 = new Staff(user_doctor_4, clinicns);
-        Doctor doctor4 = new Doctor(staff_doctor_4);
+        Doctor doctor4 = new Doctor(staff_doctor_4,9.16);
         doctor4.addSpecialisation(appointmentType5);
         doctor4.addSpecialisation(appointmentType10);
         doctor4 = doctorRepository.save(doctor4);
+        doctors.add(doctor4);
         clinicns.addNewAppTypePriceDiscount(appointmentType5,920.0,1.0);
         clinicns.addNewAppTypePriceDiscount(appointmentType10,2200.0,0.7);
         clinicns = clinicRespository.save(clinicns);
@@ -261,12 +306,13 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "(587) 8660314","8518068206648");
         user_doctor_5.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_5 = new Staff(user_doctor_5, clinicsu);
-        Doctor doctor5 = new Doctor(staff_doctor_5);
+        Doctor doctor5 = new Doctor(staff_doctor_5,5.56);
         doctor5.addSpecialisation(appointmentType1);
         doctor5.addSpecialisation(appointmentType4);
         doctor5.addSpecialisation(appointmentType8);
         doctor5.addSpecialisation(appointmentType3);
         doctor5 = doctorRepository.save(doctor5);
+        doctors.add(doctor5);
         clinicsu.addNewAppTypePriceDiscount(appointmentType1,150.0,1.0);
         clinicsu.addNewAppTypePriceDiscount(appointmentType4,240.0,0.7);
         clinicsu.addNewAppTypePriceDiscount(appointmentType8,1500.0,0.5);
@@ -278,9 +324,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "(307) 8351741","6437437353973");
         user_doctor_6.setRole(RoleEnum.DOCTOR);
         Staff staff_doctor_6 = new Staff(user_doctor_6, clinicvl);
-        Doctor doctor6 = new Doctor(staff_doctor_6);
+        Doctor doctor6 = new Doctor(staff_doctor_6,7.14);
         doctor6.addSpecialisation(appointmentType6);
         doctor6 = doctorRepository.save(doctor6);
+        doctors.add(doctor6);
         clinicvl.addNewAppTypePriceDiscount(appointmentType6, 860.0,0.9);
         clinicvl = clinicRespository.save(clinicvl);
         //endregion
@@ -291,76 +338,228 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 "(687) 2189973","8211024836776");
             Staff staff_nurse_ns1 = new Staff(user_nurse_ns1,clinicns);
             Nurse nurse_ns1 =new Nurse(staff_nurse_ns1);
-            nurseRepository.save(nurse_ns1);
+            nurse_ns1=nurseRepository.save(nurse_ns1);
+
+            User user_nurse_ns2 = new User("nije_bitno@mejl.com","Matt","Parker",
+                    "514265","1715 Boyd Place","Nova Pazova","Serbia",
+                    "(687) 2189973","8211024836789");
+            Staff staff_nurse_ns2 = new Staff(user_nurse_ns2,clinicns);
+            Nurse nurse_ns2 =new Nurse(staff_nurse_ns2);
+            nurse_ns2=nurseRepository.save(nurse_ns2);
 
             User user_nurse_bg1 = new User("dbishopp4@wikispaces.com","Delcine","Bishopp",
                     "785391","1810 Michigan Way", "Balatun","Bosnia and Herzegovina",
                     "(192) 8186705","6771172485802");
             Staff staff_nurse_bg1 = new Staff(user_nurse_bg1,clinicbg);
             Nurse nurse_bg1 =new Nurse(staff_nurse_bg1);
-            nurseRepository.save(nurse_bg1);
+            nurse_bg1=nurseRepository.save(nurse_bg1);
+
+            User user_nurse_bg2 = new User("testtest@wikispaces.com","Brow","Rice",
+                    "782891","1810 Michigan Way", "Balatun","Bosnia and Herzegovina",
+                    "(192) 8186705","6771178985802");
+            Staff staff_nurse_bg2 = new Staff(user_nurse_bg2,clinicbg);
+            Nurse nurse_bg2 =new Nurse(staff_nurse_bg2);
+            nurse_bg2=nurseRepository.save(nurse_bg2);
 
             User user_nurse_su1 = new User("sscholte5@examiner.com","Sydney","Scholte",
                     "401257","48 Hoard Hill","Lipci","Montenegro",
                     "(286) 9748369","3636790947925");
             Staff staff_nurse_su1 = new Staff(user_nurse_su1,clinicsu);
             Nurse nurse_su1 =new Nurse(staff_nurse_su1);
-            nurseRepository.save(nurse_su1);
+            nurse_su1=nurseRepository.save(nurse_su1);
 
             User user_nurse_vl1 = new User("nurse@nrs.com","Robinette","Kitchingham",
                     "123123","1715 Boyd Place","Nova Pazova","Serbia",
                     "(687) 2189973","8211024836776");
             Staff staff_nurse_vl1 = new Staff(user_nurse_vl1,clinicvl);
             Nurse nurse_vl1 =new Nurse(staff_nurse_vl1);
-            nurseRepository.save(nurse_vl1);
-
+            nurse_vl1=nurseRepository.save(nurse_vl1);
+            ArrayList<Nurse> nurses= new ArrayList<>();
+            nurses.add(nurse_bg1);nurses.add(nurse_bg2);nurses.add(nurse_ns1);nurses.add(nurse_ns2);
+            nurses.add(nurse_su1);nurses.add(nurse_vl1);
         //endregion
 
-        //region Appointments
-        Calendar start_time = Calendar.getInstance();
-        start_time.set(2020,Calendar.MARCH,25,8,0,0);
-        start_time.set(Calendar.MILLISECOND,0);
-        Calendar final_app = Calendar.getInstance();
-        final_app.set(2020,Calendar.MARCH,25,15,30,0);
-        final_app.set(Calendar.MILLISECOND,0);
-        while(start_time.compareTo(final_app)<0){
-            Calendar endTime= (Calendar) start_time.clone();
-            endTime.add(Calendar.MINUTE,30);
-            ArrayList<AppointmentType> at_list= new ArrayList<AppointmentType>();
-            at_list.addAll(doctor1.getSpecializations());
-            AppointmentType temp_at= at_list.get(ThreadLocalRandom.current().nextInt(0, at_list.size()));
-            Appointment ap_req1 = new Appointment(start_time.getTime(),endTime.getTime(), temp_at, patient1, null, doctor1);
-            ap_req1.setAppState(AppStateEnum.APPROVED);
-            appointmentRepository.save(ap_req1);
-            start_time.add(Calendar.MINUTE, 30);
-            List<Room> list = new ArrayList<Room>(clinicns.getRooms());
-            Room ap_room = list.get(0);
-            clinicns.getRooms().remove(ap_room);
-            ap_room.addAppointment(ap_req1);
-            ap_room=roomRepository.save(ap_room);
-            clinicns.getRooms().add(ap_room);
-            ap_req1.addRoom(ap_room);
-            appointmentRepository.save(ap_req1);
-            doctor1.addAppointment(ap_req1);
+
+
+        //region Appointments/Vacations/Surgeries
+        for (Doctor doctor : doctors) {
+            //Vaccation
+            for(int i =0;i<2;i++) {
+                int v_month = ThreadLocalRandom.current().nextInt(0, 3);
+                int v_day = ThreadLocalRandom.current().nextInt(1, 29);
+                Calendar v_start_time = Calendar.getInstance();
+                v_start_time.set(2020, v_month, v_day, 0, 0, 0);
+                v_start_time.set(Calendar.MILLISECOND, 0);
+
+                int vacation_length = ThreadLocalRandom.current().nextInt(1, 8);
+                Calendar v_end_time = (Calendar) v_start_time.clone();
+                v_end_time.add(Calendar.DAY_OF_YEAR, vacation_length);
+
+                String v_type = (ThreadLocalRandom.current().nextInt(0, 2) == 0) ? "HOLIDAY" : "ABSENCE";
+                int accepted_randomise = ThreadLocalRandom.current().nextInt(0, 3);
+                Boolean accepted = null;
+                if (accepted_randomise == 0) accepted = true;
+                if (accepted_randomise == 1) accepted = false;
+                if(v_end_time.getTime().before(new Date())) accepted=true;
+                VacationRequest vacation = new VacationRequest(v_type, v_start_time.getTime(), v_end_time.getTime(), accepted);
+                vacation=vacationRepository.save(vacation);
+                if(accepted!=null&&accepted==true) {
+                    doctor.getVacReq().add(vacation);
+                    doctor = doctorRepository.save(doctor);
+                }
+                if (accepted == null) {
+                    Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctor.getEmail());
+                    for (ClinicAdmin admin : clinicAdmins) {
+                        admin.getVacations_to_process().add(vacation);
+                        admin = clinicAdminRepository.save(admin);
+                        //notifyAdminsServis.newRequestNotification(admin,false);
+                    }
+                }
+            }
+            //Apppointments
+            int iterations=ThreadLocalRandom.current().nextInt(15, 30 + 1);
+            for(int i=0;i<iterations;i++) {
+                int month=ThreadLocalRandom.current().nextInt(1, 3);
+                int day=ThreadLocalRandom.current().nextInt(1, 29);
+                int hour=ThreadLocalRandom.current().nextInt(8,15);
+                int minutes=(ThreadLocalRandom.current().nextInt(0,2)==0)?0:30;
+                Calendar start_time = Calendar.getInstance();
+                start_time.set(2020, month, day, hour, minutes, 0);
+                start_time.set(Calendar.MILLISECOND, 0);
+
+                Calendar end_time = (Calendar) start_time.clone();
+                end_time.add(Calendar.MINUTE,30);
+
+                if(!doctor.checkIfAppFree(start_time,end_time)) continue;
+
+                Patient app_patient = patients.get(ThreadLocalRandom.current().nextInt(0, patients.size()));
+                ArrayList<AppointmentType> at_list = new ArrayList<AppointmentType>();
+                at_list.addAll(doctor.getSpecializations());
+                AppointmentType temp_at = at_list.get(ThreadLocalRandom.current().nextInt(0, at_list.size()));
+                Appointment ap_req1 = new Appointment(start_time.getTime(), end_time.getTime(), temp_at, app_patient,
+                        null, doctor);
+                if(ap_req1.getEndTime().before(new Date())){
+                    ap_req1.setAppState(AppStateEnum.FINISHED);
+                }else {
+                    AppStateEnum appStateEnum = (ThreadLocalRandom.current().nextInt(0, 2) == 0) ?
+                            AppStateEnum.APPROVED : AppStateEnum.REQUESTED;
+                    ap_req1.setAppState(appStateEnum);
+                }
+                ap_req1=appointmentRepository.save(ap_req1);
+                if(ap_req1.getAppState()==AppStateEnum.FINISHED){
+                    doctor.addAppointment(ap_req1);
+                }
+                if(ap_req1.getAppState()==AppStateEnum.APPROVED) {
+                    List<Room> list = new ArrayList<Room>(doctor.getClinic().getRooms());
+                    Room ap_room = list.get(ThreadLocalRandom.current().nextInt(0,list.size()));
+                    doctor.getClinic().getRooms().remove(ap_room);
+                    ap_room.addAppointment(ap_req1);
+                    Set<Nurse> retVal = nurseRepository.findByClinicName(doctor.getClinic().getClinicName());
+                    List<Nurse> clinic_nurses = new ArrayList<Nurse>();
+                    clinic_nurses.addAll(retVal);
+                    Nurse temp_nurse = clinic_nurses.get(ThreadLocalRandom.current().nextInt(0,clinic_nurses.size()));
+                    temp_nurse.getAppointments().add(ap_req1);
+                    nurses.remove(temp_nurse);
+                    nurses.add(nurseRepository.save(temp_nurse));
+                    //mozda room treba da sacuvamo preko klinike, a ne ovako direktno
+                    ap_room = roomRepository.save(ap_room);
+                    doctor.getClinic().getRooms().add(ap_room);
+                    ap_req1.addRoom(ap_room);
+                    ap_req1=appointmentRepository.save(ap_req1);
+                    app_patient.getFuture_appointments().add(ap_req1);
+                    patients.remove(app_patient);
+                    patients.add(patientRepository.save(app_patient));
+                    doctor.addAppointment(ap_req1);
+                }else if(ap_req1.getAppState()==AppStateEnum.REQUESTED){
+                    Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctor.getEmail());
+                    for (ClinicAdmin admin:clinicAdmins){
+                        admin.getAppointments_to_process().add(ap_req1);
+                        admin = clinicAdminRepository.save(admin);
+                    }
+                }
+
+            }
+            //Surgery
+            /*iterations=ThreadLocalRandom.current().nextInt(15, 30 + 1);
+            for(int i=0;i<iterations;i++) {
+                int month=ThreadLocalRandom.current().nextInt(1, 3);
+                int day=ThreadLocalRandom.current().nextInt(1, 29);
+                int hour=ThreadLocalRandom.current().nextInt(8,15);
+                int minutes=(ThreadLocalRandom.current().nextInt(0,2)==0)?0:30;
+                Calendar start_time = Calendar.getInstance();
+                start_time.set(2020, month, day, hour, minutes, 0);
+                start_time.set(Calendar.MILLISECOND, 0);
+
+                Calendar end_time = (Calendar) start_time.clone();
+                end_time.add(Calendar.MINUTE,30);
+
+                if(!doctor.checkIfAppFree(start_time,end_time)) continue;
+
+                Patient app_patient = patients.get(ThreadLocalRandom.current().nextInt(0, patients.size()));
+
+                Boolean activated= (ThreadLocalRandom.current().nextInt(0, 2) == 0) ? true:false;
+                Surgery surgery = new Surgery(start_time.getTime(), end_time.getTime(),app_patient,doctor,null,activated);
+                surgery=surgeryRepository.save(surgery);
+                if(activated!=null&&activated==Boolean.TRUE){
+                    List<Room> list = new ArrayList<Room>(doctor.getClinic().getRooms());
+                    Room ap_room = list.get(ThreadLocalRandom.current().nextInt(0,list.size()));
+                    doctor.getClinic().getRooms().remove(ap_room);
+                    ap_room.set(surgery);
+                    Set<Nurse> retVal = nurseRepository.findByClinicName(doctor.getClinic().getClinicName());
+                    List<Nurse> clinic_nurses = new ArrayList<Nurse>();
+                    clinic_nurses.addAll(retVal);
+                    Nurse temp_nurse = clinic_nurses.get(ThreadLocalRandom.current().nextInt(0,clinic_nurses.size()));
+                    temp_nurse.getAppointments().add(ap_req1);
+                    nurses.remove(temp_nurse);
+                    nurses.add(nurseRepository.save(temp_nurse));
+                    //mozda room treba da sacuvamo preko klinike, a ne ovako direktno
+                    ap_room = roomRepository.save(ap_room);
+                    doctor.getClinic().getRooms().add(ap_room);
+                    ap_req1.addRoom(ap_room);
+                    ap_req1=appointmentRepository.save(ap_req1);
+                    app_patient.getFuture_appointments().add(ap_req1);
+                    patients.remove(app_patient);
+                    patients.add(patientRepository.save(app_patient));
+                    doctor.addAppointment(ap_req1);
+                }
+            }
+
+            }*/
+            doctorRepository.save(doctor);
         }
-        doctorRepository.save(doctor1);
         //endregion
+
 
         //region Recipe
-            Recipe recipe1 = new Recipe(drug1,nurse_ns1,patient1);
-            patient1.getMedicalRecord().addRecipe(recipe1);
-            patient1 =patientRepository.save(patient1);
-            List<Recipe> recipes = new ArrayList<Recipe>(patient1.getMedicalRecord().getRecipes());
-            nurse_ns1.addRecipe(recipes.get(recipes.size()-1));
-            nurse_ns1 = nurseRepository.save(nurse_ns1);
+        for(int i=0; i<40 ;i++) {
+            Drug drug = drugs.get(ThreadLocalRandom.current().nextInt(0,drugs.size()));
+            Nurse nurse = nurses.get(ThreadLocalRandom.current().nextInt(0,nurses.size()));
 
-            Recipe recipe2 = new Recipe(drug4,nurse_ns1,patient1);
-            patient1.getMedicalRecord().addRecipe(recipe2);
-            patient1=patientRepository.save(patient1);
-            recipes = new ArrayList<Recipe>(patient1.getMedicalRecord().getRecipes());
-            nurse_ns1.addRecipe(recipes.get(recipes.size()-1));
-            nurseRepository.save(nurse_ns1);
+            Patient patient = patients.get(ThreadLocalRandom.current().nextInt(0,patients.size()));
+            patients.remove(patient);
+
+            Recipe recipe = new Recipe(drug, nurse, patient);
+            boolean validated = (ThreadLocalRandom.current().nextInt(0, 2) == 0) ? true : false;
+
+            recipe.setValidate(validated);
+
+            patient.getMedicalRecord().addRecipe(recipe);
+            patients.add(patientRepository.save(patient));
+        }
         //endregion
-*/
+    /*
+        //region Adding diagnoses to patients
+        for(Patient patient: patients) {
+            int iterations=ThreadLocalRandom.current().nextInt(1, 3);
+            for(int i = 0 ;i<iterations;i++){
+                Long diagnosesId=diagnoses.get(ThreadLocalRandom.current().nextInt(0,diagnoses.size())).getId();
+                Long medicalRecId = patient.getMedicalRecord().getId();
+                patientRepository.addDiagnoses(medicalRecId,diagnosesId);
+            }
+
+        }
+        */
+
+        //endregion
     }
 }

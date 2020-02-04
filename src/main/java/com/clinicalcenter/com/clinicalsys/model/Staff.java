@@ -17,12 +17,16 @@ public class Staff extends User {
     @ManyToOne(fetch = FetchType.EAGER)
     private Clinic clinic;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<VacationRequest> vacReq;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Surgery> surgeries;
 
     public Staff() {
     }
@@ -80,5 +84,14 @@ public class Staff extends User {
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
+
+    public Set<Surgery> getSurgeries() {
+        return surgeries;
+    }
+
+    public void setSurgeries(Set<Surgery> surgeries) {
+        this.surgeries = surgeries;
+    }
+
     //endregion
 }

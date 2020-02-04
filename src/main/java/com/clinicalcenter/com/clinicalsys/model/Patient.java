@@ -19,9 +19,8 @@ public class Patient extends User {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private MedicalRecord medicalRecord;
 
-    /*@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Appointment> appointments;
-    */
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Appointment> future_appointments;
 
     @OneToMany(fetch = FetchType.EAGER)
     @com.fasterxml.jackson.annotation.JsonIgnore
@@ -38,7 +37,7 @@ public class Patient extends User {
         this.setRole(RoleEnum.PATIENT);
         this.setFirstLogin(Boolean.TRUE);
         this.medicalRecord = new MedicalRecord();
-        //this.appointments = new HashSet<Appointment>();
+        this.future_appointments = new HashSet<Appointment>();
         this.surgeries = new HashSet<Surgery>();
     }
 
@@ -57,5 +56,13 @@ public class Patient extends User {
 
     public void setSurgeries(Set<Surgery> surgeries) {
         this.surgeries = surgeries;
+    }
+
+    public Set<Appointment> getFuture_appointments() {
+        return future_appointments;
+    }
+
+    public void setFuture_appointments(Set<Appointment> future_appointments) {
+        this.future_appointments = future_appointments;
     }
 }

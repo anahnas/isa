@@ -16,23 +16,15 @@ import java.util.Set;
 @Table(name = "nurse")
 public class Nurse extends Staff {
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private Set<Recipe> recipes;
-
-    public Nurse() {
-        recipes = new HashSet<Recipe>();
+    public Nurse(){
     }
 
     public Nurse(Staff s) {
         super(s);
-        recipes = new HashSet<Recipe>();
         this.setActive(Boolean.TRUE);
         this.setAdminConfirmed(Boolean.TRUE);
         this.setRole(RoleEnum.NURSE);
         this.setFirstLogin(Boolean.TRUE);
     }
 
-    public void addRecipe(Recipe recipe) {
-        recipes.add(recipe);
-    }
 }

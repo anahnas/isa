@@ -35,6 +35,12 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     void editPatient(String firstName, String lastName, String password, String address, String city,
                      String phoneNumber, String country, String email_test);
 
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "INSERT INTO medical_history_diagnoses (medical_history_id, diagnoses_id) VALUES " +
+            "(?1,?2)", nativeQuery = true)
+    void addDiagnoses(Long medRecid, Long diagnosesid);
+
     @Query(value = "SELECT p.id from Patient p where p.email=email")
     Long getId(String email);
 
