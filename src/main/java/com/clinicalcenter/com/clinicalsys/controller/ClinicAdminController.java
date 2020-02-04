@@ -3,6 +3,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyUserSrvice;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
@@ -56,40 +57,33 @@ public class ClinicAdminController {
         return new ResponseEntity<>(appointments_to_process, HttpStatus.OK);
     }
 
-    @GetMapping("/getFreeRoomsForTime/{date}/{clinicName}")
-    public ResponseEntity<Set<Room>> getFreeRoomsForDate(@PathVariable("date") String datestr,
-                                                         @PathVariable("clinicName") String clinicName){
+    @GetMapping("/getFreeRoomsForAppointment/{appointment_id}")
+    public ResponseEntity<Set<Room>> getFreeRoomsForDate(@PathVariable("appointment_id") String AppId){
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
-        String pattern = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        Date date;
+        Long app_id;
         try {
-            date = simpleDateFormat.parse(datestr);
-        } catch (ParseException e) {
+            app_id = Long.parseLong(AppId);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        Appointment apt= appointmentRepository.findByIdMy(app_id);
+        if(apt==null){
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
 
-        Clinic clinic = clinicRespository.findByClinicName(clinicName);
-        if(clinic==null){
-            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
-        }
-        Date end_date;
-        Calendar temp = Calendar.getInstance();
-        temp.setTime(date);
-        temp.add(Calendar.MINUTE,30);
-        end_date = temp.getTime();
-
-        Set<Room> rooms = clinic.getRooms();
+        Set<Room> rooms = apt.getDoctor().getClinic().getRooms();
         Set<Room> available_rooms = new HashSet<>();
         for(Room room : rooms){
-            if (room.isFree(date,end_date)){
-                available_rooms.add(room);
+            if (room.isFree(apt.getStartTime(),apt.getEndTime())){
+                if(room.getType()== RoomType.EXAMINATION)
+                    available_rooms.add(room);
             }
         }
         return new ResponseEntity<>(available_rooms, HttpStatus.OK);
     }
+
     @GetMapping("/assignRoomToAppointment/{roomId}/{appId}")
     public ResponseEntity<String> assignRoomToAppointment(@PathVariable("roomId") String roomId,
                                                           @PathVariable("appId") String appId){
@@ -107,7 +101,7 @@ public class ClinicAdminController {
         Room room = roomRepository.findByIdMy(room_id);
         app.addRoom(room);
         app = appointmentRepository.save(app);
-        room.getFuture_appointments().add(app);
+        room.addAppointment(app);
         roomRepository.save(room);
         notifyUserSrvice.AppointmentAnswer(app.getPatient(),true);
         return new ResponseEntity<>(null,HttpStatus.OK);
