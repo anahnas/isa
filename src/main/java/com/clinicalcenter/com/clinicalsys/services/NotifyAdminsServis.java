@@ -30,8 +30,6 @@ public class NotifyAdminsServis {
             mail.setText("New request for vacation was received. To see more details, accept or reject it, go to " +
                     "the site and check Vacation Requests section.");
         }
-        new Thread(() -> {
-            this.mailSender.send(mail);
-        }).start();
+        this.mailSender.send(mail);
     }
 }

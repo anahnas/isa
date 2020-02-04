@@ -51,6 +51,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
+/*
         //region ClinicCenterAdmin
         User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
@@ -383,7 +384,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
         //region Appointments/Vacations/Surgeries
         for (Doctor doctor : doctors) {
-            //Vaccation
+            //Vacation
             for(int i =0;i<2;i++) {
                 int v_month = ThreadLocalRandom.current().nextInt(0, 3);
                 int v_day = ThreadLocalRandom.current().nextInt(1, 29);
@@ -402,6 +403,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 if (accepted_randomise == 1) accepted = false;
                 if(v_end_time.getTime().before(new Date())) accepted=true;
                 VacationRequest vacation = new VacationRequest(v_type, v_start_time.getTime(), v_end_time.getTime(), accepted);
+                vacation.setStaff(doctor);
                 vacation=vacationRepository.save(vacation);
                 if(accepted!=null&&accepted==true) {
                     doctor.getVacReq().add(vacation);
@@ -480,8 +482,11 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
             }
             //Surgery
-            /*iterations=ThreadLocalRandom.current().nextInt(15, 30 + 1);
+            iterations=ThreadLocalRandom.current().nextInt(4, 15);
             for(int i=0;i<iterations;i++) {
+                if (doctor.getClinic().getClinicName().equals("Mesna Ambulanta Vlasenica")) {
+                    continue;
+                }
                 int month=ThreadLocalRandom.current().nextInt(1, 3);
                 int day=ThreadLocalRandom.current().nextInt(1, 29);
                 int hour=ThreadLocalRandom.current().nextInt(8,15);
@@ -502,29 +507,31 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 surgery=surgeryRepository.save(surgery);
                 if(activated!=null&&activated==Boolean.TRUE){
                     List<Room> list = new ArrayList<Room>(doctor.getClinic().getRooms());
-                    Room ap_room = list.get(ThreadLocalRandom.current().nextInt(0,list.size()));
-                    doctor.getClinic().getRooms().remove(ap_room);
-                    ap_room.set(surgery);
+                    Room sr_room = list.get(ThreadLocalRandom.current().nextInt(0,list.size()));
+                    while(sr_room.getType()==RoomType.EXAMINATION) {
+                        sr_room = list.get(ThreadLocalRandom.current().nextInt(0, list.size()));
+                    }
+                    doctor.getClinic().getRooms().remove(sr_room);
+                    sr_room.addSurgery(surgery);
                     Set<Nurse> retVal = nurseRepository.findByClinicName(doctor.getClinic().getClinicName());
                     List<Nurse> clinic_nurses = new ArrayList<Nurse>();
                     clinic_nurses.addAll(retVal);
                     Nurse temp_nurse = clinic_nurses.get(ThreadLocalRandom.current().nextInt(0,clinic_nurses.size()));
-                    temp_nurse.getAppointments().add(ap_req1);
+                    temp_nurse.getSurgeries().add(surgery);
                     nurses.remove(temp_nurse);
                     nurses.add(nurseRepository.save(temp_nurse));
                     //mozda room treba da sacuvamo preko klinike, a ne ovako direktno
-                    ap_room = roomRepository.save(ap_room);
-                    doctor.getClinic().getRooms().add(ap_room);
-                    ap_req1.addRoom(ap_room);
-                    ap_req1=appointmentRepository.save(ap_req1);
-                    app_patient.getFuture_appointments().add(ap_req1);
+                    sr_room = roomRepository.save(sr_room);
+                    doctor.getClinic().getRooms().add(sr_room);
+                    surgery.setRoom(sr_room);
+                    surgery=surgeryRepository.save(surgery);
+                    app_patient.getSurgeries().add(surgery);
                     patients.remove(app_patient);
                     patients.add(patientRepository.save(app_patient));
-                    doctor.addAppointment(ap_req1);
+                    doctor.getSurgeries().add(surgery);
                 }
             }
 
-            }*/
             doctorRepository.save(doctor);
         }
         //endregion
@@ -558,8 +565,8 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             }
 
         }
-        */
 
+*/
         //endregion
     }
 }

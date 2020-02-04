@@ -153,11 +153,14 @@ public class PatientController {
         requestedApp.setAppState(AppStateEnum.REQUESTED);
         requestedApp = appointmentRepository.save(requestedApp);
         Set<ClinicAdmin> clinicAdmins = clinicAdminRespository.getByDoctorEmail(doctor_email);
-        for (ClinicAdmin admin:clinicAdmins){
-            admin.getAppointments_to_process().add(requestedApp);
-            admin = clinicAdminRespository.save(admin);
-            notifyAdminsServis.newRequestNotification(admin,true);
-        }
+        Appointment finalRequestedApp = requestedApp;
+        new Thread(() -> {
+            for (ClinicAdmin admin:clinicAdmins){
+                admin.getAppointments_to_process().add(finalRequestedApp);
+                admin = clinicAdminRespository.save(admin);
+                notifyAdminsServis.newRequestNotification(admin,true);
+            }
+        }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
     

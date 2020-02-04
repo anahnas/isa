@@ -2,6 +2,7 @@ package com.clinicalcenter.com.clinicalsys.model;
 
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import com.clinicalcenter.com.clinicalsys.repository.RoomRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,11 @@ public class Room {
     @Column(name = "type", nullable = false)
     private RoomType type;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> future_appointments;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Surgery> future_surgeries;
 
@@ -55,9 +58,28 @@ public class Room {
         }
         return false;
     }
+    public boolean addSurgery(Surgery surg) {
+        Date start = surg.getStartTime();
+        Date end = surg.getEndTime();
+        if(isFree(start,end)){
+            future_surgeries.add(surg);
+            return true;
+        }
+        return false;
+    }
 
     public boolean isFree(Date start, Date end) {
         for (Appointment future_appointment : future_appointments) {
+            Date start2 = future_appointment.getStartTime();
+            Date end2 = future_appointment.getEndTime();
+            if (start.after(start2) && start.before(end2) || (end.after(start2) && end.before(end2))) {
+                return false;
+            }
+            if (start2.after(start) && start2.before(end)) {
+                return false;
+            }
+        }
+        for (Surgery future_appointment : future_surgeries) {
             Date start2 = future_appointment.getStartTime();
             Date end2 = future_appointment.getEndTime();
             if (start.after(start2) && start.before(end2) || (end.after(start2) && end.before(end2))) {
