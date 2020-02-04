@@ -65,9 +65,7 @@ public class NurseController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         try{
-            System.out.println(id);
             Long l = Long.parseLong(id);
-            System.out.println(l);
             User u = userRepository.findByEmail(email);
             System.out.println("Trazim->"+email);
             if(u==null){
