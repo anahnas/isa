@@ -129,7 +129,7 @@ public class PatientController {
     /*Receives Date,AppointmentType and CLinic name, returns all doctors that work for that clinic,
     are free on that date and specialise in those AppointmentTypes*/
     /*IMPORTANT NOTE patient email ends wit .com ili .net ili tako nesto, sto se uopste ne parsira, pa se na kraj
-    * mora dadati jos jedna tacka!!!*/
+     * mora dadati jos jedna tacka!!!*/
     @PostMapping("/requestApp/{date}/{doctorEmail}/{patientEmail}")
     public ResponseEntity<String> requestApp(@RequestBody AppointmentType appType,
                                                                  @PathVariable("date") String date_string,

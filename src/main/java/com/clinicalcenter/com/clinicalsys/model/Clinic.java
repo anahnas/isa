@@ -47,6 +47,9 @@ public class Clinic {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<AppointmentType_Price_Discount> appointmentTypePriceDiscounts;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Appointment> predefinedAppointments;
+
     public Clinic() {
     }
 
@@ -143,6 +146,22 @@ public class Clinic {
 
     public void setAppointmentType_price_discounts(Set<AppointmentType_Price_Discount> appointmentType_price_discounts) {
         this.appointmentTypePriceDiscounts = appointmentType_price_discounts;
+    }
+
+    public Set<AppointmentType_Price_Discount> getAppointmentTypePriceDiscounts() {
+        return appointmentTypePriceDiscounts;
+    }
+
+    public void setAppointmentTypePriceDiscounts(Set<AppointmentType_Price_Discount> appointmentTypePriceDiscounts) {
+        this.appointmentTypePriceDiscounts = appointmentTypePriceDiscounts;
+    }
+
+    public Set<Appointment> getPredefinedAppointments() {
+        return predefinedAppointments;
+    }
+
+    public void setPredefinedAppointments(Set<Appointment> predefinedAppointments) {
+        this.predefinedAppointments = predefinedAppointments;
     }
     //endregion
 }
