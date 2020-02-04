@@ -170,6 +170,38 @@ public class ClinicAdminController {
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
 
+    //SECTION FOR PREDEFINED APPOINTMENTS
+    /*Returns Doctors that are specialized in given AppointmentType, work for that clinic and are free at defined time*/
+    @GetMapping("/getAvailablRooms/{date}/{clinicName}")
+    public ResponseEntity<Set<Room>> getFreeSpecializedDoctors(  @PathVariable("date") String date_string,
+                                                                 @PathVariable("clinicName") String clinic_name) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date;
+        try {
+            date = simpleDateFormat.parse(date_string);
+        } catch (ParseException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        Clinic clinic = clinicRespository.findByClinicName(clinic_name);
+        Set<Room> rooms= clinic.getRooms();
+        Set<Room> retVal=new HashSet<>();
+        Calendar start = Calendar.getInstance();
+        start.setTime(date);
+        start.set(Calendar.SECOND,0);
+        start.set(Calendar.MILLISECOND,0);
+        Calendar end = (Calendar) start.clone();
+        end.add(Calendar.MINUTE, 30);
+        for(Room room : rooms){
+            if(room.isFree(start.getTime(),end.getTime()))
+                retVal.add(room);
+        }
+        return new ResponseEntity<>(retVal,HttpStatus.OK);
+    }
+
     @GetMapping("getClinicAppointmentTypes/{email}")
     public ResponseEntity<Set<AppointmentType>> getClinicAppointmentTypes(@PathVariable("email") String email){
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
