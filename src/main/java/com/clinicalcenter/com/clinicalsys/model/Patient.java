@@ -13,7 +13,7 @@ import java.util.*;
 @Getter
 @Entity
 @Table(name = "patient")
-public class Patient extends User{
+public class Patient extends User {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @com.fasterxml.jackson.annotation.JsonIgnore
@@ -31,7 +31,7 @@ public class Patient extends User{
 
     }
 
-    public Patient(User u){
+    public Patient(User u) {
         super(u);
         this.setActive(Boolean.FALSE);
         this.setAdminConfirmed(Boolean.FALSE);

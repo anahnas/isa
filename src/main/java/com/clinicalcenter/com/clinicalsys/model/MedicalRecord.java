@@ -27,13 +27,13 @@ public class MedicalRecord {
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Diagnose> diagnoses;
 
-    public MedicalRecord(){
+    public MedicalRecord() {
         recipes = new LinkedHashSet<>();
         drugs_in_user = new LinkedHashSet<>();
         diagnoses = new LinkedHashSet<>();
     }
 
-    public void addRecipe(Recipe recipe){
+    public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
     }
 

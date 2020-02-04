@@ -10,8 +10,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "diagnose")
-public class Diagnose
-{
+public class Diagnose {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +24,7 @@ public class Diagnose
     public Diagnose() {
     }
 
-    public Diagnose(String name, String description){
+    public Diagnose(String name, String description) {
         this.name = name;
         this.description = description;
     }

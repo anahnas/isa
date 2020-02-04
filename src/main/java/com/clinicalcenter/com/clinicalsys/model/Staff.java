@@ -27,14 +27,14 @@ public class Staff extends User {
     public Staff() {
     }
 
-    public Staff(User u,Clinic c){
+    public Staff(User u, Clinic c) {
         super(u);
         clinic = c;
         vacReq = new HashSet<VacationRequest>();
         appointments = new HashSet<Appointment>();
     }
 
-    public Staff(Staff s){
+    public Staff(Staff s) {
         this.setEmail(s.getEmail());
         this.setAdminConfirmed(s.getAdminConfirmed());
         this.setActive(s.getActive());
@@ -52,7 +52,7 @@ public class Staff extends User {
         this.appointments = s.getAppointments();
     }
 
-    public void addAppointment(Appointment apt){
+    public void addAppointment(Appointment apt) {
         this.appointments.add(apt);
     }
 
