@@ -4,10 +4,8 @@ import com.clinicalcenter.com.clinicalsys.model.Appointment;
 import com.clinicalcenter.com.clinicalsys.model.Clinic;
 import com.clinicalcenter.com.clinicalsys.model.Room;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
-import com.clinicalcenter.com.clinicalsys.repository.AppointmentRepository;
-import com.clinicalcenter.com.clinicalsys.repository.ClinicAdminRepository;
-import com.clinicalcenter.com.clinicalsys.repository.DoctorRepository;
-import com.clinicalcenter.com.clinicalsys.repository.RoomRepository;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
+import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyUserSrvice;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.apache.catalina.connector.Response;
@@ -17,6 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.Doc;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -29,6 +32,8 @@ public class ClinicAdminController {
     @Autowired
     private ClinicAdminRepository clinicAdminRepository;
     @Autowired
+    private ClinicRespository clinicRespository;
+    @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
     private RoomRepository roomRepository;
@@ -37,12 +42,13 @@ public class ClinicAdminController {
 
     public ClinicAdminController(ClinicAdminRepository clinicAdminRepository, AppointmentRepository appointmentRepository,
                                  RoomRepository roomRepository, NotifyUserSrvice notifyUserSrvice,
-                                 DoctorRepository doctorRepository){
+                                 DoctorRepository doctorRepository, ClinicRespository clinicRespository){
         this.clinicAdminRepository = clinicAdminRepository;
         this.appointmentRepository = appointmentRepository;
         this.roomRepository = roomRepository;
         this.notifyUserSrvice = notifyUserSrvice;
         this.doctorRepository = doctorRepository;
+        this.clinicRespository = clinicRespository;
     }
 
     @GetMapping("/getAppointmentRequests/{email}")
@@ -52,6 +58,41 @@ public class ClinicAdminController {
         }
         Set<Appointment> appointments_to_process= clinicAdminRepository.findByEmail(email).getAppointments_to_process();
         return new ResponseEntity<>(appointments_to_process, HttpStatus.OK);
+    }
+
+    @GetMapping("/getFreeRoomsForTime/{date}/{clinicName}")
+    public ResponseEntity<Set<Room>> getFreeRoomsForDate(@PathVariable("date") String datestr,
+                                                         @PathVariable("clinicName") String clinicName){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date;
+        try {
+            date = simpleDateFormat.parse(datestr);
+        } catch (ParseException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        Clinic clinic = clinicRespository.findByClinicName(clinicName);
+        if(clinic==null){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        }
+        Date end_date;
+        Calendar temp = Calendar.getInstance();
+        temp.setTime(date);
+        temp.add(Calendar.MINUTE,30);
+        end_date = temp.getTime();
+
+        Set<Room> rooms = clinic.getRooms();
+        Set<Room> available_rooms = new HashSet<>();
+        for(Room room : rooms){
+            if (room.isFree(date,end_date)){
+                available_rooms.add(room);
+            }
+        }
+        return new ResponseEntity<>(available_rooms, HttpStatus.OK);
     }
 
     @GetMapping("/assignRoomToAppointment/{roomId}/{appId}")

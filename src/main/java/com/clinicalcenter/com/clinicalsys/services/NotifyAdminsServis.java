@@ -17,13 +17,19 @@ public class NotifyAdminsServis {
     public NotifyAdminsServis (JavaMailSender javaMailSender){
         this.mailSender = javaMailSender;
     }
-    public void newAppointmentRequestNotification(ClinicAdmin ca){
+    public void newRequestNotification(ClinicAdmin ca,boolean appointment){
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(ca.getEmail());
         mail.setFrom("spring.mail.username");
-        mail.setSubject("New Appointment Request");
-        mail.setText("New request for appointment was received. To see more details, accept or reject it, go to " +
-                "the site and check Appointment Requests section.");
+        if(appointment) {
+            mail.setSubject("New Appointment Request");
+            mail.setText("New request for appointment was received. To see more details, accept or reject it, go to " +
+                    "the site and check Appointment Requests section.");
+        }else{
+            mail.setSubject("New Vacation Request");
+            mail.setText("New request for vacation was received. To see more details, accept or reject it, go to " +
+                    "the site and check Vacation Requests section.");
+        }
         new Thread(() -> {
             this.mailSender.send(mail);
         }).start();

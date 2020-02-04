@@ -40,9 +40,11 @@ public class Appointment {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Doctor doctor;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Room room;

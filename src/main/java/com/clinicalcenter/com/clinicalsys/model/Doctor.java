@@ -14,7 +14,7 @@ import java.util.*;
 public class Doctor extends Staff {
 
     @Column(name = "rating", unique = false, nullable = true)
-    private Float rating;
+    private Double rating;
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> requested;
@@ -26,13 +26,14 @@ public class Doctor extends Staff {
 
     }
 
-    public Doctor(Staff staff) {
+    public Doctor(Staff staff, Double rating) {
         super(staff);
         rating = null;
         this.setActive(Boolean.TRUE);
         this.setAdminConfirmed(Boolean.TRUE);
         this.setRole(RoleEnum.DOCTOR);
         this.setFirstLogin(Boolean.TRUE);
+        this.rating = rating;
         requested = new HashSet<Appointment>();
         specializations = new HashSet<AppointmentType>();
     }
@@ -72,12 +73,25 @@ public class Doctor extends Staff {
         return sortedTimes;
     }
 
-    private Boolean checkIfAppFree(Calendar start, Calendar end) {
+    public Boolean checkIfAppFree(Calendar start, Calendar end) {
         for (Appointment apt : this.getAppointments()) {
             Calendar start2 = Calendar.getInstance();
             start2.setTime(apt.getStartTime());
             Calendar end2 = Calendar.getInstance();
             end2.setTime(apt.getEndTime());
+            if (start.compareTo(start2) >= 0 && start.compareTo(end2) < 0 ||
+                    (end.compareTo(start2) > 0 && end.compareTo(end2) <= 0)) {
+                return Boolean.FALSE;
+            }
+            if (start2.compareTo(start) > 0 && start2.compareTo(end) < 0) {
+                return Boolean.FALSE;
+            }
+        }
+        for (Surgery srg : this.getSurgeries()) {
+            Calendar start2 = Calendar.getInstance();
+            start2.setTime(srg.getStartTime());
+            Calendar end2 = Calendar.getInstance();
+            end2.setTime(srg.getEndTime());
             if (start.compareTo(start2) >= 0 && start.compareTo(end2) < 0 ||
                     (end.compareTo(start2) > 0 && end.compareTo(end2) <= 0)) {
                 return Boolean.FALSE;
@@ -96,11 +110,11 @@ public class Doctor extends Staff {
     }
 
     //region getters/setters
-    public Float getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Float rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 

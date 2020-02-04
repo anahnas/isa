@@ -156,7 +156,7 @@ public class PatientController {
         for (ClinicAdmin admin:clinicAdmins){
             admin.getAppointments_to_process().add(requestedApp);
             admin = clinicAdminRespository.save(admin);
-            notifyAdminsServis.newAppointmentRequestNotification(admin);
+            notifyAdminsServis.newRequestNotification(admin,true);
         }
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
