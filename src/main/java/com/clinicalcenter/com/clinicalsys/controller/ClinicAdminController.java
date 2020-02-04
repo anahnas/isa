@@ -95,6 +95,11 @@ public class ClinicAdminController {
             return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
         }
         Appointment app=appointmentRepository.findByIdMy(app_id);
+        Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(app.getDoctor().getEmail());
+        for (ClinicAdmin admin:clinicAdmins){
+            admin.getAppointments_to_process().remove(app);
+            admin = clinicAdminRepository.save(admin);
+        }
         app.setAppState(AppStateEnum.APPROVED);
         app.getDoctor().getAppointments().add(app);
         doctorRepository.save(app.getDoctor());
@@ -104,6 +109,25 @@ public class ClinicAdminController {
         room.addAppointment(app);
         roomRepository.save(room);
         notifyUserSrvice.AppointmentAnswer(app.getPatient(),true);
+        return new ResponseEntity<>(null,HttpStatus.OK);
+    }
+
+    @PostMapping("/rejectAppointment/{appId}")
+    public ResponseEntity<String> rejectAppointment(@PathVariable("appId") String appId){
+        Long app_id;
+        try{
+            app_id = Long.parseLong(appId);
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        }
+        Appointment app=appointmentRepository.findByIdMy(app_id);
+        Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(app.getDoctor().getEmail());
+        for (ClinicAdmin admin:clinicAdmins){
+            admin.getAppointments_to_process().remove(app);
+            admin = clinicAdminRepository.save(admin);
+        }
+        app.setAppState(AppStateEnum.REJECTED);
+        appointmentRepository.save(app);
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
