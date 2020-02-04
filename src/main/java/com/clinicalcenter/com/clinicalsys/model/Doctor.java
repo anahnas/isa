@@ -16,9 +16,11 @@ public class Doctor extends Staff {
     @Column(name = "rating", unique = false, nullable = true)
     private Double rating;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> requested;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToMany
     private Set<AppointmentType> specializations;
 

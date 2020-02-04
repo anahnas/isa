@@ -1,5 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class VacationRequest {
     @Column(name = "type", unique = false, nullable = false)
     private String type;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Staff staff ;
 

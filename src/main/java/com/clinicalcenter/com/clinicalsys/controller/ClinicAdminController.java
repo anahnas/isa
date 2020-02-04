@@ -1,20 +1,16 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
-import com.clinicalcenter.com.clinicalsys.model.Appointment;
-import com.clinicalcenter.com.clinicalsys.model.Clinic;
-import com.clinicalcenter.com.clinicalsys.model.Room;
+import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyUserSrvice;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.Doc;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -94,7 +90,6 @@ public class ClinicAdminController {
         }
         return new ResponseEntity<>(available_rooms, HttpStatus.OK);
     }
-
     @GetMapping("/assignRoomToAppointment/{roomId}/{appId}")
     public ResponseEntity<String> assignRoomToAppointment(@PathVariable("roomId") String roomId,
                                                           @PathVariable("appId") String appId){
@@ -116,5 +111,14 @@ public class ClinicAdminController {
         roomRepository.save(room);
         notifyUserSrvice.AppointmentAnswer(app.getPatient(),true);
         return new ResponseEntity<>(null,HttpStatus.OK);
+    }
+
+    @GetMapping("/getVacationRequests/{email}")
+    public ResponseEntity<Set<VacationRequest>> getVacationRequests(@PathVariable("email") String email){
+        if(!Authorized.isAuthorised(email)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        Set<VacationRequest> vacations_to_process= clinicAdminRepository.findByEmail(email).getVacations_to_process();
+        return new ResponseEntity<>(vacations_to_process, HttpStatus.OK);
     }
 }

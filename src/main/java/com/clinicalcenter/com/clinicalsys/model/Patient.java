@@ -14,11 +14,11 @@ import java.util.*;
 @Entity
 @Table(name = "patient")
 public class Patient extends User {
-
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private MedicalRecord medicalRecord;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Appointment> future_appointments;
 
