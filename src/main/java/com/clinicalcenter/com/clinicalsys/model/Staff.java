@@ -14,6 +14,7 @@ import java.util.Set;
 @Table(name = "staff")
 public class Staff extends User {
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Clinic clinic;
 
