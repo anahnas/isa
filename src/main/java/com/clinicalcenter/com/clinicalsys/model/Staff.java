@@ -17,14 +17,15 @@ public class Staff extends User {
     @ManyToOne(fetch = FetchType.EAGER)
     private Clinic clinic;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private Set<VacationRequest> vacReq;
 
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
 
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Surgery> surgeries;
 
@@ -36,6 +37,7 @@ public class Staff extends User {
         clinic = c;
         vacReq = new HashSet<VacationRequest>();
         appointments = new HashSet<Appointment>();
+        surgeries = new HashSet<Surgery>();
     }
 
     public Staff(Staff s) {
@@ -54,6 +56,7 @@ public class Staff extends User {
         this.clinic = s.getClinic();
         this.vacReq = s.getVacReq();
         this.appointments = s.getAppointments();
+        this.surgeries = s.getSurgeries();
     }
 
     public void addAppointment(Appointment apt) {

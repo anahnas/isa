@@ -19,7 +19,4 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
             "FROM clinic WHERE clinic.clinic_name = ?1)", nativeQuery = true)
     Set<Nurse> findByClinicName(String clinicName);
 
-    @Query(value = "SELECT * FROM recipe WHERE recipe.nurse_id in (SELECT clinicalsys.user.id FROM clinicalsys.user " +
-            "where  clinicalsys.user.email = ?1)",nativeQuery = true)
-    Set<Recipe> getRecipesForValidation(String email);
 }

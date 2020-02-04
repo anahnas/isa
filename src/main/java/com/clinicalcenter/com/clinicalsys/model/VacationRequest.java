@@ -19,6 +19,9 @@ public class VacationRequest {
     @Column(name = "type", unique = false, nullable = false)
     private String type;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Staff staff ;
+
     @Column(name = "startDate", unique = false, nullable = false)
     private Date startDate;
 
@@ -35,6 +38,54 @@ public class VacationRequest {
         this.type = type;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.accepted = accepted;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
         this.accepted = accepted;
     }
 }
