@@ -26,5 +26,6 @@ public class UpdatePassword {
         this.newpassword = newpassword;
     }
 
-    public UpdatePassword(){}
+    public UpdatePassword() {
+    }
 }

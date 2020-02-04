@@ -21,15 +21,16 @@ public class AppointmentType_Price_Discount {
     @ManyToOne(fetch = FetchType.EAGER)
     private AppointmentType appointmentType;
 
-    @Column(name = "price",nullable = false)
+    @Column(name = "price", nullable = false)
     private Double price;
 
     @Column(name = "discound", nullable = false)
     private Double discount;
 
-    public AppointmentType_Price_Discount(){}
+    public AppointmentType_Price_Discount() {
+    }
 
-    public AppointmentType_Price_Discount(AppointmentType at, Double price, Double discount){
+    public AppointmentType_Price_Discount(AppointmentType at, Double price, Double discount) {
         this.appointmentType = at;
         this.price = price;
         this.discount = discount;

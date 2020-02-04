@@ -31,10 +31,10 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(Drug drug, Nurse nurse, Patient patient){
-        this.drug=drug;
-        this.nurse=nurse;
-        this.patient=patient;
+    public Recipe(Drug drug, Nurse nurse, Patient patient) {
+        this.drug = drug;
+        this.nurse = nurse;
+        this.patient = patient;
         this.isValidate = Boolean.FALSE;
     }
 

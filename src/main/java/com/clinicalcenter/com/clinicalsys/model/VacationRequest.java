@@ -31,7 +31,7 @@ public class VacationRequest {
     public VacationRequest() {
     }
 
-    public VacationRequest(String type, Date startDate, Date endDate, Boolean accepted){
+    public VacationRequest(String type, Date startDate, Date endDate, Boolean accepted) {
         this.type = type;
         this.startDate = startDate;
         this.endDate = endDate;

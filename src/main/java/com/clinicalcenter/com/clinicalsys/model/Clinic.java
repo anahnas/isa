@@ -39,7 +39,7 @@ public class Clinic {
 
     @Column(name = "rating", unique = false, nullable = true)
     private Double rating;
-    
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<Room> rooms;
@@ -47,7 +47,8 @@ public class Clinic {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<AppointmentType_Price_Discount> appointmentTypePriceDiscounts;
 
-    public Clinic() {}
+    public Clinic() {
+    }
 
     public Clinic(String clinicName, String address, String description, Double rating, String city, String country) {
         this.clinicName = clinicName;
@@ -60,14 +61,14 @@ public class Clinic {
         this.appointmentTypePriceDiscounts = new HashSet<AppointmentType_Price_Discount>();
     }
 
-    public void addNewAppTypePriceDiscount(AppointmentType at,Double price, Double discount){
-        for(AppointmentType_Price_Discount atpd : this.appointmentTypePriceDiscounts){
-            if(atpd.getAppointmentType().getId()==at.getId()){
+    public void addNewAppTypePriceDiscount(AppointmentType at, Double price, Double discount) {
+        for (AppointmentType_Price_Discount atpd : this.appointmentTypePriceDiscounts) {
+            if (atpd.getAppointmentType().getId() == at.getId()) {
                 this.appointmentTypePriceDiscounts.remove(atpd);
                 break;
             }
         }
-        AppointmentType_Price_Discount temp = new AppointmentType_Price_Discount(at,price,discount);
+        AppointmentType_Price_Discount temp = new AppointmentType_Price_Discount(at, price, discount);
         this.appointmentTypePriceDiscounts.add(temp);
     }
 

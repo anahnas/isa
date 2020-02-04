@@ -14,7 +14,7 @@ public class MyUserDetails implements UserDetails {
     private User user;
     private ArrayList<GrantedAuthority> authorities;
 
-    public MyUserDetails(User user){
+    public MyUserDetails(User user) {
         this.user = user;
         authorities = new ArrayList<GrantedAuthority>();
     }
