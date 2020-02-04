@@ -15,6 +15,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("select ap from Appointment ap")
     Set<Appointment> getAllAppintments();
 
+    @Query(value = "Select a from  Appointment a where a.id=?1")
+    Appointment findByIdMy(Long id);
+
     @Transactional
     @Modifying(flushAutomatically = true)
     @Query(value = "UPDATE appointment SET room_id=?1 where id = ?2", nativeQuery = true)
