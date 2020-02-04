@@ -31,6 +31,9 @@ public class Staff extends User {
     private Set<Surgery> surgeries;
 
     public Staff() {
+        vacReq = new HashSet<VacationRequest>();
+        appointments = new HashSet<Appointment>();
+        surgeries = new HashSet<Surgery>();
     }
 
     public Staff(User u, Clinic c) {

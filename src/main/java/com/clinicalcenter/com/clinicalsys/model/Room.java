@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -68,28 +69,38 @@ public class Room {
         return false;
     }
 
-    public boolean isFree(Date start, Date end) {
-        for (Appointment future_appointment : future_appointments) {
-            Date start2 = future_appointment.getStartTime();
-            Date end2 = future_appointment.getEndTime();
-            if (start.after(start2) && start.before(end2) || (end.after(start2) && end.before(end2))) {
-                return false;
+    public boolean isFree(Date startd, Date endd) {
+        Calendar start=Calendar.getInstance();
+        start.setTime(startd);
+        Calendar end=Calendar.getInstance();
+        end.setTime(endd);
+        for (Appointment apt : this.getFuture_appointments()) {
+            Calendar start2 = Calendar.getInstance();
+            start2.setTime(apt.getStartTime());
+            Calendar end2 = Calendar.getInstance();
+            end2.setTime(apt.getEndTime());
+            if (start.compareTo(start2) >= 0 && start.compareTo(end2) < 0 ||
+                    (end.compareTo(start2) > 0 && end.compareTo(end2) <= 0)) {
+                return Boolean.FALSE;
             }
-            if (start2.after(start) && start2.before(end)) {
-                return false;
-            }
-        }
-        for (Surgery future_appointment : future_surgeries) {
-            Date start2 = future_appointment.getStartTime();
-            Date end2 = future_appointment.getEndTime();
-            if (start.after(start2) && start.before(end2) || (end.after(start2) && end.before(end2))) {
-                return false;
-            }
-            if (start2.after(start) && start2.before(end)) {
-                return false;
+            if (start2.compareTo(start) > 0 && start2.compareTo(end) < 0) {
+                return Boolean.FALSE;
             }
         }
-        return true;
+        for (Surgery srg : this.getFuture_surgeries()) {
+            Calendar start2 = Calendar.getInstance();
+            start2.setTime(srg.getStartTime());
+            Calendar end2 = Calendar.getInstance();
+            end2.setTime(srg.getEndTime());
+            if (start.compareTo(start2) >= 0 && start.compareTo(end2) < 0 ||
+                    (end.compareTo(start2) > 0 && end.compareTo(end2) <= 0)) {
+                return Boolean.FALSE;
+            }
+            if (start2.compareTo(start) > 0 && start2.compareTo(end) < 0) {
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
     }
 
     public Long getId() {
