@@ -230,6 +230,7 @@ public class ClinicAdminController {
         app.setEndTime(end.getTime());
         app = appointmentRepository.save(app);
         clinicAdmin.getClinic().getPredefinedAppointments().add(app);
+        clinicRespository.save(clinicAdmin.getClinic());
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
