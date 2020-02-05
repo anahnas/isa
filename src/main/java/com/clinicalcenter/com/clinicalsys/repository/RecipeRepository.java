@@ -18,10 +18,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     @Transactional
     @Modifying
-    @Query("update Recipe r SET r.isValidate = true where r.id = ?1")
+    @Query(value = "update clinicalsys.recipe SET clinicalsys.recipe.is_validate = true where  clinicalsys.recipe.id = ?1", nativeQuery = true)
     void validate(Long id);
 
     @Transactional
     @Query("select r from Recipe r where r.id = ?1")
     Recipe findRecipe(Long l);
+
+    @Query(value = "SELECT * FROM clinicalsys.recipe where clinicalsys.recipe.nurse_id = ?1 " +
+            "and clinicalsys.recipe.is_validate = false", nativeQuery = true)
+    Set<Recipe> findRecipesForNurse(Long id);
 }
