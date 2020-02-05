@@ -48,7 +48,7 @@ public class NurseController {
         Set<Recipe> retVal = new HashSet<>();
         for(Recipe r : all_recipes){
             if(r.isValidate()==false&&r.getNurse().getEmail().equals(email))
-            retVal.add(r);
+                retVal.add(r);
         }
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
@@ -60,6 +60,7 @@ public class NurseController {
         }
         try{
             Long l = Long.parseLong(id);
+            System.out.println("--> ovo je id:" + l);
             recipeRepository.validate(l);
             return new ResponseEntity<>("", HttpStatus.OK);
         }
