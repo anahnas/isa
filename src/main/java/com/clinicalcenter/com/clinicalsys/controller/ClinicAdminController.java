@@ -30,6 +30,8 @@ public class ClinicAdminController {
     @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
+    private SurgeryRepository surgeryRepository;
+    @Autowired
     private RoomRepository roomRepository;
     @Autowired
     private DoctorRepository doctorRepository;
@@ -38,13 +40,15 @@ public class ClinicAdminController {
 
     public ClinicAdminController(ClinicAdminRepository clinicAdminRepository, AppointmentRepository appointmentRepository,
                                  RoomRepository roomRepository, NotifyUserSrvice notifyUserSrvice,
-                                 DoctorRepository doctorRepository, ClinicRespository clinicRespository){
+                                 DoctorRepository doctorRepository, ClinicRespository clinicRespository,
+                                 SurgeryRepository surgeryRepository){
         this.clinicAdminRepository = clinicAdminRepository;
         this.appointmentRepository = appointmentRepository;
         this.roomRepository = roomRepository;
         this.notifyUserSrvice = notifyUserSrvice;
         this.doctorRepository = doctorRepository;
         this.clinicRespository = clinicRespository;
+        this.surgeryRepository = surgeryRepository;
     }
 
     @GetMapping("/getAppointmentRequests/{email}")
@@ -107,6 +111,11 @@ public class ClinicAdminController {
         }catch (Exception e){
             return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
         }
+        Room room = roomRepository.findByIdMy(room_id);
+        if(room==null){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        };
+        if(room.getType()==RoomType.SURGERY)
         new Thread(()-> {
             Appointment app=appointmentRepository.findByIdMy(app_id);
             Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(app.getDoctor().getEmail());
@@ -117,13 +126,55 @@ public class ClinicAdminController {
             app.setAppState(AppStateEnum.APPROVED);
             app.getDoctor().getAppointments().add(app);
             doctorRepository.save(app.getDoctor());
-            Room room = roomRepository.findByIdMy(room_id);
             app.addRoom(room);
             app = appointmentRepository.save(app);
             room.addAppointment(app);
             roomRepository.save(room);
             notifyUserSrvice.AppointmentAnswer(app.getPatient(),true);
         }).start();
+
+
+        return new ResponseEntity<>(null,HttpStatus.OK);
+    }
+
+    @GetMapping("/assignRoomToSurgery/{roomId}/{surgId}")
+    public ResponseEntity<String> assignRoomToSurgery(@PathVariable("roomId") String roomId,
+                                                          @PathVariable("surgId") String surgId){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        Long surg_id,room_id;
+        try{
+            surg_id = Long.parseLong(surgId);
+            room_id = Long.parseLong(roomId);
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        }
+        Room room = roomRepository.findByIdMy(room_id);
+        if(room==null){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        };
+        if(room.getType()==RoomType.SURGERY)
+            new Thread(()-> {
+                Surgery surg=surgeryRepository.findByIdMy(surg_id);
+                Set<Doctor> doctors_set = surg.getDoctors();
+                ArrayList<Doctor> doctors = new ArrayList<>(doctors_set);
+                Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctors.get(0).getEmail());
+                for (ClinicAdmin admin:clinicAdmins){
+                    admin.getSurgeries_to_process().remove(surg);
+                    admin = clinicAdminRepository.save(admin);
+                }
+                surg.setApproved(Boolean.TRUE);
+                for(Doctor doctor:doctors) {
+                    doctor.getSurgeries().add(surg);
+                    doctorRepository.save(doctor);
+                }
+                surg.setRoom(room);
+                surg = surgeryRepository.save(surg);
+                room.getFuture_surgeries().add(surg);
+                roomRepository.save(room);
+                notifyUserSrvice.AppointmentAnswer(surg.getPatient(),true);
+            }).start();
 
 
         return new ResponseEntity<>(null,HttpStatus.OK);
@@ -153,6 +204,32 @@ public class ClinicAdminController {
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
+    @PostMapping("/rejectSurgery/{surgId}")
+    public ResponseEntity<String> rejectSurgery(@PathVariable("surgId") String surgId){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        Long surg_id;
+        try{
+            surg_id = Long.parseLong(surgId);
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        }
+        new Thread(() -> {
+            Surgery surg=surgeryRepository.findByIdMy(surg_id);
+            if(surg==null) return;
+            Set<Doctor> doctors_set = surg.getDoctors();
+            ArrayList<Doctor> doctors = new ArrayList<>(doctors_set);
+            Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctors.get(0).getEmail());
+            for (ClinicAdmin admin:clinicAdmins){
+                admin.getSurgeries_to_process().remove(surg);
+                admin = clinicAdminRepository.save(admin);
+            }
+            surg.setApproved(Boolean.FALSE);
+            surgeryRepository.save(surg);
+        }).start();
+        return new ResponseEntity<>(null,HttpStatus.OK);
+    }
 
     //SECTION FOR PREDEFINED APPOINTMENTS
     /*Returns Doctors that are specialized in given AppointmentType, work for that clinic and are free at defined time*/
