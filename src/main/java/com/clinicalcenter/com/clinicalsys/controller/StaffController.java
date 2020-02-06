@@ -4,17 +4,13 @@ import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.repository.ClinicAdminRepository;
 import com.clinicalcenter.com.clinicalsys.repository.StaffRepository;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
-import com.clinicalcenter.com.clinicalsys.repository.VacationRepository;
-import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServis;
+import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 @RestController
@@ -25,14 +21,14 @@ public class StaffController {
     @Autowired
     private ClinicAdminRepository clinicAdminRepository;
     @Autowired
-    NotifyAdminsServis notifyAdminsServis;
+    NotifyAdminsServices notifyAdminsServices;
 
     public StaffController(UserRepository userRepository, StaffRepository staffRepository,
-                           ClinicAdminRepository clinicAdminRepository, NotifyAdminsServis notifyAdminsServis) {
+                           ClinicAdminRepository clinicAdminRepository, NotifyAdminsServices notifyAdminsServices) {
         this.userRepository = userRepository;
         this.staffRepository = staffRepository;
         this.clinicAdminRepository = clinicAdminRepository;
-        this.notifyAdminsServis = notifyAdminsServis;
+        this.notifyAdminsServices = notifyAdminsServices;
     }
 
 
@@ -78,7 +74,7 @@ public class StaffController {
             for (ClinicAdmin admin : clinicAdmins) {
                 admin.getVacations_to_process().add(vr);
                 admin = clinicAdminRepository.save(admin);
-                notifyAdminsServis.newRequestNotification(admin,false);
+                notifyAdminsServices.newRequestNotification(admin,Boolean.TRUE);
             }
         }).start();
         return new ResponseEntity<>(null, HttpStatus.OK);

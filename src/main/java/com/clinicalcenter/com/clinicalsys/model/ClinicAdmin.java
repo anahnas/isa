@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -22,6 +23,9 @@ public class ClinicAdmin extends User{
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Appointment> appointments_to_process;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Surgery> surgeries_to_process;
+
     public ClinicAdmin() {
     }
 
@@ -32,6 +36,9 @@ public class ClinicAdmin extends User{
         this.setRole(RoleEnum.CLINIC_ADMIN);
         this.setFirstLogin(Boolean.TRUE);
         this.clinic = clc;
+        this.vacations_to_process=new HashSet<>();
+        this.surgeries_to_process=new HashSet<>();
+        this.appointments_to_process=new HashSet<>();
     }
 
     //region getters setters
@@ -57,6 +64,14 @@ public class ClinicAdmin extends User{
 
     public void setAppointments_to_process(Set<Appointment> appointments_to_process) {
         this.appointments_to_process = appointments_to_process;
+    }
+
+    public Set<Surgery> getSurgeries_to_process() {
+        return surgeries_to_process;
+    }
+
+    public void setSurgeries_to_process(Set<Surgery> surgeries_to_process) {
+        this.surgeries_to_process = surgeries_to_process;
     }
     //endregion
 }

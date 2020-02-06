@@ -9,19 +9,23 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotifyAdminsServis {
+public class NotifyAdminsServices {
 
     @Autowired
     private JavaMailSender mailSender;
 
-    public NotifyAdminsServis (JavaMailSender javaMailSender){
+    public NotifyAdminsServices(JavaMailSender javaMailSender){
         this.mailSender = javaMailSender;
     }
-    public void newRequestNotification(ClinicAdmin ca,boolean appointment){
+    public void newRequestNotification(ClinicAdmin ca,Boolean appointment){
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(ca.getEmail());
         mail.setFrom("spring.mail.username");
-        if(appointment) {
+        if(appointment==null){
+            mail.setSubject("New Surgery Request");
+            mail.setText("New request for surgery was created. To see more details, accept or reject it, go to " +
+                    "the site and check Surgery Requests section.");
+        }else if(appointment==Boolean.TRUE) {
             mail.setSubject("New Appointment Request");
             mail.setText("New request for appointment was received. To see more details, accept or reject it, go to " +
                     "the site and check Appointment Requests section.");
