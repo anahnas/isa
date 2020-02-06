@@ -163,5 +163,9 @@ public class PatientController {
         }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
-    
+
+    @GetMapping("/getPastAppointments")
+    public ResponseEntity<Set<Appointment>> getPastAppointments(){
+        return new ResponseEntity<>(null,HttpStatus.OK);
+    }
 }
