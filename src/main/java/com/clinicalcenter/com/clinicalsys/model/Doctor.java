@@ -21,7 +21,7 @@ public class Doctor extends Staff {
     private Set<Appointment> requested;
 
     @com.fasterxml.jackson.annotation.JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<AppointmentType> specializations;
 
     public Doctor() {

@@ -56,8 +56,19 @@ public class ClinicAdminController {
         return new ResponseEntity<>(appointments_to_process, HttpStatus.OK);
     }
 
-    @GetMapping("/getFreeRoomsForAppointment/{appointment_id}")
-    public ResponseEntity<Set<Room>> getFreeRoomsForDate(@PathVariable("appointment_id") String AppId){
+    @GetMapping("/getSurgeryRequests/{email}")
+    public ResponseEntity<Set<Surgery>> getSurgeryRequests(@PathVariable("email") String email){
+        if(!Authorized.isAuthorised(email)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        Set<Surgery> appointments_to_process= clinicAdminRepository.findByEmail(email).getSurgeries_to_process();
+        return new ResponseEntity<>(appointments_to_process, HttpStatus.OK);
+    }
+
+    /*Return free rooms for appointment OR surgery, depending on type variable*/
+    @GetMapping("/getFreeRoomsForAppointment/{appointment_id}/{type}")
+    public ResponseEntity<Set<Room>> getFreeRoomsForDate(@PathVariable("appointment_id") String AppId,
+                                                         @PathVariable("type") String type){
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
@@ -76,7 +87,7 @@ public class ClinicAdminController {
         Set<Room> available_rooms = new HashSet<>();
         for(Room room : rooms){
             if (room.isFree(apt.getStartTime(),apt.getEndTime())){
-                if(room.getType()== RoomType.EXAMINATION)
+                if(room.getType()== RoomType.valueOf(type))
                     available_rooms.add(room);
             }
         }
@@ -241,8 +252,6 @@ public class ClinicAdminController {
         clinicRespository.save(clinicAdmin.getClinic());
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
-
-
 
     @GetMapping("/getVacationRequests/{email}")
     public ResponseEntity<Set<VacationRequest>> getVacationRequests(@PathVariable("email") String email){

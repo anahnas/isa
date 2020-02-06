@@ -1,18 +1,11 @@
 package com.clinicalcenter.com.clinicalsys.util;
 
-import com.clinicalcenter.com.clinicalsys.model.*;
-import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
-import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
-import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import com.clinicalcenter.com.clinicalsys.repository.*;
-import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServis;
+import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class StartupInitialization implements ApplicationListener<ContextRefreshedEvent> {
@@ -46,7 +39,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
     @Autowired
     VacationRepository vacationRepository;
     @Autowired
-    private NotifyAdminsServis notifyAdminsServis;
+    private NotifyAdminsServices notifyAdminsServices;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {

@@ -1,20 +1,22 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 
-import com.clinicalcenter.com.clinicalsys.model.Drug;
-import com.clinicalcenter.com.clinicalsys.model.Patient;
-import com.clinicalcenter.com.clinicalsys.model.Recipe;
-import com.clinicalcenter.com.clinicalsys.model.User;
+import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
-import com.clinicalcenter.com.clinicalsys.repository.DrugRepository;
-import com.clinicalcenter.com.clinicalsys.repository.PatientRepository;
-import com.clinicalcenter.com.clinicalsys.repository.RecipeRepository;
-import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
+import com.clinicalcenter.com.clinicalsys.repository.*;
+import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 
 @RestController
@@ -25,12 +27,24 @@ public class DoctorController {
     private final RecipeRepository recipeRepository;
     private final DrugRepository drugRepository;
     private final PatientRepository patientRepository;
+    @Autowired
+    private ClinicAdminRepository clinicAdminRepository;
+    @Autowired
+    private SurgeryRepository surgeryRepository;
+    @Autowired
+    private NotifyAdminsServices notifyAdminsServices;
 
-    public DoctorController(UserRepository userRepository, RecipeRepository recipeRepository, DrugRepository drugRepository, PatientRepository patientRepository) {
+    public DoctorController(UserRepository userRepository, RecipeRepository recipeRepository,
+                            DrugRepository drugRepository, PatientRepository patientRepository,
+                            ClinicAdminRepository clinicAdminRepository, NotifyAdminsServices notifyAdminsServices,
+                            SurgeryRepository surgeryRepository) {
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
         this.drugRepository = drugRepository;
         this.patientRepository = patientRepository;
+        this.clinicAdminRepository = clinicAdminRepository;
+        this.notifyAdminsServices = notifyAdminsServices;
+        this.surgeryRepository = surgeryRepository;
     }
 
     @GetMapping("/getpatients")
@@ -82,5 +96,56 @@ public class DoctorController {
 
 
         }
+    }
+
+    @PostMapping("/requestSurgery/{date_start}/{date_end}")
+    public ResponseEntity<String> requestSurgery(@RequestBody Patient patient,
+                                                 @PathVariable("date_start") String date_start_string,
+                                                 @PathVariable("date_end") String date_end_string){
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date_start,date_end;
+        try {
+            date_start = simpleDateFormat.parse(date_start_string);
+            date_end = simpleDateFormat.parse(date_end_string);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Dates are not in the right format", HttpStatus.NOT_ACCEPTABLE);
+        }
+        Calendar start_cal = Calendar.getInstance();
+        start_cal.setTime(date_start);
+        start_cal.set(Calendar.MILLISECOND,0);
+        Calendar end_cal = Calendar.getInstance();
+        end_cal.setTime(date_end);
+        end_cal.set(Calendar.MILLISECOND,0);
+        if(start_cal.compareTo(end_cal)>=0){
+            return new ResponseEntity<>("End has to be after start!",HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(start_cal.get(Calendar.YEAR)!=end_cal.get(Calendar.YEAR)||
+                (start_cal.get(Calendar.MONTH)!=end_cal.get(Calendar.MONTH))||
+                (start_cal.get(Calendar.DATE)!=end_cal.get(Calendar.DATE))){
+            return new ResponseEntity<>("Surgery must start and end on the same day!", HttpStatus.NOT_ACCEPTABLE);
+        }
+        UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        Doctor doctor = (Doctor) ((MyUserDetails)upat.getPrincipal()).getUser();
+        if(!doctor.checkIfAppFree(start_cal,end_cal)){
+            return new ResponseEntity<>("You are not free at a given time, check your calender!",HttpStatus.NOT_ACCEPTABLE);
+        }
+        Surgery surgery = new Surgery(start_cal.getTime(),end_cal.getTime(),patient,doctor,null,null);
+        surgery = surgeryRepository.save(surgery);
+        Surgery finalSurgery = surgery;
+        new Thread(() -> {
+            Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctor.getEmail());
+            for (ClinicAdmin admin:clinicAdmins){
+                admin.getSurgeries_to_process().add(finalSurgery);
+                admin = clinicAdminRepository.save(admin);
+                notifyAdminsServices.newRequestNotification(admin,true);
+            }
+        }).start();
+        return new ResponseEntity<>(null,HttpStatus.OK);
     }
 }
