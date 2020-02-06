@@ -19,15 +19,12 @@ public class Surgery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Room Room;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Doctor> doctors;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
 
