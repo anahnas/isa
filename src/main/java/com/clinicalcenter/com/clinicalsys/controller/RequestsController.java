@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -52,6 +55,7 @@ public class RequestsController {
 
     @Async
     @PostMapping("/acceptrequest")
+    //@Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public ResponseEntity<String> acceptRequest(@RequestBody String email) throws MailException{
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -75,6 +79,7 @@ public class RequestsController {
 
     @Async
     @PostMapping("/deleterequest")
+    //@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public ResponseEntity<String> removeRequest(@RequestBody DeleteRequest rqst)
             throws MailException, InterruptedException{
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
