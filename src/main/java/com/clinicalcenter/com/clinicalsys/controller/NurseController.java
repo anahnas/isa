@@ -44,13 +44,10 @@ public class NurseController {
         if(!Authorized.isAuthorised(email)){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        List<Recipe> all_recipes = recipeRepository.findAll();
-        Set<Recipe> retVal = new HashSet<>();
-        for(Recipe r : all_recipes){
-            if(r.isValidate()==false&&r.getNurse().getEmail().equals(email))
-                retVal.add(r);
-        }
-        return new ResponseEntity<>(retVal,HttpStatus.OK);
+
+        Nurse nurse = (Nurse) this.userRepository.findByEmail(email);
+        Set<Recipe> recipes_for_validation = recipeRepository.findRecipesForNurse(nurse.getId());
+        return new ResponseEntity<>(recipes_for_validation,HttpStatus.OK);
     }
 
     @PostMapping("/validateRecipe/{id}")
@@ -59,9 +56,11 @@ public class NurseController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         try{
-            Long l = Long.parseLong(id);
+            new Thread(() -> {
+                    Long l = Long.parseLong(id);
             System.out.println("--> ovo je id:" + l);
             recipeRepository.validate(l);
+            }).start();
             return new ResponseEntity<>("", HttpStatus.OK);
         }
         catch (Exception e){
