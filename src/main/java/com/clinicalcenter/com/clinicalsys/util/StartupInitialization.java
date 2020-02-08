@@ -1,11 +1,18 @@
 package com.clinicalcenter.com.clinicalsys.util;
 
+import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
 import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class StartupInitialization implements ApplicationListener<ContextRefreshedEvent> {
@@ -43,9 +50,10 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-  /*
+    /*
         //region ClinicCenterAdmin
-        User user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
+        User user_ccadmin;
+        user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
                 "1 Holy Cross Center","Barajevo","Serbia",
                 "(407) 1040666","6199927252131");
         ClinicCenterAdmin ccadmin = new ClinicCenterAdmin(user_ccadmin,true);
@@ -70,21 +78,21 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         //endregion
 
         //region Rooms
-        Room clinicns_1_e = new Room ("Soba za preglede 1", RoomType.EXAMINATION);
-        Room clinicns_2_e = new Room ("Soba za preglede 2", RoomType.EXAMINATION);
+        Room clinicns_1_e = new Room("Soba za preglede 1", RoomType.APPOINTMENT);
+        Room clinicns_2_e = new Room ("Soba za preglede 2", RoomType.APPOINTMENT);
         Room clinicns_1_s = new Room ("Operaciona sala", RoomType.SURGERY);
 
-        Room clinicbg_1_e = new Room ("Soba za preglede 1", RoomType.EXAMINATION);
-        Room clinicbg_2_e = new Room ("Soba za preglede 2", RoomType.EXAMINATION);
+        Room clinicbg_1_e = new Room ("Soba za preglede 1", RoomType.APPOINTMENT);
+        Room clinicbg_2_e = new Room ("Soba za preglede 2", RoomType.APPOINTMENT);
         Room clinicbg_1_s = new Room ("Glavna operaciona sala", RoomType.SURGERY);
         Room clinicbg_2_s = new Room ("Pomocna operaciona sala", RoomType.SURGERY);
 
-        Room clinicsu_1_e = new Room ("Soba za preglede 1", RoomType.EXAMINATION);
-        Room clinicsu_2_e = new Room ("Soba za preglede 2", RoomType.EXAMINATION);
-        Room clinicsu_3_e = new Room ("Soba za preglede 3", RoomType.EXAMINATION);
+        Room clinicsu_1_e = new Room ("Soba za preglede 1", RoomType.APPOINTMENT);
+        Room clinicsu_2_e = new Room ("Soba za preglede 2", RoomType.APPOINTMENT);
+        Room clinicsu_3_e = new Room ("Soba za preglede 3", RoomType.APPOINTMENT);
         Room clinicsu_1_s = new Room ("Sala za operacije", RoomType.SURGERY);
 
-        Room clinicvl_1_e = new Room("Jedina soba...", RoomType.EXAMINATION);
+        Room clinicvl_1_e = new Room("Jedina soba...", RoomType.APPOINTMENT);
         //endregion
 
         //region Diagnoses
@@ -411,7 +419,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 }
             }
             //Apppointments
-            int iterations=ThreadLocalRandom.current().nextInt(15, 30 + 1);
+            int iterations=ThreadLocalRandom.current().nextInt(8, 15);
             for(int i=0;i<iterations;i++) {
                 int month=ThreadLocalRandom.current().nextInt(1, 3);
                 int day=ThreadLocalRandom.current().nextInt(1, 29);
@@ -442,8 +450,13 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
                 ap_req1=appointmentRepository.save(ap_req1);
                 if(ap_req1.getAppState()==AppStateEnum.FINISHED){
                     doctor.addAppointment(ap_req1);
-                }
-                if(ap_req1.getAppState()==AppStateEnum.APPROVED) {
+                    Integer grade = ThreadLocalRandom.current().nextInt(1,11);
+                    patients.remove(app_patient);
+                    app_patient.rate(new Rating(doctor.getId(),null,grade));
+                    grade = ThreadLocalRandom.current().nextInt(1,11);
+                    app_patient.rate(new Rating(null,doctor.getClinic().getId(),grade));
+                    patients.add(patientRepository.save(app_patient));
+                }else if(ap_req1.getAppState()==AppStateEnum.APPROVED) {
                     List<Room> list = new ArrayList<Room>(doctor.getClinic().getRooms());
                     Room ap_room = list.get(ThreadLocalRandom.current().nextInt(0,list.size()));
                     doctor.getClinic().getRooms().remove(ap_room);
@@ -474,7 +487,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
             }
             //Surgery
-            iterations=ThreadLocalRandom.current().nextInt(4, 15);
+            iterations=ThreadLocalRandom.current().nextInt(2, 10);
             for(int i=0;i<iterations;i++) {
                 if (doctor.getClinic().getClinicName().equals("Mesna Ambulanta Vlasenica")) {
                     continue;
@@ -494,13 +507,19 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
                 Patient app_patient = patients.get(ThreadLocalRandom.current().nextInt(0, patients.size()));
 
-                Boolean activated= (ThreadLocalRandom.current().nextInt(0, 2) == 0) ? true:false;
-                Surgery surgery = new Surgery(start_time.getTime(), end_time.getTime(),app_patient,doctor,null,activated);
+                AppStateEnum appStateEnum;
+                if(end_time.getTime().before(new Date())){
+                    appStateEnum = AppStateEnum.FINISHED;
+                }else{
+                    appStateEnum = (ThreadLocalRandom.current().nextInt(0, 2) == 0) ?
+                            AppStateEnum.APPROVED:AppStateEnum.REQUESTED;
+                }
+                Surgery surgery = new Surgery(start_time.getTime(), end_time.getTime(),app_patient,doctor,null,appStateEnum);
                 surgery=surgeryRepository.save(surgery);
-                if(activated!=null&&activated==Boolean.TRUE){
+                if(appStateEnum==AppStateEnum.APPROVED){
                     List<Room> list = new ArrayList<Room>(doctor.getClinic().getRooms());
                     Room sr_room = list.get(ThreadLocalRandom.current().nextInt(0,list.size()));
-                    while(sr_room.getType()==RoomType.EXAMINATION) {
+                    while(sr_room.getType()==RoomType.APPOINTMENT) {
                         sr_room = list.get(ThreadLocalRandom.current().nextInt(0, list.size()));
                     }
                     doctor.getClinic().getRooms().remove(sr_room);

@@ -1,5 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,17 +35,17 @@ public class Surgery {
     @Column(name = "endTime", nullable = false)
     private Date endTime;
 
-    @Column(name="approved")
-    private Boolean approved;
+    @Column(name = "appState", unique = false, nullable = false)
+    private AppStateEnum appState;
 
-    public Surgery(Date startTime,Date endTime,Patient patient, Doctor doctor, Room room, Boolean activated) {
+    public Surgery(Date startTime,Date endTime,Patient patient, Doctor doctor, Room room, AppStateEnum appSate) {
         Room = room;
         this.doctors = new HashSet<>();
         doctors.add(doctor);
         this.patient = patient;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.approved = activated;
+        this.appState = appSate;
     }
 
     public Surgery() {
@@ -98,11 +99,11 @@ public class Surgery {
         this.endTime = endTime;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public AppStateEnum getAppState() {
+        return appState;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setAppState(AppStateEnum appState) {
+        this.appState = appState;
     }
 }

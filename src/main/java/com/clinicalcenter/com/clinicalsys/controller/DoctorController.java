@@ -143,7 +143,7 @@ public class DoctorController {
             for (ClinicAdmin admin:clinicAdmins){
                 admin.getSurgeries_to_process().add(finalSurgery);
                 admin = clinicAdminRepository.save(admin);
-                notifyAdminsServices.newRequestNotification(admin,true);
+                notifyAdminsServices.newRequestNotification(admin,null);
             }
         }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);

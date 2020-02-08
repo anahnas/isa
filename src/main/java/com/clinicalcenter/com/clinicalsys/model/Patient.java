@@ -26,6 +26,9 @@ public class Patient extends User {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<Surgery> surgeries;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Rating> ratings;
+
     public Patient() {
 
     }
@@ -39,9 +42,26 @@ public class Patient extends User {
         this.medicalRecord = new MedicalRecord();
         this.future_appointments = new HashSet<Appointment>();
         this.surgeries = new HashSet<Surgery>();
+        this.ratings = new HashSet<Rating>();
     }
 
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    public void rate(Rating new_rating){
+         Long clinicId=new_rating.getClinicId();
+        Long doctorId = new_rating.getDoctorId();
+        for(Rating rating: ratings){
+            if(rating.getClinicId()!=null&&clinicId!=null&&rating.getClinicId().compareTo(clinicId)==0||
+                    (rating.getDoctorId()!=null&&doctorId!=null&&rating.getDoctorId().compareTo(doctorId)==0)){
+                ratings.remove(rating);
+                break;
+            }
+        }
+        ratings.add(new_rating);
+    }
+
+    public Set<Rating> getRatings() {
+        return ratings;
+    }
+
     public MedicalRecord getMedicalRecord() {
         return medicalRecord;
     }

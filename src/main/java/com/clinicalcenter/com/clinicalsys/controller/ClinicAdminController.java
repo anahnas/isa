@@ -164,7 +164,7 @@ public class ClinicAdminController {
                     admin.getSurgeries_to_process().remove(surg);
                     admin = clinicAdminRepository.save(admin);
                 }
-                surg.setApproved(Boolean.TRUE);
+                surg.setAppState(AppStateEnum.APPROVED);
                 for(Doctor doctor:doctors) {
                     doctor.getSurgeries().add(surg);
                     doctorRepository.save(doctor);
@@ -225,7 +225,7 @@ public class ClinicAdminController {
                 admin.getSurgeries_to_process().remove(surg);
                 admin = clinicAdminRepository.save(admin);
             }
-            surg.setApproved(Boolean.FALSE);
+            surg.setAppState(AppStateEnum.REJECTED);
             surgeryRepository.save(surg);
         }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
