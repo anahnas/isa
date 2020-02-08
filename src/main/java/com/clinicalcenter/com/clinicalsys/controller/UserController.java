@@ -73,7 +73,6 @@ public class UserController {
         user.setActive(Boolean.FALSE);
         user.setRole(RoleEnum.PATIENT);
         Patient patient = new Patient(user);
-        patientRepository.save(patient);
         //TODO backgroud checking for same email
         user.setFirstLogin(Boolean.TRUE);
         patientRepository.save(new Patient(user));
