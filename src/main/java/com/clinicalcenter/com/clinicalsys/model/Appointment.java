@@ -43,6 +43,9 @@ public class Appointment {
     private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    private Nurse nurse;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Room room;
 
     public Appointment() {
