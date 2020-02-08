@@ -249,7 +249,7 @@ public class PatientController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,clinic_name,id,doctorId,
-                    clinicId,clinicGrade,doctorGrade));
+                    clinicId,null,clinicGrade,doctorGrade));
         }
         Set<Surgery> surgeries = surgeryRepository.getPatientsPastSurgeries(patient.getId());
         for(Surgery surgery : surgeries){
@@ -265,7 +265,7 @@ public class PatientController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,clinic_name,id,doctorId,
-                    clinicId,clinicGrade,doctorGrade));
+                    clinicId,null,clinicGrade,doctorGrade));
         }
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
@@ -305,7 +305,7 @@ public class PatientController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null));
+                    null,null,null,null));
         }
         for(Surgery surgery : patient.getSurgeries()){
             type = "Surgery";
@@ -315,7 +315,7 @@ public class PatientController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null));
+                    null,null,null,null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }

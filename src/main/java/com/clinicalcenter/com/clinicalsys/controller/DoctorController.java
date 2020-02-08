@@ -2,6 +2,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.DTO.AppointmentSurgeryDTO;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
@@ -13,10 +14,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -96,6 +99,41 @@ public class DoctorController {
 
 
         }
+    }
+
+    @GetMapping("/getFutureAppointmentsAndSurgeries")
+    public ResponseEntity<Set<AppointmentSurgeryDTO>> getFutureAppointmentsAndSurgeries(){
+        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        Patient patient = (Patient) ((MyUserDetails)upat.getPrincipal()).getUser();
+        Set<AppointmentSurgeryDTO> retVal = new HashSet<>();
+        // Maybe the patient will have to be taken from repository for consistency reasons
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String type,doctor_name,patient_name,clinic_name,strDate;
+        Long id;
+        for(Appointment appointment : patient.getFuture_appointments()){
+            type = appointment.getType().getType();
+            doctor_name=appointment.getDoctor().getFirstName() + " " + appointment.getDoctor().getLastName();
+            clinic_name=appointment.getDoctor().getClinic().getClinicName();
+            strDate = dateFormat.format(appointment.getStartTime());
+            id = appointment.getId();
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
+                    null,null,null));
+        }
+        for(Surgery surgery : patient.getSurgeries()){
+            type = "Surgery";
+            Doctor doctor = surgery.getDoctors().iterator().next();
+            doctor_name=doctor.getFirstName() + " " + doctor.getLastName();
+            clinic_name=doctor.getClinic().getClinicName();
+            strDate = dateFormat.format(surgery.getStartTime());
+            id = surgery.getId();
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
+                    null,null,null));
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @PostMapping("/requestSurgery/{date_start}/{date_end}")
