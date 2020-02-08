@@ -16,4 +16,7 @@ public interface DrugRepository extends JpaRepository<Drug, Long> {
     @Query("select d from Drug d")
     public Set<Drug> allDrugs();
 
+    @Query(value = "select * from clinicalsys.drug  where clinicalsys.drug.id = ?1", nativeQuery = true)
+    Drug findByIdMy(Long l);
+
 }
