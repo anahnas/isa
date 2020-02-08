@@ -7,6 +7,7 @@ public class AppointmentSurgeryDTO {
     private Long DoctorId;
     private Integer DoctorGrade;
     private String PatientName;
+    private Long PatientId;
     private String dateString;
     private String clinicName;
     private Long ClinicId;
@@ -18,7 +19,7 @@ public class AppointmentSurgeryDTO {
     }
 
     public AppointmentSurgeryDTO(String appointmentType, String doctorsName, String patientName, String dateString,
-                                 String clinicName, Long id, Long DoctorId, Long ClinicId,
+                                 String clinicName, Long id, Long DoctorId, Long ClinicId, Long PatinetId,
                                  Integer clinicGrade, Integer doctorGrade) {
         this.appointmentType = appointmentType;
         DoctorsName = doctorsName;
@@ -30,6 +31,15 @@ public class AppointmentSurgeryDTO {
         this.ClinicId = ClinicId;
         this.ClinicGrade = clinicGrade;
         this.DoctorGrade = doctorGrade;
+        this.PatientId = PatinetId;
+    }
+
+    public Long getPatientId() {
+        return PatientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        PatientId = patientId;
     }
 
     public Integer getDoctorGrade() {
