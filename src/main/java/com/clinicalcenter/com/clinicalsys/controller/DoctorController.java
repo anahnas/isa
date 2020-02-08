@@ -3,6 +3,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.DTO.AppointmentSurgeryDTO;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
@@ -103,35 +104,37 @@ public class DoctorController {
 
     @GetMapping("/getFutureAppointmentsAndSurgeries")
     public ResponseEntity<Set<AppointmentSurgeryDTO>> getFutureAppointmentsAndSurgeries(){
-        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)
                 SecurityContextHolder.getContext().getAuthentication();
-        Patient patient = (Patient) ((MyUserDetails)upat.getPrincipal()).getUser();
+        Doctor doctor = (Doctor) ((MyUserDetails)upat.getPrincipal()).getUser();
         Set<AppointmentSurgeryDTO> retVal = new HashSet<>();
         // Maybe the patient will have to be taken from repository for consistency reasons
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String type,doctor_name,patient_name,clinic_name,strDate;
-        Long id;
-        for(Appointment appointment : patient.getFuture_appointments()){
+        String type,patient_name,strDate;
+        Long id, patientId;
+        for(Appointment appointment : doctor.getAppointments()){
+            if(appointment.getAppState()!= AppStateEnum.APPROVED){
+                continue;
+            }
+            patient_name = appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName();
+            patientId = appointment.getPatient().getId();
             type = appointment.getType().getType();
-            doctor_name=appointment.getDoctor().getFirstName() + " " + appointment.getDoctor().getLastName();
-            clinic_name=appointment.getDoctor().getClinic().getClinicName();
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
-            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null));
+            retVal.add(new AppointmentSurgeryDTO(type, null, patient_name,strDate,null,id,null,
+                    null,patientId, null,null));
         }
-        for(Surgery surgery : patient.getSurgeries()){
+        for(Surgery surgery : doctor.getSurgeries()){
             type = "Surgery";
-            Doctor doctor = surgery.getDoctors().iterator().next();
-            doctor_name=doctor.getFirstName() + " " + doctor.getLastName();
-            clinic_name=doctor.getClinic().getClinicName();
+            patient_name = surgery.getPatient().getFirstName() + " " + surgery.getPatient().getLastName();
+            patientId = surgery.getPatient().getId();
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
-            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null));
+            retVal.add(new AppointmentSurgeryDTO(type, null, patient_name,strDate,null,id,null,
+                    null,patientId, null,null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
