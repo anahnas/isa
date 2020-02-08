@@ -74,6 +74,12 @@ public class PatientController {
         return new ResponseEntity<>(retValue, HttpStatus.OK);
     }
 
+    @GetMapping("/getAllClinics")
+    public ResponseEntity<Set<Clinic>> getAllClinics(){
+        Set<Clinic> retVal = clinicRespository.findClinics();
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
     @GetMapping("/getAppointmentTypes")
     public ResponseEntity<Set<AppointmentType>> getAppointmentTypes(){
         if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
@@ -279,6 +285,40 @@ public class PatientController {
         return retVal;
     }
 
+    @GetMapping("/getFutureAppointmentsAndSurgeries")
+    public ResponseEntity<Set<AppointmentSurgeryDTO>> getFutureAppointmentsAndSurgeries(){
+        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        Patient patient = (Patient) ((MyUserDetails)upat.getPrincipal()).getUser();
+        Set<AppointmentSurgeryDTO> retVal = new HashSet<>();
+        // Maybe the patient will have to be taken from repository for consistency reasons
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String type,doctor_name,patient_name,clinic_name,strDate;
+        Long id;
+        for(Appointment appointment : patient.getFuture_appointments()){
+            type = appointment.getType().getType();
+            doctor_name=appointment.getDoctor().getFirstName() + " " + appointment.getDoctor().getLastName();
+            clinic_name=appointment.getDoctor().getClinic().getClinicName();
+            strDate = dateFormat.format(appointment.getStartTime());
+            id = appointment.getId();
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
+                    null,null,null));
+        }
+        for(Surgery surgery : patient.getSurgeries()){
+            type = "Surgery";
+            Doctor doctor = surgery.getDoctors().iterator().next();
+            doctor_name=doctor.getFirstName() + " " + doctor.getLastName();
+            clinic_name=doctor.getClinic().getClinicName();
+            strDate = dateFormat.format(surgery.getStartTime());
+            id = surgery.getId();
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
+                    null,null,null));
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
     /*NOT USED AT ALL*/
     @GetMapping("/getRatings")
     public ResponseEntity<Set<Rating>> getRatings(){
