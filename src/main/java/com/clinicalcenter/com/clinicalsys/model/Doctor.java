@@ -30,7 +30,6 @@ public class Doctor extends Staff {
 
     public Doctor(Staff staff, Double rating) {
         super(staff);
-        rating = null;
         this.setActive(Boolean.TRUE);
         this.setAdminConfirmed(Boolean.TRUE);
         this.setRole(RoleEnum.DOCTOR);

@@ -22,4 +22,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Modifying(flushAutomatically = true)
     @Query(value = "UPDATE appointment SET room_id=?1 where id = ?2", nativeQuery = true)
     void addRoom(Long roomId, Long appId);
+
+    @Query(value = "SELECT a from Appointment a where a.patient.id=?1 and a.appState=4")
+    Set<Appointment> getPatientsPastAppointments(Long patientid);
 }
