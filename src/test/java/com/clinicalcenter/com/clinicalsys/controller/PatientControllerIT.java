@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PatientControllerIntegrationTest {
+public class PatientControllerIT {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
