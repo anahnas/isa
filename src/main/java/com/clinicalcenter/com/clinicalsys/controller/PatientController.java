@@ -183,15 +183,19 @@ public class PatientController {
         try {
             date = simpleDateFormat.parse(date_string);
         } catch (ParseException e) {
+            System.out.println("1");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         if(date.before(new Date())){
+            System.out.println("2");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         if(appType.getType()==null){
+            System.out.println("3");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         if(!appointmentRepository.existsById(appType.getId())){
+            System.out.println("4");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         Clinic clinic = clinicRespository.findByClinicName(clinic_name);
