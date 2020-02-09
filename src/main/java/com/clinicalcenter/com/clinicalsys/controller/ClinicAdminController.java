@@ -41,11 +41,13 @@ public class ClinicAdminController {
     private DoctorRepository doctorRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private VacationRepository vacationRepository;
 
     public ClinicAdminController(ClinicAdminRepository clinicAdminRepository, AppointmentRepository appointmentRepository,
                                  RoomRepository roomRepository, NotifyUserSrvice notifyUserSrvice,
                                  DoctorRepository doctorRepository, ClinicRespository clinicRespository,
-                                 SurgeryRepository surgeryRepository){
+                                 SurgeryRepository surgeryRepository, VacationRepository vacationRepository){
         this.clinicAdminRepository = clinicAdminRepository;
         this.appointmentRepository = appointmentRepository;
         this.roomRepository = roomRepository;
@@ -53,6 +55,7 @@ public class ClinicAdminController {
         this.doctorRepository = doctorRepository;
         this.clinicRespository = clinicRespository;
         this.surgeryRepository = surgeryRepository;
+        this.vacationRepository = vacationRepository;
     }
 
     @GetMapping("/getAppointmentAndSurgeryRequests")
@@ -356,5 +359,32 @@ public class ClinicAdminController {
         }
         Set<VacationRequest> vacations_to_process= clinicAdminRepository.findByEmail(email).getVacations_to_process();
         return new ResponseEntity<>(vacations_to_process, HttpStatus.OK);
+    }
+
+    @PostMapping("/respondToVacationRequest/{vacation_id}")
+    public ResponseEntity<String> acceptVacation(@RequestBody Boolean status,
+                                                               @PathVariable("vacation_id") String vacation_id){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+        UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        ClinicAdmin admin = (ClinicAdmin) ((MyUserDetails)upat.getPrincipal()).getUser();
+        Long vacId;
+        try{
+            vacId = Long.parseLong(vacation_id);
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(!vacationRepository.existsById(vacId)){
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(status){
+            vacationRepository.acceptRequest(vacId);
+        }else{
+            vacationRepository.denyRequest(vacId);
+    }
+        admin.getVacations_to_process().remove(vacationRepository.findByIdMy(vacId));
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

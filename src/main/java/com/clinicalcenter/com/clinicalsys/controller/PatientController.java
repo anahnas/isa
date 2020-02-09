@@ -180,27 +180,24 @@ public class PatientController {
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Date date;
+        Set<Doctor_FreeTimes> retVal=new HashSet<>();
+
         try {
             date = simpleDateFormat.parse(date_string);
         } catch (ParseException e) {
-            System.out.println("1");
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(retVal, HttpStatus.NOT_ACCEPTABLE);
         }
         if(date.before(new Date())){
-            System.out.println("2");
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(retVal, HttpStatus.NOT_ACCEPTABLE);
         }
         if(appType.getType()==null){
-            System.out.println("3");
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(retVal, HttpStatus.NOT_ACCEPTABLE);
         }
         if(!appointmentRepository.existsById(appType.getId())){
-            System.out.println("4");
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(retVal, HttpStatus.NOT_ACCEPTABLE);
         }
         Clinic clinic = clinicRespository.findByClinicName(clinic_name);
         Set<Doctor> doctors_temp= new HashSet<Doctor>(doctorRepository.allWithSpecializationInClinic(appType.getId(),clinic.getId()));
-        Set<Doctor_FreeTimes> retVal=new HashSet<>();
         for(Doctor doctor : doctors_temp){
             Set<String> freeTimes = doctor.getFreeTimes(date);
             if(freeTimes.isEmpty())

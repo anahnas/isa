@@ -173,26 +173,26 @@ public class SearchAppointmentPage {
     // ensurements
 
     public void ensureFilterClinicsFormIsDisplayed(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(filterClinicsForm));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.visibilityOf(filterClinicsForm));
     }
 
     public void ensureFilterClinicsFormIsNotDisplayed(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("filterClinicsForm"),0));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("filterClinicsForm"),0));
     }
 
 
     public void ensureSearchButtonIsClickable(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(searchBtn));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.elementToBeClickable(searchBtn));
     }
 
 
     public void ensureThereAreXAppTypeOptions(int x){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBe(By.className("appTypeOptions"),x));
+        new WebDriverWait(driver, 59).until(ExpectedConditions.numberOfElementsToBe(By.className("appTypeOptions"),x));
     }
 
 
     public void ensureFilterClinicsBtnIsClickable(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(filterClinicsBtn));
+        new WebDriverWait(driver, 59).until(ExpectedConditions.elementToBeClickable(filterClinicsBtn));
     }
 
     public void ensureClinicsTableIsDisplayed(){
@@ -201,36 +201,36 @@ public class SearchAppointmentPage {
 
 
     public void ensureClinicsTableIsNotDisplayed(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("#clinicsTable"), 0));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("#clinicsTable"), 0));
     }
 
 
     public void ensureThereAreMoreThanXNumberOfElementsInClinicsTable(int x){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("ClinicRow"), x));
-        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.className("doctorsBtn")));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("ClinicRow"), x));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.elementToBeClickable(By.className("doctorsBtn")));
     }
 
     public void ensureFilterDoctorsFormIsDisplayed(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(searchDoctorsForm));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.visibilityOf(searchDoctorsForm));
     }
 
     public void ensureDoctorsTableIsDisplayed(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(doctorsTable));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.visibilityOf(doctorsTable));
     }
 
     public void ensureDoctorsTableIsNotDisplayed(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(doctorsTable)));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(doctorsTable)));
     }
 
     public void ensureThereAreMoreThanXNumberOfElementsInDoctorsTable(int x){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("DoctorRow"), x));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("DoctorRow"), x));
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0,800)");
-        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(scheduleBtn));
+        new WebDriverWait(driver, 59).until(ExpectedConditions.elementToBeClickable(scheduleBtn));
     }
 
     public void setStartAppTimeOption(){
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("startAppTime"), 0));
+        new WebDriverWait(driver, 50).until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("startAppTime"), 0));
         driver.findElement(By.id("orders")).click();
         driver.findElement(By.className("startAppTime")).click();
     }

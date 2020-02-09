@@ -6,6 +6,7 @@ import com.clinicalcenter.com.clinicalsys.model.Patient;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.repository.AppointmentRepository;
 import com.clinicalcenter.com.clinicalsys.repository.AppointmentTypeRepository;
+import com.clinicalcenter.com.clinicalsys.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ public class AppointmentHandlingService {
 
     @Autowired
     AppointmentRepository appointmentRepository;
+    @Autowired
+    PatientRepository patientRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<String> ReserveFastAppointment(Long appointmentId) {
@@ -32,18 +35,11 @@ public class AppointmentHandlingService {
         if (a.getAppState() != AppStateEnum.APPROVED) {
             return new ResponseEntity<>("Fast Appointment already booked", HttpStatus.NOT_ACCEPTABLE);
         }
-        try {
-            Thread.sleep(7000);
-        } catch (Exception e) {
-
-        }
         appointmentRepository.bookFastApp(patient.getId(), appointmentId);
         //deletes appointment form clinic's predefined appointments list
-        //appointmentRepository.deletePredefinedAppointment(id);
-        /*
+        appointmentRepository.deletePredefinedAppointment(appointmentId);
         patient.getFuture_appointments().add(a);
-        patientRespository.save(patient);
-        */
+        patientRepository.save(patient);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 }
