@@ -10,4 +10,7 @@ public interface AppointmentTypeRepository extends JpaRepository<AppointmentType
 
     @Query(value = "Select a from  AppointmentType a where a.id=?1")
     AppointmentType findByIdMy(Long id);
+
+    //
+    // AppointmentType findType(String type);
 }

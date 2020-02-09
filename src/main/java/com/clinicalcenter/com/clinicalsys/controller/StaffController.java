@@ -1,6 +1,8 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.authentication.UpdatePassword;
+import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.ClinicAdminRepository;
 import com.clinicalcenter.com.clinicalsys.repository.StaffRepository;
 import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
@@ -79,4 +81,52 @@ public class StaffController {
         }).start();
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.NURSE)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            if(us.getFirstLogin() == true){
+                userRepository.changeFirstLogin(updatePassword.getEmail());
+            }
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/justUpdatePassword")
+    public ResponseEntity<String> justUpdatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.NURSE)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+
+
+    // @PostMapping("/changeName")
+   /* public ResponseEntity<String> changeName(@PathVariable("firstName") String name, @RequestBody Staff staff) {
+        staff.setFirstName(name);
+        Staff s = staffRepository.findByName(name);
+        //ubaci provjeru dal vec postoji, pa ako ne, tek onda cuvaj u repoz
+
+        staffRepository.save(s);
+        return new ResponseEntity<>("", HttpStatus.OK);
+
+    }*/
 }

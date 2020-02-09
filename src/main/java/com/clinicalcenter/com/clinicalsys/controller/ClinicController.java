@@ -46,5 +46,18 @@ public class ClinicController {
         return new ResponseEntity<>(retValue, HttpStatus.OK);
     }
 
+    @GetMapping("/getclinicsByCA")
+    public ResponseEntity<Set<Clinic>> getRequestsByCA(){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Set<Clinic> retValue = clinicRespository.findClinics();
+        if(retValue==null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
 
 }

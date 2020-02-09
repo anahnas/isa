@@ -1,5 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,13 +17,16 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private Nurse nurse;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private Drug drug;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private Patient patient;
 
     @Column(name = "isValidate", unique = false, nullable = true)

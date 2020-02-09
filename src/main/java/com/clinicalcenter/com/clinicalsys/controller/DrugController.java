@@ -4,11 +4,15 @@ import com.clinicalcenter.com.clinicalsys.model.Appointment;
 import com.clinicalcenter.com.clinicalsys.model.Drug;
 import com.clinicalcenter.com.clinicalsys.model.Patient;
 import com.clinicalcenter.com.clinicalsys.model.Recipe;
+import com.clinicalcenter.com.clinicalsys.model.Nurse;
+import com.clinicalcenter.com.clinicalsys.model.User;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.AppointmentRepository;
 import com.clinicalcenter.com.clinicalsys.repository.DrugRepository;
 import com.clinicalcenter.com.clinicalsys.repository.PatientRepository;
 import com.clinicalcenter.com.clinicalsys.repository.RecipeRepository;
+import com.clinicalcenter.com.clinicalsys.repository.NurseRepository;
+import com.clinicalcenter.com.clinicalsys.repository.UserRepository;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import java.util.Set;
 @RestController
 public class DrugController {
     private final DrugRepository drugRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     private final AppointmentRepository appointmentRepository;
@@ -27,8 +32,9 @@ public class DrugController {
     private final RecipeRepository recipeRepository;
 
     private final PatientRepository patientRepository;
-    public DrugController(DrugRepository drugRepository, AppointmentRepository appointmentRepository, RecipeRepository recipeRepository, PatientRepository patientRepository) {
+    public DrugController(DrugRepository drugRepository, AppointmentRepository appointmentRepository, RecipeRepository recipeRepository, PatientRepository patientRepository, UserRepository userRepository) {
         this.drugRepository = drugRepository;
+        this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
         this.recipeRepository = recipeRepository;
         this.patientRepository = patientRepository;
@@ -62,6 +68,18 @@ public class DrugController {
         }
         return new ResponseEntity<>(retValue, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/drugs/getallNurses")
+    public ResponseEntity<Set<User>> getNurse(){
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Set<User> retValue = userRepository.findNurses();
+        if(retValue==null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
     }
 
     @GetMapping("/getdrugs")

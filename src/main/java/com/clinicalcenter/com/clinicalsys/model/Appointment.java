@@ -46,6 +46,9 @@ public class Appointment {
     private Nurse nurse;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    private ClinicAdmin clinicAdmin;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     private Room room;
 
     public Appointment() {
@@ -58,6 +61,17 @@ public class Appointment {
         this.appState=AppStateEnum.REQUESTED;
         this.patient = patient;
         this.doctor = doctor;
+        this.room = room;
+    }
+
+    public Appointment(Date startTime, Date endTime, AppointmentType type, AppStateEnum appState, Patient patient, Doctor doctor, ClinicAdmin clinicAdmin, Room room) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.type = type;
+        this.appState = appState;
+        this.patient = patient;
+        this.doctor = doctor;
+        this.clinicAdmin = clinicAdmin;
         this.room = room;
     }
 
@@ -127,5 +141,13 @@ public class Appointment {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public ClinicAdmin getClinicAdmin() {
+        return clinicAdmin;
+    }
+
+    public void setClinicAdmin(ClinicAdmin clinicAdmin) {
+        this.clinicAdmin = clinicAdmin;
     }
 }

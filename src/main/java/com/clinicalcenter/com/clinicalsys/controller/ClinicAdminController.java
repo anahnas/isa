@@ -3,6 +3,12 @@ package com.clinicalcenter.com.clinicalsys.controller;
 import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.DTO.AppointmentSurgeryDTO;
 import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
+import com.clinicalcenter.com.clinicalsys.model.Appointment;
+import com.clinicalcenter.com.clinicalsys.model.Clinic;
+import com.clinicalcenter.com.clinicalsys.model.DTO.RequestedAppDTO;
+import com.clinicalcenter.com.clinicalsys.model.Room;
+import com.clinicalcenter.com.clinicalsys.model.authentication.DeleteRequest;
+import com.clinicalcenter.com.clinicalsys.model.authentication.UpdatePassword;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoomType;
@@ -14,12 +20,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.print.Doc;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/admin")
@@ -38,14 +50,19 @@ public class ClinicAdminController {
     @Autowired
     private RoomRepository roomRepository;
     @Autowired
+    private AppointmentTypeRepository appointmentTypeRepository;
+    @Autowired
     private DoctorRepository doctorRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private VacationRepository vacationRepository;
 
     public ClinicAdminController(ClinicAdminRepository clinicAdminRepository, AppointmentRepository appointmentRepository,
+                                 AppointmentTypeRepository appointmentTypeRepository,
                                  RoomRepository roomRepository, NotifyUserSrvice notifyUserSrvice,
                                  DoctorRepository doctorRepository, ClinicRespository clinicRespository,
-                                 SurgeryRepository surgeryRepository){
+                                 SurgeryRepository surgeryRepository, VacationRepository vacationRepository){
         this.clinicAdminRepository = clinicAdminRepository;
         this.appointmentRepository = appointmentRepository;
         this.roomRepository = roomRepository;
@@ -53,6 +70,8 @@ public class ClinicAdminController {
         this.doctorRepository = doctorRepository;
         this.clinicRespository = clinicRespository;
         this.surgeryRepository = surgeryRepository;
+        this.vacationRepository = vacationRepository;
+        this.appointmentTypeRepository = appointmentTypeRepository;
     }
 
     @GetMapping("/getAppointmentAndSurgeryRequests")
@@ -357,4 +376,344 @@ public class ClinicAdminController {
         Set<VacationRequest> vacations_to_process= clinicAdminRepository.findByEmail(email).getVacations_to_process();
         return new ResponseEntity<>(vacations_to_process, HttpStatus.OK);
     }
+
+    @GetMapping("/getRooms")
+    public ResponseEntity<Set<Room>> getRooms() {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+
+        Set<Room> retValue = new HashSet<>(roomRepository.findAll());
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+
+
+    }
+
+    @PostMapping("/addRoom")
+    public ResponseEntity<String> addRoom(@RequestBody Room room) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Room temp = roomRepository.findRoomByName(room.getName());
+        if(temp==null) {
+            roomRepository.save(room);
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("This room already exists", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Async
+    @PostMapping("/deleteRoom")
+    public ResponseEntity<String> removeRoom(@RequestBody DeleteRequest rqst) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Room r = roomRepository.findRoomByName(rqst.getEmail());
+        if(r == null){
+            System.out.println("Room with name: " + rqst.getEmail() + " does not exist!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            System.out.println("Brisemo sobu..");
+
+
+            roomRepository.deleteByName(rqst.getEmail());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+
+    @Async
+    @PostMapping("/deleteRoom2")
+    public ResponseEntity<String> removeRoom2(@RequestBody DeleteRequest rqst) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Optional<Room> r = roomRepository.findById(rqst.getId());
+        if(r == null){
+            System.out.println("Room with id: " + rqst.getId() + " does not exist!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            System.out.println("Brisemo sobu..");
+
+
+            roomRepository.deleteById(rqst.getId());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/getTypes")
+    public ResponseEntity<Set<AppointmentType>> getTypes() {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+
+        Set<AppointmentType> retValue = new HashSet<>(appointmentTypeRepository.findAll());
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
+   /* @PostMapping("/addType")
+    public ResponseEntity<String> addType(@RequestBody AppointmentType type) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        AppointmentType temp = appointmentTypeRepository.findType(type.getType());
+        if(temp==null) {
+            appointmentTypeRepository.save(type);
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("This type already exists", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Async
+    @PostMapping("/deleteType")
+    public ResponseEntity<String> removeType(@RequestBody DeleteRequest rqst) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Optional<AppointmentType> r = appointmentTypeRepository.findById(rqst.getId());
+        if(r == null){
+            System.out.println("Type with id: " + rqst.getId() + " does not exist!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            System.out.println("Brisemo tip..");
+            appointmentTypeRepository.deleteById(rqst.getId());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }*/
+
+
+
+
+    @GetMapping("/getHolidayRequests")
+    public ResponseEntity<Set<VacationRequest>> getHolidayRequests(){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Set<VacationRequest> retValue = new HashSet<>(vacationRepository.findAll());
+        if(retValue==null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
+    /*@Async
+    @PostMapping("/acceptHolidayRequest")
+    public ResponseEntity<String> acceptRequest(@RequestBody String email) throws MailException {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        VacationRequest vr =  vacationRepository.findByEmail(email);
+        if(vr == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        vr.setApproved(Boolean.TRUE);
+        vacationRepository.save(vr);
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(email);
+        mail.setFrom("spring.mail.username");
+        mail.setSubject("Confirmation");
+        mail.setText("Please confirm your request by click on link bellow: \n\n" + "http://localhost:4200/acceptHR/"+email);
+        new Thread(() -> {
+            this.mailSender.send(mail);
+        }).start();
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+
+    @Async
+    @PostMapping("/deleteHolidayRequest")
+    public ResponseEntity<String> removeRequest(@RequestBody DeleteRequest rqst)
+            throws MailException, InterruptedException{
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        VacationRequest vr =  vacationRepository.findByEmail(rqst.getEmail());
+
+        if(vr == null){
+            System.out.println("User with email: " + rqst.getEmail() + " dose not exist!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(rqst.getEmail());
+            mail.setFrom("spring.mail.username");
+            mail.setSubject("Rejection");
+            mail.setText("Explanation for registration rejection: \n" + rqst.getContent());
+            new Thread(() -> {
+                this.mailSender.send(mail);
+            }).start();
+            System.out.println("Email sent..");
+            vacationRepository.deleteByEmail(rqst.getEmail());
+
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }*/
+
+    @PostMapping("/regClinicDoctor/{clinic}")
+    public ResponseEntity<String> addUser(@RequestBody User user, @PathVariable("clinic") String clinic) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Clinic clc = clinicRespository.findByClinicName(clinic);
+        System.out.println("Ovo je klinika koju treba obraditi: " + clinic);
+        Staff s = new Staff(user, clc);
+        Doctor doc = new Doctor(s);
+        System.out.println("Dodjes li tu?" + doc);
+        //staffRepository.save(s);
+        // userRepository.save(s);
+        // doctorRepository.save(doc);
+        userRepository.save(doc);
+        System.out.println("cuva li se?");
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @Async
+    @PostMapping("/deleteDoctor")
+    public ResponseEntity<String> removeDoctor(@RequestBody DeleteRequest rqst) {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(rqst.getEmail());
+        if(us == null){
+            System.out.println("Doctor with email: " + rqst.getEmail() + " does not exist!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            System.out.println("Brisemo doktora..");
+            userRepository.deleteByEmail(rqst.getEmail());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+
+    @GetMapping("/getDoctors")
+    public ResponseEntity<Set<User>> getRequests() {
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        System.out.println("ClinicAdminREALController");
+
+        Set<User> retValue = new Set<User>() {
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(Object o) {
+                return false;
+            }
+
+            @Override
+            public Iterator<User> iterator() {
+                return null;
+            }
+
+            @Override
+            public Object[] toArray() {
+                return new Object[0];
+            }
+
+            @Override
+            public <T> T[] toArray(T[] a) {
+                return null;
+            }
+
+            @Override
+            public boolean add(User user) {
+                return false;
+            }
+
+            @Override
+            public boolean remove(Object o) {
+                return false;
+            }
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(Collection<? extends User> c) {
+                return false;
+            }
+
+            @Override
+            public boolean retainAll(Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean removeAll(Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public void clear() {
+
+            }
+        };
+        retValue = userRepository.findDoctors();
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+
+    }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            if(us.getFirstLogin() == true){
+                userRepository.changeFirstLogin(updatePassword.getEmail());
+            }
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/justUpdatePassword")
+    public ResponseEntity<String> justUpdatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+
+
+
 }

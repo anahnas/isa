@@ -1,14 +1,23 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.Diagnose;
+import com.clinicalcenter.com.clinicalsys.model.Drug;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.AppointmentRepository;
 import com.clinicalcenter.com.clinicalsys.repository.DiagnoseRepository;
 import com.clinicalcenter.com.clinicalsys.repository.PatientRepository;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
+import jdk.jshell.Diag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 

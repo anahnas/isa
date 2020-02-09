@@ -1,5 +1,6 @@
 package com.clinicalcenter.com.clinicalsys.model;
 
+import com.clinicalcenter.com.clinicalsys.model.DTO.RequestedAppDTO;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,7 @@ public class ClinicAdmin extends User{
         this.surgeries_to_process=new HashSet<>();
         this.appointments_to_process=new HashSet<>();
     }
+
 
     //region getters setters
     public Clinic getClinic() {

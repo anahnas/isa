@@ -19,4 +19,6 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
             "FROM clinic WHERE clinic.clinic_name = ?1)", nativeQuery = true)
     Set<Nurse> findByClinicName(String clinicName);
 
+    // Nurse findNurseByName(String name);
+
 }

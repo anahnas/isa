@@ -6,6 +6,9 @@ public class DeleteRequest {
 
     private String email;
     private String content;
+    private Long Id;
+    private String name;
+
 
     public DeleteRequest() {
 
@@ -15,6 +18,11 @@ public class DeleteRequest {
         this.email = email;
         this.content = content;
     }
+    public DeleteRequest(Long Id, String content) {
+        this.Id = Id;
+        this.content = content;
+    }
+
 
     public String getEmail() {
         return email;
@@ -30,5 +38,13 @@ public class DeleteRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 }

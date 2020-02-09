@@ -28,6 +28,16 @@ public class Doctor extends Staff {
 
     }
 
+    public Doctor(Staff staff) {
+        super(staff);
+        this.setActive(Boolean.TRUE);
+        this.setAdminConfirmed(Boolean.TRUE);
+        this.setRole(RoleEnum.DOCTOR);
+        // this.setFirstLogin(Boolean.TRUE);
+        requested = new HashSet<Appointment>();
+        specializations = new HashSet<AppointmentType>();
+    }
+
     public Doctor(Staff staff, Double rating) {
         super(staff);
         this.setActive(Boolean.TRUE);

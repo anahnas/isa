@@ -4,6 +4,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 import com.clinicalcenter.com.clinicalsys.model.*;
 import com.clinicalcenter.com.clinicalsys.model.DTO.AppointmentSurgeryDTO;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
+import com.clinicalcenter.com.clinicalsys.model.authentication.UpdatePassword;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
 import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
@@ -30,21 +31,24 @@ public class DoctorController {
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
     private final DrugRepository drugRepository;
+    private final DiagnoseRepository diagnoseRepository;
     private final PatientRepository patientRepository;
     @Autowired
     private ClinicAdminRepository clinicAdminRepository;
+    private NurseRepository nurseRepository;
     @Autowired
     private SurgeryRepository surgeryRepository;
     @Autowired
     private NotifyAdminsServices notifyAdminsServices;
 
     public DoctorController(UserRepository userRepository, RecipeRepository recipeRepository,
-                            DrugRepository drugRepository, PatientRepository patientRepository,
+                            DrugRepository drugRepository, DiagnoseRepository diagnoseRepository, PatientRepository patientRepository,
                             ClinicAdminRepository clinicAdminRepository, NotifyAdminsServices notifyAdminsServices,
                             SurgeryRepository surgeryRepository) {
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
         this.drugRepository = drugRepository;
+        this.diagnoseRepository = diagnoseRepository;
         this.patientRepository = patientRepository;
         this.clinicAdminRepository = clinicAdminRepository;
         this.notifyAdminsServices = notifyAdminsServices;
@@ -95,6 +99,50 @@ public class DoctorController {
             r.setDrug(dr);
             Patient p =((Patient)user);
             p.getMedicalRecord().getRecipes().add(r);
+            patientRepository.save(p);
+            return new ResponseEntity<>("", HttpStatus.OK);
+
+
+        }
+    }
+
+    // @PostMapping("/makerecipeNurse/{email}")
+    /*public ResponseEntity<String> makeRecipeNurse(@RequestBody User nurse, @PathVariable("email") String email){
+        System.out.println("Usaooo->"+email);
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        else {
+            User n = userRepository.findNurseByName(nurse.getFirstName());
+            Recipe r = new Recipe();
+            r.setNurse((Nurse) n);
+            Patient p =((Patient)user);
+            p.getMedicalRecord().getRecipes().add(r);
+            patientRepository.save(p);
+            return new ResponseEntity<>("", HttpStatus.OK);
+
+
+        }
+    }*/
+
+    @PostMapping("/makeDiagnose/{email}")
+    public ResponseEntity<String> makeDiagnose(@RequestBody Diagnose diagnose, @PathVariable("email") String email){
+        System.out.println("Usaooo->"+email);
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        else {
+            Diagnose d = diagnoseRepository.findByName(diagnose.getName());
+            Patient p =((Patient)user);
+            p.getMedicalRecord().getDiagnoses().add(d);
             patientRepository.save(p);
             return new ResponseEntity<>("", HttpStatus.OK);
 
@@ -189,4 +237,41 @@ public class DoctorController {
         }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            if(us.getFirstLogin() == true){
+                userRepository.changeFirstLogin(updatePassword.getEmail());
+            }
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/justUpdatePassword")
+    public ResponseEntity<String> justUpdatePassword(@RequestBody UpdatePassword updatePassword){
+        if(!Authorized.isAuthorised(RoleEnum.DOCTOR)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        User us = userRepository.findByEmail(updatePassword.getEmail());
+        if(us == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        else {
+
+            userRepository.updatePassword(updatePassword.getEmail(), updatePassword.getNewpassword());
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+    }
+
+
 }

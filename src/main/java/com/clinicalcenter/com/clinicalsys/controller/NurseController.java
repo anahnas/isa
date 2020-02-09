@@ -2,6 +2,7 @@ package com.clinicalcenter.com.clinicalsys.controller;
 
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.authentication.UpdatePassword;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
@@ -68,4 +69,6 @@ public class NurseController {
         }
 
     }
+
+
 }
