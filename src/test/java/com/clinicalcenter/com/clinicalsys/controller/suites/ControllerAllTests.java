@@ -7,11 +7,11 @@ import com.clinicalcenter.com.clinicalsys.repository.PatientRepositoryUnitTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
+/*@RunWith(Suite.class)
 @Suite.SuiteClasses({
         PatientControllerIT.class,
         PatientControllerUnitTest.class
-})
+})*/
 public class ControllerAllTests {
 
 

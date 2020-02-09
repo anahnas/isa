@@ -5,10 +5,10 @@ import com.clinicalcenter.com.clinicalsys.repository.PatientRepositoryIntegratio
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
+/*@RunWith(Suite.class)
 @Suite.SuiteClasses({
         PatientRepositoryIntegrationTest.class
-})
+})*/
 public class RepositoryIntegrationTests {
 
 }
