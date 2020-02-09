@@ -5,10 +5,6 @@ Backend: https://github.com/anahnas/isa <br/>
 
 Frontend: https://github.com/bole25/client-app <br/>
 
-Napomena: Trenutna verzija kao cross origine ima: 
-<ul>
-  <li> localhost://8080 i localhost://4200
-</ul>
 
 Za izradu projekta korišteni su: 
 <ul>
@@ -17,9 +13,9 @@ Za izradu projekta korišteni su:
   <li> Angular 8 </li>
 </ul>
 
-Korištena radna okruženja: IntelliJ i za backend i za frontend.
+Korištena radna okruženja: IntelliJ i za backend i za frontend i MySqlWorkbench za MySql bazu
 
-Pokretanje back dijela ( isa folder) VALJDA OVAKO
+Pokretanje back dijela ( isa folder)
 <ul> 
  <li> U lokalu kreirati MySQL bazu podataka sa nazivom isa. </li>  
   <li> Zamijeniti trenutni sadržaj aplication.properties fajla sa sledećim:
@@ -35,7 +31,33 @@ Pokretanje back dijela ( isa folder) VALJDA OVAKO
 
   <li> Uraditi maven update projekta </li>
   <li> Projekat se pokreće na portu 8080. </li>
+  <li> startup_script - skripta za kreiranje baze i insert podataka </li>
+   <li> Za kontinualnu integraciju i kontinualno testiranje koristen je Travis CI Cloud servis </li>
+    <li> Za proveru kvaliteta koda koristen je SonarLint</li>
 </ul>
+
+Frontend::Angular aplikacija  
+<ul>
+  <li> npm install </li> 
+  <li> npm run serve </li>
+</ul>
+<br>
+
+  Aplikaciji se pristupa putem:
+  <ul>
+    <li><a href="http://localhost:4200">http://localhost:4200</a></li>
+  </ul>
+  <br>
+  Deployment:
+    
+  <ul>
+    <li><a href="https://klijent.herokuapp.com/">Link</a></li>
+    <li>(Na deploy-ovanoj bazi se nalazi podskup podataka iz gore navedene skripte)</li>
+    <li>Za deployment Angular aplikacije i Java spring boot aplikacije koristen Heroku</li>
+    <li>MySql baza deploy-ovana na remotemysql.com</li>
+  </ul>
+
+
 
 
 
