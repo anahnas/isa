@@ -29,10 +29,10 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PatientControllerIT {
-/*
+
     @Autowired
     private AppointmentRepository appointmentRepository;
 

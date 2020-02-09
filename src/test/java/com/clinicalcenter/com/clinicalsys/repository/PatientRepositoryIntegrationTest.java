@@ -12,11 +12,11 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-//    @RunWith(SpringRunner.class)
-//    @DataJpaTest
-//    @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-    public class PatientRepositoryIntegrationTest {
-/*
+@RunWith(SpringRunner.class)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+public class PatientRepositoryIntegrationTest {
+
         @Autowired
         private PatientRepository patientRepository;
 
@@ -26,6 +26,6 @@ import static org.junit.Assert.assertEquals;
             Set<Patient> all = patientRepository.getAllPatients();
             assertEquals(4, all.size());
         }
-*/
-    }
+
+}
 

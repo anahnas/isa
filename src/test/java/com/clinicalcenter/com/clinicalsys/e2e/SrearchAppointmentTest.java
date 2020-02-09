@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class SrearchAppointmentTest {
-/*    private WebDriver browser;
+    private WebDriver browser;
 
     private SearchAppointmentPage searchAppointmentPage;
     private HomePage homePage;
