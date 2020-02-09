@@ -23,4 +23,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Set<Doctor> allWithSpecializationInClinic(Long id, Long clinicid);
 
     Doctor findByEmail(String email);
+
+    @Query(value = "Select d From Doctor d where d.clinic.id=?1")
+    Set<Doctor> findAllInClinic(Long parseLong);
 }

@@ -13,6 +13,8 @@ public class AppointmentSurgeryDTO {
     private String clinicName;
     private Long ClinicId;
     private Integer ClinicGrade;
+    private Double price;
+    private Double discount;
     private Long id;
 
     public  AppointmentSurgeryDTO(){
@@ -21,7 +23,7 @@ public class AppointmentSurgeryDTO {
 
     public AppointmentSurgeryDTO(String appointmentType, String doctorsName, String patientName, String dateString,
                                  String clinicName, Long id, Long DoctorId, Long ClinicId, Long PatinetId,
-                                 Integer clinicGrade, Integer doctorGrade, String email) {
+                                 Integer clinicGrade, Integer doctorGrade, Double price, Double discount, String email) {
         this.appointmentType = appointmentType;
         DoctorsName = doctorsName;
         PatientName = patientName;
@@ -33,7 +35,24 @@ public class AppointmentSurgeryDTO {
         this.ClinicGrade = clinicGrade;
         this.DoctorGrade = doctorGrade;
         this.PatientId = PatinetId;
-        this.PatientEmail = email;
+        this.price = price;
+        this.discount = discount;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
     }
 
     public String getPatientEmail() {

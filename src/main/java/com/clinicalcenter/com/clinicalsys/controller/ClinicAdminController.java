@@ -1,6 +1,7 @@
 package com.clinicalcenter.com.clinicalsys.controller;
 
 import com.clinicalcenter.com.clinicalsys.model.*;
+import com.clinicalcenter.com.clinicalsys.model.DTO.AppointmentSurgeryDTO;
 import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
@@ -11,8 +12,11 @@ import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,22 +55,45 @@ public class ClinicAdminController {
         this.surgeryRepository = surgeryRepository;
     }
 
-    @GetMapping("/getAppointmentRequests/{email}")
-    public ResponseEntity<Set<Appointment>> getAppointmentRequests(@PathVariable("email") String email){
-        if(!Authorized.isAuthorised(email)){
+    @GetMapping("/getAppointmentAndSurgeryRequests")
+    public ResponseEntity<Set<AppointmentSurgeryDTO>> getAppointmentRequests(){
+        if(!Authorized.isAuthorised(RoleEnum.CLINIC_ADMIN)){
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
-        Set<Appointment> appointments_to_process= clinicAdminRepository.findByEmail(email).getAppointments_to_process();
-        return new ResponseEntity<>(appointments_to_process, HttpStatus.OK);
-    }
-
-    @GetMapping("/getSurgeryRequests/{email}")
-    public ResponseEntity<Set<Surgery>> getSurgeryRequests(@PathVariable("email") String email){
-        if(!Authorized.isAuthorised(email)){
-            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        ClinicAdmin admin = (ClinicAdmin) ((MyUserDetails)upat.getPrincipal()).getUser();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Set<AppointmentSurgeryDTO> retVal = new HashSet<AppointmentSurgeryDTO>();
+        Set<Appointment> appointments_to_process= admin.getAppointments_to_process();
+        String type,doctor_name,patient_name,clinic_name,strDate;
+        Long id,clinicId,doctorId,patientId;
+        Integer clinicGrade,doctorGrade;
+        for(Appointment appointment : appointments_to_process){
+            type = appointment.getType().getType();
+            doctor_name=appointment.getDoctor().getFirstName() + " " + appointment.getDoctor().getLastName();
+            doctorId=appointment.getDoctor().getId();
+            patient_name=appointment.getPatient().getFirstName() + " " + appointment.getDoctor().getLastName();
+            patientId=appointment.getPatient().getId();
+            strDate = dateFormat.format(appointment.getStartTime());
+            id = appointment.getId();
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,null,id,doctorId,
+                    null,patientId,null,null, null, null,null));
         }
-        Set<Surgery> appointments_to_process= clinicAdminRepository.findByEmail(email).getSurgeries_to_process();
-        return new ResponseEntity<>(appointments_to_process, HttpStatus.OK);
+        Set<Surgery> surgeries_to_process= admin.getSurgeries_to_process();
+        for(Surgery surgery : surgeries_to_process){
+            type = "Surgery";
+            Doctor doctor = surgery.getDoctors().iterator().next();
+            doctor_name=doctor.getFirstName() + " " + doctor.getLastName();
+            doctorId = doctor.getId();
+            patient_name=surgery.getPatient().getFirstName() + " " + surgery.getPatient().getLastName();
+            patientId=surgery.getPatient().getId();
+            strDate = dateFormat.format(surgery.getStartTime());
+            id = surgery.getId();
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,null,id,doctorId,
+                    null,patientId,null,null, null, null, null));
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     /*Return free rooms for appointment OR surgery, depending on type variable*/
@@ -114,9 +141,7 @@ public class ClinicAdminController {
         Room room = roomRepository.findByIdMy(room_id);
         if(room==null){
             return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
-        };
-        if(room.getType()==RoomType.SURGERY)
-        new Thread(()-> {
+        }
             Appointment app=appointmentRepository.findByIdMy(app_id);
             Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(app.getDoctor().getEmail());
             for (ClinicAdmin admin:clinicAdmins){
@@ -130,10 +155,10 @@ public class ClinicAdminController {
             app = appointmentRepository.save(app);
             room.addAppointment(app);
             roomRepository.save(room);
-            notifyUserSrvice.AppointmentAnswer(app.getPatient(),true);
-        }).start();
-
-
+            Appointment finalApp = app;
+            new Thread(()-> {
+                notifyUserSrvice.AppointmentAnswer(finalApp.getPatient(),true);
+            }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
@@ -154,28 +179,27 @@ public class ClinicAdminController {
         if(room==null){
             return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
         };
-        if(room.getType()==RoomType.SURGERY)
-            new Thread(()-> {
-                Surgery surg=surgeryRepository.findByIdMy(surg_id);
-                Set<Doctor> doctors_set = surg.getDoctors();
-                ArrayList<Doctor> doctors = new ArrayList<>(doctors_set);
-                Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctors.get(0).getEmail());
-                for (ClinicAdmin admin:clinicAdmins){
-                    admin.getSurgeries_to_process().remove(surg);
-                    admin = clinicAdminRepository.save(admin);
-                }
-                surg.setAppState(AppStateEnum.APPROVED);
-                for(Doctor doctor:doctors) {
-                    doctor.getSurgeries().add(surg);
-                    doctorRepository.save(doctor);
-                }
-                surg.setRoom(room);
-                surg = surgeryRepository.save(surg);
-                room.getFuture_surgeries().add(surg);
-                roomRepository.save(room);
-                notifyUserSrvice.AppointmentAnswer(surg.getPatient(),true);
-            }).start();
-
+        Surgery surg=surgeryRepository.findByIdMy(surg_id);
+        Set<Doctor> doctors_set = surg.getDoctors();
+        ArrayList<Doctor> doctors = new ArrayList<>(doctors_set);
+        Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctors.get(0).getEmail());
+        for (ClinicAdmin admin:clinicAdmins){
+            admin.getSurgeries_to_process().remove(surg);
+            admin = clinicAdminRepository.save(admin);
+        }
+        surg.setAppState(AppStateEnum.APPROVED);
+        for(Doctor doctor:doctors) {
+            doctor.getSurgeries().add(surg);
+            doctorRepository.save(doctor);
+        }
+        surg.setRoom(room);
+        surg = surgeryRepository.save(surg);
+        room.getFuture_surgeries().add(surg);
+        roomRepository.save(room);
+        Surgery finalSurg = surg;
+        new Thread(()-> {
+            notifyUserSrvice.AppointmentAnswer(finalSurg.getPatient(),true);
+        }).start();
 
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
@@ -191,7 +215,6 @@ public class ClinicAdminController {
         }catch (Exception e){
             return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
         }
-        new Thread(() -> {
             Appointment app=appointmentRepository.findByIdMy(app_id);
             Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(app.getDoctor().getEmail());
             for (ClinicAdmin admin:clinicAdmins){
@@ -200,7 +223,6 @@ public class ClinicAdminController {
             }
             app.setAppState(AppStateEnum.REJECTED);
             appointmentRepository.save(app);
-        }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
@@ -215,9 +237,10 @@ public class ClinicAdminController {
         }catch (Exception e){
             return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
         }
-        new Thread(() -> {
             Surgery surg=surgeryRepository.findByIdMy(surg_id);
-            if(surg==null) return;
+            if(surg==null){
+                return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+            }
             Set<Doctor> doctors_set = surg.getDoctors();
             ArrayList<Doctor> doctors = new ArrayList<>(doctors_set);
             Set<ClinicAdmin> clinicAdmins = clinicAdminRepository.getByDoctorEmail(doctors.get(0).getEmail());
@@ -227,11 +250,9 @@ public class ClinicAdminController {
             }
             surg.setAppState(AppStateEnum.REJECTED);
             surgeryRepository.save(surg);
-        }).start();
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
-    //SECTION FOR PREDEFINED APPOINTMENTS
     /*Returns Doctors that are specialized in given AppointmentType, work for that clinic and are free at defined time*/
     @PostMapping("/getAvailablDoctors/{date}/{email}")
     public ResponseEntity<Set<Doctor>> getFreeSpecializedDoctors(@RequestBody AppointmentType appType,
@@ -265,7 +286,6 @@ public class ClinicAdminController {
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
 
-    //SECTION FOR PREDEFINED APPOINTMENTS
     /*Returns Doctors that are specialized in given AppointmentType, work for that clinic and are free at defined time*/
     @GetMapping("/getAvailablRooms/{date}/{email}")
     public ResponseEntity<Set<Room>> getFreeSpecializedDoctors(  @PathVariable("date") String date_string,
@@ -329,7 +349,6 @@ public class ClinicAdminController {
         clinicRespository.save(clinicAdmin.getClinic());
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
-
     @GetMapping("/getVacationRequests/{email}")
     public ResponseEntity<Set<VacationRequest>> getVacationRequests(@PathVariable("email") String email){
         if(!Authorized.isAuthorised(email)){

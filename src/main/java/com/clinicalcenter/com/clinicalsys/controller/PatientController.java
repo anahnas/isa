@@ -7,6 +7,7 @@ import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.AppStateEnum;
 import com.clinicalcenter.com.clinicalsys.model.enumeration.RoleEnum;
 import com.clinicalcenter.com.clinicalsys.repository.*;
+import com.clinicalcenter.com.clinicalsys.services.AppointmentHandlingService;
 import com.clinicalcenter.com.clinicalsys.services.NotifyAdminsServices;
 import com.clinicalcenter.com.clinicalsys.util.Authorized;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
@@ -34,6 +38,8 @@ import javax.persistence.EntityNotFoundException;
 @RequestMapping("/patient")
 public class PatientController {
 
+    @Autowired
+    private AppointmentHandlingService appointmentHandlingService;
     @Autowired
     private NotifyAdminsServices notifyAdminsServices;
     @Autowired
@@ -74,6 +80,48 @@ public class PatientController {
         return new ResponseEntity<>(retValue, HttpStatus.OK);
     }
 
+    @GetMapping("/getDoctors/{clinic_id}")
+    public ResponseEntity<Set<Doctor>> getDoctorsByClinic(@PathVariable("clinic_id") String clinicId){
+        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Set<Doctor> retValue= doctorRepository.findAllInClinic(Long.parseLong(clinicId));
+        return new ResponseEntity<>(retValue, HttpStatus.OK);
+    }
+
+    @GetMapping("/getPredefinedAppointments/{clinic_id}")
+    public ResponseEntity<Set<AppointmentSurgeryDTO>> getPredefinedAppointments(@PathVariable("clinic_id") String clinicId){
+        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Clinic clinic = clinicRespository.findByIdMy(Long.parseLong(clinicId));
+        Set<Appointment> appointments = clinic.getPredefinedAppointments();
+        Set<AppointmentSurgeryDTO> retVal = new HashSet<AppointmentSurgeryDTO>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String type,doctor_name,clinic_name,strDate;
+        Long id;
+        for(Appointment appointment : appointments){
+            type = appointment.getType().getType();
+            doctor_name=appointment.getDoctor().getFirstName() + " " + appointment.getDoctor().getLastName();
+            clinic_name=appointment.getDoctor().getClinic().getClinicName();
+            strDate = dateFormat.format(appointment.getStartTime());
+            id = appointment.getId();
+            Set<AppointmentType_Price_Discount> atpds = clinic.getAppointmentTypePriceDiscounts();
+            Double price=null;
+            Double discount=null;
+            for(AppointmentType_Price_Discount atpd : atpds){
+                if(atpd.getAppointmentType().getId()==appointment.getType().getId()){
+                    price = atpd.getPrice();
+                    discount = atpd.getDiscount();
+                    break;
+                }
+            }
+            retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
+                    null,null,null,null,price,discount,null));
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
     @GetMapping("/getAllClinics")
     public ResponseEntity<Set<Clinic>> getAllClinics(){
         Set<Clinic> retVal = clinicRespository.findClinics();
@@ -94,28 +142,25 @@ public class PatientController {
     @PostMapping("/getAvailableClinics/{date}")
     public ResponseEntity<Set<Clinic>> getFreeSpecializedDoctorClinics(@RequestBody AppTypeDTO appType, @PathVariable("date") String date_string) {
 
-        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Date date;
+        Set<Clinic> clinics = new HashSet<Clinic>();
         try {
             date = simpleDateFormat.parse(date_string);
         } catch (ParseException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(clinics, HttpStatus.NOT_ACCEPTABLE);
         }
         if(date.before(new Date())){
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(clinics, HttpStatus.NOT_ACCEPTABLE);
         }
         if(appType.getType()==null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(clinics, HttpStatus.NOT_ACCEPTABLE);
         }
         if(!appointmentRepository.existsById(appType.getId())) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(clinics, HttpStatus.NOT_ACCEPTABLE);
         }
         Set<Doctor> doctors= new HashSet<Doctor>(doctorRepository.allWithSpecialization(appType.getId()));
-        Set<Clinic> clinics = new HashSet<Clinic>();
         for(Doctor doctor : doctors){
             if(doctor.getFreeTimes(date).isEmpty())
                 continue;
@@ -132,24 +177,25 @@ public class PatientController {
     public ResponseEntity<Set<Doctor_FreeTimes>> getFreeSpecializedDoctors(@RequestBody AppTypeDTO appType,
                                                                            @PathVariable("date") String date_string,
                                                                            @PathVariable("clinicName") String clinic_name) {
-        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Date date;
         try {
             date = simpleDateFormat.parse(date_string);
         } catch (ParseException e) {
+            System.out.println("1");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         if(date.before(new Date())){
+            System.out.println("2");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         if(appType.getType()==null){
+            System.out.println("3");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         if(!appointmentRepository.existsById(appType.getId())){
+            System.out.println("4");
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         Clinic clinic = clinicRespository.findByClinicName(clinic_name);
@@ -196,7 +242,7 @@ public class PatientController {
         start.setTime(date);
         Calendar end = (Calendar) start.clone();
         end.add(Calendar.MINUTE,30);
-        if(doctor.checkIfAppFree(start, end)){
+        if(!doctor.checkIfAppFree(start, end)){
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
         Patient patient = patientRespository.findByEmail(patient_email);
@@ -249,7 +295,7 @@ public class PatientController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,clinic_name,id,doctorId,
-                    clinicId,null,clinicGrade,doctorGrade, null));
+                    clinicId,null,clinicGrade,doctorGrade, null, null,null));
         }
         Set<Surgery> surgeries = surgeryRepository.getPatientsPastSurgeries(patient.getId());
         for(Surgery surgery : surgeries){
@@ -265,7 +311,7 @@ public class PatientController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,clinic_name,id,doctorId,
-                    clinicId,null,clinicGrade,doctorGrade, null));
+                    clinicId,null,clinicGrade,doctorGrade, null, null,null));
         }
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
@@ -305,7 +351,7 @@ public class PatientController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null,null, null));
+                    null,null,null,null, null, null,null));
         }
         for(Surgery surgery : patient.getSurgeries()){
             type = "Surgery";
@@ -315,7 +361,7 @@ public class PatientController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null,null, null));
+                    null,null,null,null, null, null, null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
@@ -351,6 +397,22 @@ public class PatientController {
             finalPatient.rate(rating);
             patientRespository.save(finalPatient);
         }).start();
+        return new ResponseEntity<>("",HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
+    @PostMapping("/bookFastAppointment/{id}")
+    public ResponseEntity<String> bookFastAppointment(@PathVariable("id") String appId){
+        if(!Authorized.isAuthorised(RoleEnum.PATIENT)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Long id;
+        try {
+            id = Long.parseLong(appId);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        appointmentHandlingService.ReserveFastAppointment(id);
         return new ResponseEntity<>("",HttpStatus.OK);
     }
 }

@@ -113,7 +113,7 @@ public class DoctorController {
         Set<AppointmentSurgeryDTO> retVal = new HashSet<>();
         // Maybe the patient will have to be taken from repository for consistency reasons
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String type,patient_name,strDate, patientemail;
+        String type,patient_name,strDate;
         Long id, patientId;
         for(Appointment appointment : doctor.getAppointments()){
             if(appointment.getAppState()!= AppStateEnum.APPROVED){
@@ -121,22 +121,20 @@ public class DoctorController {
             }
             patient_name = appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName();
             patientId = appointment.getPatient().getId();
-            patientemail = appointment.getPatient().getEmail();
             type = appointment.getType().getType();
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, null, patient_name,strDate,null,id,null,
-                    null,patientId, null,null, patientemail));
+                    null,patientId, null,null,null,null,null));
         }
         for(Surgery surgery : doctor.getSurgeries()){
             type = "Surgery";
             patient_name = surgery.getPatient().getFirstName() + " " + surgery.getPatient().getLastName();
             patientId = surgery.getPatient().getId();
-            patientemail = surgery.getPatient().getEmail();
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, null, patient_name,strDate,null,id,null,
-                    null,patientId, null,null, patientemail));
+                    null,patientId, null,null,null,null,null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
