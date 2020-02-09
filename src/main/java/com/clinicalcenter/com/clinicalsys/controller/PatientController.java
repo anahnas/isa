@@ -117,7 +117,7 @@ public class PatientController {
                 }
             }
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null,null,price,discount));
+                    null,null,null,null,price,discount,null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
@@ -295,7 +295,7 @@ public class PatientController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,clinic_name,id,doctorId,
-                    clinicId,null,clinicGrade,doctorGrade, null, null));
+                    clinicId,null,clinicGrade,doctorGrade, null, null,null));
         }
         Set<Surgery> surgeries = surgeryRepository.getPatientsPastSurgeries(patient.getId());
         for(Surgery surgery : surgeries){
@@ -311,7 +311,7 @@ public class PatientController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,clinic_name,id,doctorId,
-                    clinicId,null,clinicGrade,doctorGrade, null, null));
+                    clinicId,null,clinicGrade,doctorGrade, null, null,null));
         }
         return new ResponseEntity<>(retVal,HttpStatus.OK);
     }
@@ -351,7 +351,7 @@ public class PatientController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null,null, null, null));
+                    null,null,null,null, null, null,null));
         }
         for(Surgery surgery : patient.getSurgeries()){
             type = "Surgery";
@@ -361,7 +361,7 @@ public class PatientController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, null,strDate,clinic_name,id,null,
-                    null,null,null,null, null, null));
+                    null,null,null,null, null, null, null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }

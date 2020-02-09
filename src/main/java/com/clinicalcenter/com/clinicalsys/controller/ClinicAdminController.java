@@ -78,7 +78,7 @@ public class ClinicAdminController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,null,id,doctorId,
-                    null,patientId,null,null, null, null));
+                    null,patientId,null,null, null, null,null));
         }
         Set<Surgery> surgeries_to_process= admin.getSurgeries_to_process();
         for(Surgery surgery : surgeries_to_process){
@@ -91,7 +91,7 @@ public class ClinicAdminController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, doctor_name, patient_name,strDate,null,id,doctorId,
-                    null,patientId,null,null, null, null));
+                    null,patientId,null,null, null, null, null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }

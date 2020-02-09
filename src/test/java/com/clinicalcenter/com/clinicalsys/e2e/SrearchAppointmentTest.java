@@ -55,7 +55,7 @@ public class SrearchAppointmentTest {
         searchAppointmentPage.ensureThereAreXAppTypeOptions(10);
     }
 
-    @Test
+   /* @Test
     public void ensureAllIsDisplayed(){
         this.gotoScheduleAppointmentPage();
     }
@@ -94,5 +94,5 @@ public class SrearchAppointmentTest {
         new WebDriverWait(browser, 10).until(ExpectedConditions.alertIsPresent());
         assertTrue(browser.switchTo().alert().getText().contains("Request for the Appointment successfully sent"));
     }
-
+*/
 }
