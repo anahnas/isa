@@ -1,4 +1,4 @@
-package com.clinicalcenter.com.clinicalsys.controller.suites;
+package com.clinicalcenter.com.clinicalsys.repository.suites;
 
 import com.clinicalcenter.com.clinicalsys.controller.PatientControllerIT;
 import com.clinicalcenter.com.clinicalsys.controller.PatientControllerUnitTest;
@@ -9,10 +9,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        PatientControllerIT.class,
-        PatientControllerUnitTest.class
+        PatientRepositoryUnitTest.class,
+        PatientRepositoryIntegrationTest.class
 })
-public class ControllerAllTests {
+public class RepositoryAllTests {
 
 
 }

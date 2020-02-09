@@ -22,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -33,8 +32,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -60,11 +57,6 @@ public class PatientControllerUnitTest {
     private AppointmentRepository appointmentRepository;
     @Mock
     private ClinicRespository clinicRespository;
-    @Mock
-    private ClinicAdminRepository clinicAdminRespository;
-    @Mock
-    private PatientRepository patientRespository;
-
     @InjectMocks
     PatientController patientControllerUnderTest;
 
@@ -97,30 +89,24 @@ public class PatientControllerUnitTest {
         clinic.setId(1L);
         Mockito.when(clinicRespository.findByClinicName(PatientConstants.EXISTING_CLINIC_NAME)).thenReturn(clinic);
         Mockito.when(clinicRespository.findByClinicName(PatientConstants.NOT_EXISTING_CLINIC_NAME)).thenReturn(null);
+
+        Mockito.when(appointmentRepository.existsById(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID)).thenReturn(true);
+
     }
 
-    /*@Test
-    public void getAppointmentTypes_successful() throws Exception {
-        //this.loginAsPatient();
 
-        mockMvc.perform(get("http://localhost:8080/patient/getAppointmentTypes")).andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
-
-        verify(appointmentTypeRepository, times(1)).findAll();
-    }*/
-
-    /*@Test
+    @Test
     public void testGetFreeSpecializedDoctorClinics_successful() throws Exception {
         AppointmentType appointmentType = new AppointmentType();
-        appointmentType.setId(1L);
-        appointmentType.setType("Ocni pregled");
+        appointmentType.setId(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
+        appointmentType.setType(PatientConstants.EXISTING_TYPE);
 
         mockMvc.perform(post("http://localhost:8080/patient/getAvailableClinics/" + PatientConstants.FUTURE_DATE).contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(appointmentType)).characterEncoding("utf-8")).andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
 
-        verify(doctorRepository, times(1)).allWithSpecialization(1L);
-
-    }*/
+        verify(doctorRepository, times(1)).allWithSpecialization(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
+        verify(appointmentRepository, times(1)).existsById(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
+    }
 
     @Test
     public void testGetFreeSpecializedDoctorClinics_notExistingType() throws Exception {
@@ -156,7 +142,7 @@ public class PatientControllerUnitTest {
 
 
 
-    /*@Test
+    @Test
     public void testGetFreeSpecializedDoctors_successful() throws Exception {
         AppointmentType type = new AppointmentType();
         type.setType(PatientConstants.EXISTING_TYPE);
@@ -164,8 +150,8 @@ public class PatientControllerUnitTest {
 
         mockMvc.perform(post("http://localhost:8080/patient/getAvailableClinics/"  + PatientConstants.FUTURE_DATE + "/" + PatientConstants.EXISTING_CLINIC_NAME).contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(type)).characterEncoding("utf-8")).andDo(print())
                 .andExpect(status().isOk()).andExpect(jsonPath("$").isArray());
-        verify(doctorRepository, times(1)).allWithSpecialization(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
-    }*/
+        verify(doctorRepository, times(1)).allWithSpecializationInClinic(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID, 1L);
+    }
 
     @Test
     public void testGetFreeSpecializedDoctors_notExistingType() throws Exception {

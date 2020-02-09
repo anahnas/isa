@@ -5,6 +5,7 @@ import com.clinicalcenter.com.clinicalsys.constants.UserConstants;
 import com.clinicalcenter.com.clinicalsys.model.Appointment;
 import com.clinicalcenter.com.clinicalsys.model.AppointmentType;
 import com.clinicalcenter.com.clinicalsys.model.Clinic;
+import com.clinicalcenter.com.clinicalsys.model.DTO.AppTypeDTO;
 import com.clinicalcenter.com.clinicalsys.model.DTO.Doctor_FreeTimes;
 import com.clinicalcenter.com.clinicalsys.model.authentication.AuthenticationRequest;
 import com.clinicalcenter.com.clinicalsys.model.authentication.AuthenticationResponse;
@@ -31,7 +32,7 @@ import static org.junit.Assert.*;
 //@RunWith(SpringRunner.class)
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PatientControllerIT {
-
+/*
     @Autowired
     private AppointmentRepository appointmentRepository;
 
@@ -69,7 +70,7 @@ public class PatientControllerIT {
         return new HttpEntity<>(headers);
     }
 
-/*
+
     @Test
     public void testGetFreeSpecializedDoctorClinics_successful(){
         this.loginAsPatient();
@@ -91,7 +92,7 @@ public class PatientControllerIT {
 
     @Test
     public void testGetFreeSpecializedDoctorClinics_notExistingType(){
-        this.loginAsPatient();
+        //this.loginAsPatient();
         AppointmentType type = new AppointmentType();
         type.setType(PatientConstants.NOT_EXISTING_TYPE);
         type.setId(PatientConstants.NOT_EXISTING_APPOINTMENT_TYPE_ID);
@@ -133,12 +134,12 @@ public class PatientControllerIT {
     @Test
     public void testGetFreeSpecializedDoctorClinics_loggedAsDoctor(){
         this.loginAsDoctor();
-        AppointmentType type = new AppointmentType();
+        AppTypeDTO type = new AppTypeDTO();
         type.setType(PatientConstants.EXISTING_TYPE);
         type.setId(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + this.accessToken);
-        HttpEntity<AppointmentType> request = new HttpEntity<>(type, headers);
+        HttpEntity<AppTypeDTO> request = new HttpEntity<>(type, headers);
         ResponseEntity<Set<Clinic>> response = restTemplate.exchange(
                 "http://localhost:8080/patient/getAvailableClinics/" + PatientConstants.FUTURE_DATE, HttpMethod.POST, request, new ParameterizedTypeReference<Set<Clinic>>(){});
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -234,7 +235,7 @@ public class PatientControllerIT {
 
     @Test
     public void testGetFreeSpecializedDoctors_datePassed(){
-        this.loginAsPatient();
+        //this.loginAsPatient();
         AppointmentType type = new AppointmentType();
         type.setType(PatientConstants.EXISTING_TYPE);
         type.setId(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
@@ -350,14 +351,14 @@ public class PatientControllerIT {
 
     @Test
     public void testRequestApp_datePassed(){
-        this.loginAsPatient();
+        //this.loginAsPatient();
 
-        AppointmentType type = new AppointmentType();
+        AppTypeDTO type = new AppTypeDTO();
         type.setType(PatientConstants.EXISTING_TYPE);
         type.setId(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + this.accessToken);
-        HttpEntity<AppointmentType> request = new HttpEntity<>(type, headers);
+        HttpEntity<AppTypeDTO> request = new HttpEntity<>(type, headers);
 
         int before = appointmentRepository.getAllAppintments().size();
 
@@ -509,15 +510,15 @@ public class PatientControllerIT {
 
     @Test
     public void testRequestApp_appointmentReserved(){
-        this.loginAsPatient();
+        //this.loginAsPatient();
 
         // set request
-        AppointmentType type = new AppointmentType();
+        AppTypeDTO type = new AppTypeDTO();
         type.setType(PatientConstants.EXISTING_TYPE);
         type.setId(PatientConstants.EXISTING_APPOINTMENT_TYPE_ID);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + this.accessToken);
-        HttpEntity<AppointmentType> request = new HttpEntity<>(type, headers);
+        HttpEntity<AppTypeDTO> request = new HttpEntity<>(type, headers);
 
         int before = appointmentRepository.getAllAppintments().size();
 
@@ -534,6 +535,6 @@ public class PatientControllerIT {
     @After
     public void tearDown(){
 
-    }
+    }/*
 */
 }
