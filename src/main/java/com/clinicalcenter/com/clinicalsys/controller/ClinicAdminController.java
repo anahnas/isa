@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
@@ -128,6 +131,7 @@ public class ClinicAdminController {
         return new ResponseEntity<>(available_rooms, HttpStatus.OK);
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     @GetMapping("/assignRoomToAppointment/{roomId}/{appId}")
     public ResponseEntity<String> assignRoomToAppointment(@PathVariable("roomId") String roomId,
                                                           @PathVariable("appId") String appId){
@@ -165,6 +169,7 @@ public class ClinicAdminController {
         return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     @GetMapping("/assignRoomToSurgery/{roomId}/{surgId}")
     public ResponseEntity<String> assignRoomToSurgery(@PathVariable("roomId") String roomId,
                                                           @PathVariable("surgId") String surgId){
@@ -361,6 +366,7 @@ public class ClinicAdminController {
         return new ResponseEntity<>(vacations_to_process, HttpStatus.OK);
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     @PostMapping("/respondToVacationRequest/{vacation_id}")
     public ResponseEntity<String> acceptVacation(@RequestBody Boolean status,
                                                                @PathVariable("vacation_id") String vacation_id){

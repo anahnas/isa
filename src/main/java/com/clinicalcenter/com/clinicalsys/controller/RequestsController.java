@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -51,6 +54,7 @@ public class RequestsController {
     }
 
     @Async
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     @PostMapping("/acceptrequest")
     public ResponseEntity<String> acceptRequest(@RequestBody String email) throws MailException{
         if(!Authorized.isAuthorised(RoleEnum.CLINIC_CENTER_ADMIN)){
@@ -60,7 +64,7 @@ public class RequestsController {
         if(user == null){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        patientRepository.setConfirmed(user.getEmail());
+        userRepository.setConfirmed(user.getEmail());
 
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(email);
@@ -74,6 +78,7 @@ public class RequestsController {
     }
 
     @Async
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     @PostMapping("/deleterequest")
     public ResponseEntity<String> removeRequest(@RequestBody DeleteRequest rqst)
             throws MailException, InterruptedException{
@@ -95,7 +100,7 @@ public class RequestsController {
                 this.mailSender.send(mail);
             }).start();
             System.out.println("Email sent..");
-            userRepository.deleteByEmail(rqst.getEmail());
+            userRepository.deleteByEmailMy(rqst.getEmail());
             return new ResponseEntity<>("", HttpStatus.OK);
         }
     }
