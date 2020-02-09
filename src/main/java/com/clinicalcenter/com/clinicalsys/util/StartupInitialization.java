@@ -50,7 +50,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-    /*
+/*
         //region ClinicCenterAdmin
         User user_ccadmin;
         user_ccadmin = new User("kmalia8@phoca.cz","Kial","Malia","663354",
@@ -547,7 +547,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
         }
         //endregion
 
-
+/*
         //region Recipe
         for(int i=0; i<40 ;i++) {
             Drug drug = drugs.get(ThreadLocalRandom.current().nextInt(0,drugs.size()));
@@ -565,7 +565,7 @@ public class StartupInitialization implements ApplicationListener<ContextRefresh
             patients.add(patientRepository.save(patient));
         }
         //endregion
-    /*
+
         //region Adding diagnoses to patients
         for(Patient patient: patients) {
             int iterations=ThreadLocalRandom.current().nextInt(1, 3);
