@@ -125,7 +125,7 @@ public class DoctorController {
             strDate = dateFormat.format(appointment.getStartTime());
             id = appointment.getId();
             retVal.add(new AppointmentSurgeryDTO(type, null, patient_name,strDate,null,id,null,
-                    null,patientId, null,null));
+                    null,patientId, null,null,null,null));
         }
         for(Surgery surgery : doctor.getSurgeries()){
             type = "Surgery";
@@ -134,7 +134,7 @@ public class DoctorController {
             strDate = dateFormat.format(surgery.getStartTime());
             id = surgery.getId();
             retVal.add(new AppointmentSurgeryDTO(type, null, patient_name,strDate,null,id,null,
-                    null,patientId, null,null));
+                    null,patientId, null,null,null,null));
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }

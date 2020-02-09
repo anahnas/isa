@@ -21,4 +21,6 @@ public interface ClinicRespository extends JpaRepository<Clinic, Long> {
     @Transactional
     Clinic findByClinicName(String clinicName);
 
+    @Query( value = "select c from Clinic c where c.id=?1")
+    Clinic findByIdMy(Long parseLong);
 }

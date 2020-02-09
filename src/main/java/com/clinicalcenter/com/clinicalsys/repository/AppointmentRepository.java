@@ -25,4 +25,15 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query(value = "SELECT a from Appointment a where a.patient.id=?1 and a.appState=4")
     Set<Appointment> getPatientsPastAppointments(Long patientid);
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "UPDATE appointment SET patient_id=?1, app_state=5 where id=?2 ", nativeQuery = true)
+    void bookFastApp(Long patientId, Long id);
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "DELETE FROM clinicalsys.clinic_predefined_appointments WHERE " +
+            "clinicalsys.clinic_predefined_appointments.predefined_appointments_id=?1", nativeQuery = true)
+    void deletePredefinedAppointment(Long id);
 }
